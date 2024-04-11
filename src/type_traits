@@ -42,6 +42,10 @@ namespace std
     class _UCXXEXPORT __is_integer
     {
     public:
+        enum
+        {
+            __value = 1
+        };
         typedef __false_type value;
     };
 
@@ -49,6 +53,10 @@ namespace std
     class _UCXXEXPORT __is_integer<unsigned int>
     {
     public:
+        enum
+        {
+            __value = 1
+        };
         typedef __true_type value;
     };
 
@@ -56,6 +64,10 @@ namespace std
     class _UCXXEXPORT __is_integer<signed int>
     {
     public:
+        enum
+        {
+            __value = 1
+        };
         typedef __true_type value;
     };
 
@@ -63,6 +75,10 @@ namespace std
     class _UCXXEXPORT __is_integer<short unsigned int>
     {
     public:
+        enum
+        {
+            __value = 1
+        };
         typedef __true_type value;
     };
 
@@ -70,6 +86,10 @@ namespace std
     class _UCXXEXPORT __is_integer<short signed int>
     {
     public:
+        enum
+        {
+            __value = 1
+        };
         typedef __true_type value;
     };
 
@@ -77,6 +97,10 @@ namespace std
     class _UCXXEXPORT __is_integer<char>
     {
     public:
+        enum
+        {
+            __value = 1
+        };
         typedef __true_type value;
     };
 
@@ -84,6 +108,10 @@ namespace std
     class _UCXXEXPORT __is_integer<signed char>
     {
     public:
+        enum
+        {
+            __value = 1
+        };
         typedef __true_type value;
     };
 
@@ -91,6 +119,10 @@ namespace std
     class _UCXXEXPORT __is_integer<unsigned char>
     {
     public:
+        enum
+        {
+            __value = 1
+        };
         typedef __true_type value;
     };
 
@@ -98,6 +130,10 @@ namespace std
     class _UCXXEXPORT __is_integer<long unsigned int>
     {
     public:
+        enum
+        {
+            __value = 1
+        };
         typedef __true_type value;
     };
 
@@ -105,6 +141,10 @@ namespace std
     class _UCXXEXPORT __is_integer<long signed int>
     {
     public:
+        enum
+        {
+            __value = 1
+        };
         typedef __true_type value;
     };
     // 44
@@ -208,7 +248,7 @@ namespace std
     {
         static_assert(_STRUCT14VALUE(_Always_false, _Ty), "Calling declval is ill-formed, see N4892 [declval]/2.");
     }
-    
+
     template <class _Ty>
     struct remove_extent
     { // remove array extent

@@ -5,6 +5,7 @@
 #include <iostream>
 #include <memory>
 #include <dynarray>
+#include <cmath>
 void Translate(std::chrono::hours H) {
   std::cout << std::chrono::duration_cast<std::chrono::seconds>(H).count() << std::endl;
 }
@@ -16,7 +17,7 @@ void setup() {
   FF = [H]() {
     Translate(H);
   };
-  std::dynarray<int> D(10);
+  std::dynarray<int> D(std::log2(1024));
 }
 void loop() {
   FF();

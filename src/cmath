@@ -17,12 +17,10 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 #pragma once
-#ifndef ARDUINO_ARCH_AVR
-#include "Cpp_Standard_Library.h"
-#include CSL_Official(cmath)
-#else
+#ifdef ARDUINO_ARCH_AVR
 #include <math.h>
-
+#include "type_traits"
+#include "ext/type_traits.h"
 #undef abs
 #undef acos
 #undef asin
@@ -46,10 +44,13 @@
 #undef sqrt
 #undef tan
 #undef tanh
-
+#else
+#include "Cpp_Standard_Library.h"
+#include CSL_Official(cmath)
+#endif
 namespace std
 {
-
+#ifdef ARDUINO_ARCH_AVR
 	using ::acos;
 	using ::asin;
 	using ::atan;
@@ -280,6 +281,29 @@ namespace std
 	}
 #endif //	 __UCLIBCXX_HAS_LONG_DOUBLE__
 #endif //	 __CORRECT_ISO_CPP_MATH_H_PROTO
-}
+#endif
+#ifndef ARDUINO_ARCH_ESP32
+	// DR 568.
+#ifndef __CORRECT_ISO_CPP11_MATH_H_PROTO_FP
+	inline float
+	log2(float __x)
+	{
+		return __builtin_log2f(__x);
+	}
 
-#endif //__STD_HEADER_CMATH
+	inline long double
+	log2(long double __x)
+	{
+		return __builtin_log2l(__x);
+	}
+#endif
+
+	template <typename _Tp>
+	inline typename __gnu_cxx::__enable_if<__is_integer<_Tp>::__value,
+										   double>::__type
+	log2(_Tp __x)
+	{
+		return __builtin_log2(__x);
+	}
+#endif
+}
