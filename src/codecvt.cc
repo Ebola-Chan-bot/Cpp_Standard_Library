@@ -334,9 +334,9 @@ namespace std _GLIBCXX_VISIBILITY(default)
 			if (mode & consume_header)
 			{
 				if (read_bom(from, utf16_bom))
-					mode &= ~little_endian;
+					(int&)mode &= ~little_endian;
 				else if (read_bom(from, utf16le_bom))
-					mode |= little_endian;
+					(int&)mode |= little_endian;
 			}
 		}
 
