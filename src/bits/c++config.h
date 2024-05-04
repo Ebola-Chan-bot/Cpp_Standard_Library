@@ -1,5 +1,8 @@
 #pragma once
 #include "../__config"
+//一些GCC特定版本才支持的定义
+#define __unlikely__
+
 //78
 // Macros for deprecated attributes.
 //   _GLIBCXX_USE_DEPRECATED
@@ -278,18 +281,6 @@ namespace __gnu_cxx
 #define _GLIBCXX_NOEXCEPT_QUAL
 #endif
 
-// Macro for extern template, ie controlling template linkage via use
-// of extern keyword on template declaration. As documented in the g++
-// manual, it inhibits all implicit instantiations and is used
-// throughout the library to avoid multiple weak definitions for
-// required types that are already explicitly instantiated in the
-// library binary. This substantially reduces the binary size of
-// resulting executables.
-// Special case: _GLIBCXX_EXTERN_TEMPLATE == -1 disallows extern
-// templates only in basic_string, thus activating its debug-mode
-// checks even at -O0.
-#define _GLIBCXX_EXTERN_TEMPLATE
-
 /*
   Outline of libstdc++ namespaces.
 
@@ -338,7 +329,26 @@ namespace __gnu_cxx
   For full details see:
   http://gcc.gnu.org/onlinedocs/libstdc++/latest-doxygen/namespaces.html
 */
+namespace std
+{
+  typedef __SIZE_TYPE__ 	size_t;
+  typedef __PTRDIFF_TYPE__	ptrdiff_t;
 
+#if __cplusplus >= 201103L
+  typedef decltype(nullptr)	nullptr_t;
+#endif
+
+#pragma GCC visibility push(default)
+  // This allows the library to terminate without including all of <exception>
+  // and without making the declaration of std::terminate visible to users.
+  extern "C++" __attribute__ ((__noreturn__, __always_inline__))
+  inline void __terminate() _GLIBCXX_USE_NOEXCEPT
+  {
+    void terminate() _GLIBCXX_USE_NOEXCEPT __attribute__ ((__noreturn__,__cold__));
+    terminate();
+  }
+#pragma GCC visibility pop
+}
 
 #if ! _GLIBCXX_USE_DUAL_ABI
 // Ignore any pre-defined value of _GLIBCXX_USE_CXX11_ABI
