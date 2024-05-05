@@ -872,5 +872,5 @@ _Static_assert (0, "IEEE 128-bits long double requires redirection on this platf
 #endif	 /* sys/cdefs.h */
 #else
 #include "../Cpp_Standard_Library.h"
-#include CSL_Official(sys/cdefs.h)
+#include CSL_OfficialC(sys/cdefs.h)
 #endif

@@ -1,3 +1,5 @@
+#pragma once
+#ifdef ARDUINO_ARCH_AVR
 // ABI Support -*- C++ -*-
 
 // Copyright (C) 2000-2024 Free Software Foundation, Inc.
@@ -645,3 +647,7 @@ namespace __gnu_cxx
 #pragma GCC visibility pop
 
 #endif // __CXXABI_H
+#else
+#include "Cpp_Standard_Library.h"
+#include CSL_Official(cxxabi.h)
+#endif

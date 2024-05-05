@@ -78,6 +78,7 @@
 		"set": "cpp",
 		"cerrno": "cpp",
 		"codecvt": "cpp",
-		"dynarray":"cpp"
+		"dynarray": "cpp",
+		"stdio.h": "c"
 	}
 }

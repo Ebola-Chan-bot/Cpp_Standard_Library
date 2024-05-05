@@ -236,26 +236,6 @@ extern size_t __printf_buffer_as_file_xsputn (FILE *fp, const void *buf,
 					      size_t len);
 extern size_t __wprintf_buffer_as_file_xsputn (FILE *fp, const void *buf,
 					       size_t len);
-#define IO_VTABLES_LEN (IO_VTABLES_NUM * sizeof (struct _IO_jump_t))
-
-extern const struct _IO_jump_t __io_vtables[] attribute_hidden;
-#define _IO_str_jumps                    (__io_vtables[IO_STR_JUMPS])
-#define _IO_wstr_jumps                   (__io_vtables[IO_WSTR_JUMPS])
-#define _IO_file_jumps                   (__io_vtables[IO_FILE_JUMPS])
-#define _IO_file_jumps_mmap              (__io_vtables[IO_FILE_JUMPS_MMAP])
-#define _IO_file_jumps_maybe_mmap        (__io_vtables[IO_FILE_JUMPS_MAYBE_MMAP])
-#define _IO_wfile_jumps                  (__io_vtables[IO_WFILE_JUMPS])
-#define _IO_wfile_jumps_mmap             (__io_vtables[IO_WFILE_JUMPS_MMAP])
-#define _IO_wfile_jumps_maybe_mmap       (__io_vtables[IO_WFILE_JUMPS_MAYBE_MMAP])
-#define _IO_cookie_jumps                 (__io_vtables[IO_COOKIE_JUMPS])
-#define _IO_proc_jumps                   (__io_vtables[IO_PROC_JUMPS])
-#define _IO_mem_jumps                    (__io_vtables[IO_MEM_JUMPS])
-#define _IO_wmem_jumps                   (__io_vtables[IO_WMEM_JUMPS])
-#define _IO_printf_buffer_as_file_jumps  (__io_vtables[IO_PRINTF_BUFFER_AS_FILE_JUMPS])
-#define _IO_wprintf_buffer_as_file_jumps (__io_vtables[IO_WPRINTF_BUFFER_AS_FILE_JUMPS])
-#define _IO_old_file_jumps               (__io_vtables[IO_OLD_FILE_JUMPS])
-#define _IO_old_proc_jumps               (__io_vtables[IO_OLD_PROC_JUMPS])
-#define _IO_old_cookie_jumps             (__io_vtables[IO_OLD_COOKIED_JUMPS])
 
 #ifdef SHARED
 # define libio_static_fn_required(name)
@@ -322,9 +302,6 @@ extern int __vasprintf_internal (char **result_ptr, const char *format,
     attribute_hidden;
 extern int __vdprintf_internal (int d, const char *format, va_list ap,
 				unsigned int mode_flags)
-    attribute_hidden;
-extern int __obstack_vprintf_internal (struct obstack *ob, const char *fmt,
-				       va_list ap, unsigned int mode_flags)
     attribute_hidden;
 
 /* Note: __vsprintf_internal, unlike vsprintf, does take a maxlen argument,
@@ -519,6 +496,5 @@ enum __codecvt_result
   __codecvt_noconv
 };
   attribute_hidden;
-int __libio_codecvt_encoding (struct _IO_codecvt *) attribute_hidden;
 
 #endif /* libioP.h.  */

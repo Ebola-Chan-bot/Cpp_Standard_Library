@@ -16,6 +16,7 @@
 */
 #pragma once
 #ifdef ARDUINO_ARCH_AVR
+#include <wchar.h>
 #define __need_wint_t
 #define __need_size_t
 #include <stddef.h>
@@ -23,6 +24,7 @@ namespace std
 {
 	//using ::mbstate_t;
 	using ::wint_t;
+	using ::swprintf;
 	/*
 	using ::btowc;
 	using ::fgetwc;
@@ -40,7 +42,6 @@ namespace std
 	using ::mbsrtowcs;
 	using ::putwc;
 	using ::putwchar;
-	using ::swprintf;
 	using ::swscanf;
 	using ::ungetwc;
 	using ::vfwprintf;

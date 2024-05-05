@@ -26,6 +26,7 @@
 
 #include <errno.h>
 #include <math_ldbl_opt.h>
+#include <printf.h>
 #include <printf_buffer.h>
 #include <stddef.h>
 #include <stdarg.h>

@@ -8,5 +8,6 @@
 #ifdef ARDUINO_ARCH_AVR
 #define CSL_Official(Header) <Arduino.h/../../arduino/Header>
 #else
-#define CSL_Official(Header) <cxxabi.h/../../__GNUC__.__GNUC_MINOR__.__GNUC_PATCHLEVEL__/Header>
+#define CSL_Official(Header) <_ansi.h/../c++/__GNUC__.__GNUC_MINOR__.__GNUC_PATCHLEVEL__/Header>
+#define CSL_OfficialC(Header) <_ansi.h/../../include/Header>
 #endif

@@ -34,11 +34,7 @@
 #include <exception>
 #include <cstddef>
 #include "unwind.h"
-#ifdef ARDUINO_ARCH_AVR
-#include <cxxabi_avr.h>
-#else
 #include <cxxabi.h>
-#endif
 
 #ifdef _GLIBCXX_HAVE_SYS_SDT_H
 #include <sys/sdt.h>

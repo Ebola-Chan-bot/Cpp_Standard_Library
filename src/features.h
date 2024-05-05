@@ -1,3 +1,8 @@
+#pragma once
+#define __STDC_VERSION__ 201112L
+#ifdef VSCODE
+#undef __STRICT_ANSI__
+#endif
 /* Copyright (C) 1991-2024 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
