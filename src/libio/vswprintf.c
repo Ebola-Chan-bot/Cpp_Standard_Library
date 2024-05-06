@@ -1,3 +1,4 @@
+#ifdef ARDUINO_ARCH_AVR
 /* Copyright (C) 1994-2024 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
@@ -66,3 +67,4 @@ __vswprintf (wchar_t *string, size_t maxlen, const wchar_t *format,
   return __vswprintf_internal (string, maxlen, format, args, 0);
 }
 ldbl_weak_alias (__vswprintf, vswprintf)
+#endif

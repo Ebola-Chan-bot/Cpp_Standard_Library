@@ -79,6 +79,13 @@
 		"cerrno": "cpp",
 		"codecvt": "cpp",
 		"dynarray": "cpp",
-		"stdio.h": "c"
+		"stdio.h": "c",
+		"printf.h": "c",
+		"features.h": "c",
+		"file.h": "c",
+		"locale.h": "c",
+		"cpp_standard_library.h": "c",
+		"langinfo.h": "c",
+		"errno.h": "c"
 	}
 }

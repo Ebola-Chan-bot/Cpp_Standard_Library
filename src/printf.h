@@ -8,6 +8,14 @@
 
 # ifndef _ISOMAC
 
+/* Internal interfaces for registered specifiers.  */
+extern printf_arginfo_size_function **__printf_arginfo_table attribute_hidden;
+extern printf_function **__printf_function_table attribute_hidden;
+extern printf_va_arg_function **__printf_va_arg_table attribute_hidden;
+int __register_printf_specifier (int, printf_function,
+				 printf_arginfo_size_function);
+libc_hidden_proto (__register_printf_specifier)
+
 /* The various kinds of arguments that can be passed to printf.  */
 union printf_arg
   {
