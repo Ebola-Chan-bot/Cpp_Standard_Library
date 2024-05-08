@@ -186,7 +186,6 @@
 #define timezone_t sys_timezone_t
 #define tzalloc sys_tzalloc
 #define tzfree sys_tzfree
-#include <time.h>
 #undef localtime_rz
 #undef mktime_z
 #undef posix2time_z
@@ -199,10 +198,6 @@
 #undef tzfree
 
 #include <stddef.h>
-#include <string.h>
-#if !PORT_TO_C89
-# include <inttypes.h>
-#endif
 #include <limits.h>	/* for CHAR_BIT et al. */
 #include <stdlib.h>
 
@@ -231,10 +226,6 @@
 #if HAVE_GETTEXT
 # include <libintl.h>
 #endif /* HAVE_GETTEXT */
-
-#if HAVE_UNISTD_H
-# include <unistd.h> /* for R_OK, and other POSIX goodness */
-#endif /* HAVE_UNISTD_H */
 
 #ifndef HAVE_STRFTIME_L
 # if _POSIX_VERSION < 200809
@@ -296,9 +287,6 @@
 
 #ifndef HAVE_INTTYPES_H
 # define HAVE_INTTYPES_H HAVE_STDINT_H
-#endif
-#if HAVE_INTTYPES_H
-# include <inttypes.h>
 #endif
 
 /* Pre-C99 GCC compilers define __LONG_LONG_MAX__ instead of LLONG_MAX.  */

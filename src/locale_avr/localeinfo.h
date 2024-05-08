@@ -22,10 +22,7 @@
 #include <stddef.h>
 #include <langinfo.h>
 #include <limits.h>
-#include <locale.h>
-#include <time.h>
 #include <stdint.h>
-#include <sys/types.h>
 
 /* Magic number at the beginning of a locale data file for CATEGORY.  */
 #define	LIMAGIC(category) \

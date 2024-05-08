@@ -1,5 +1,5 @@
-#ifdef ARDUINO_ARCH_AVR
-/* Copyright (C) 1991-2024 Free Software Foundation, Inc.
+/* Macros for wide (wchar_t) implementation of struct __wprintf_buffer.
+   Copyright (C) 2022-2024 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -16,22 +16,9 @@
    License along with the GNU C Library; if not, see
    <https://www.gnu.org/licenses/>.  */
 
-#include <stdarg.h>
-#include <stddef.h>
-#include <math_ldbl_opt.h>
-/* Write formatted output into S, according to the format string FORMAT.  */
-/* VARARGS3 */
-int
-__swprintf (wchar_t *s, size_t n, const wchar_t *format, ...)
-{
-  va_list arg;
-  int done;
+#define Xprintf(n) __wprintf_##n
 
-  va_start (arg, format);
-  done = __vswprintf_internal (s, n, format, arg, 0);
-  va_end (arg);
-
-  return done;
-}
-ldbl_strong_alias (__swprintf, swprintf)
-#endif
+#define CHAR_T wchar_t
+#define MEMCPY __wmemcpy
+#define MEMSET __wmemset
+#define STRNLEN __wcsnlen

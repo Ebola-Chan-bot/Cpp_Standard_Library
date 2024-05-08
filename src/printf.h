@@ -6,6 +6,8 @@
 # endif
 #endif
 
+#include <stdio-common/printf.h>
+
 # ifndef _ISOMAC
 
 /* Internal interfaces for registered specifiers.  */

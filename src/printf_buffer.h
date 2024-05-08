@@ -29,6 +29,7 @@
 #include <stdint.h>
 #include <sys/types.h>
 #include <sys/cdefs.h>
+#include <libc-symbols.h>
 
 /* <printf_buffer_as_file.h> introduces a way to use struct
    __printf_buffer objects from FILE * streams.  To avoid storing a

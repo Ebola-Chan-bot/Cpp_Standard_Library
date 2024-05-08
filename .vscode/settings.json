@@ -86,6 +86,12 @@
 		"locale.h": "c",
 		"cpp_standard_library.h": "c",
 		"langinfo.h": "c",
-		"errno.h": "c"
+		"errno.h": "c",
+		"printf_buffer.h": "c",
+		"stdint.h": "c",
+		"stdbool.h": "c",
+		"cdefs.h": "c",
+		"types.h": "c",
+		"string.h": "c"
 	}
 }

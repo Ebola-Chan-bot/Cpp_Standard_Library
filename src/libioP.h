@@ -41,8 +41,6 @@
 
 #include <math_ldbl_opt.h>
 
-#include <stdio.h>
-
 #define _IO_seek_set 0
 #define _IO_seek_cur 1
 #define _IO_seek_end 2
@@ -401,13 +399,6 @@ extern int __vswprintf_internal (wchar_t *string, size_t maxlen,
 #define SCANF_ISOC23_BIN_CST		0x0004
 #define SCANF_LDBL_USES_FLOAT128	0x0008
 
-extern int __vfscanf_internal (FILE *fp, const char *format, va_list argp,
-			       unsigned int flags)
-  attribute_hidden;
-extern int __vfwscanf_internal (FILE *fp, const wchar_t *format, va_list argp,
-				unsigned int flags)
-  attribute_hidden;
-
 #ifdef _IO_MTSAFE_IO
 /* check following! */
 # ifdef _IO_USE_OLD_IO_FILE
@@ -481,10 +472,6 @@ IO_set_accept_foreign_vtables (void (*flag) (void))
 }
 
 #endif
-
-/* Check if unknown vtable pointers are permitted; otherwise,
-   terminate the process.  */
-void _IO_vtable_check (void) attribute_hidden;
 
 /* Character set conversion.  */
 

@@ -2,8 +2,6 @@
 #ifdef ARDUINO_ARCH_AVR
 #ifndef _LANGINFO_H
 
-#include <locale_avr/langinfo.h>
-
 #ifndef _ISOMAC
 libc_hidden_proto (nl_langinfo)
 
