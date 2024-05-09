@@ -5,3 +5,65 @@
 [[gnu::weak]] void operator delete(void *ptr, std::size_t size) noexcept;
 [[gnu::weak]] void operator delete[](void *ptr, std::size_t size) noexcept;
 #endif // __cplusplus >= 201402L
+#ifdef ARDUINO_ARCH_SAM
+// The -*- C++ -*- dynamic memory management header.
+
+// Copyright (C) 1994-2024 Free Software Foundation, Inc.
+
+// This file is part of GCC.
+//
+// GCC is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 3, or (at your option)
+// any later version.
+// 
+// GCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// Under Section 7 of GPL version 3, you are granted additional
+// permissions described in the GCC Runtime Library Exception, version
+// 3.1, as published by the Free Software Foundation.
+
+// You should have received a copy of the GNU General Public License and
+// a copy of the GCC Runtime Library Exception along with this program;
+// see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
+// <http://www.gnu.org/licenses/>.
+
+/** @file new
+ *  This is a Standard C++ Library header.
+ *
+ *  The header @c new defines several functions to manage dynamic memory and
+ *  handling memory allocation errors; see
+ *  https://gcc.gnu.org/onlinedocs/libstdc++/manual/dynamic_memory.html
+ *  for more.
+ */
+
+#pragma GCC system_header
+
+#pragma GCC visibility push(default)
+
+extern "C++" {
+
+namespace std 
+{
+#if __cplusplus >= 201103L
+  class bad_array_new_length : public bad_alloc
+  {
+  public:
+    bad_array_new_length() throw() { }
+
+    // This declaration is not useless:
+    // http://gcc.gnu.org/onlinedocs/gcc-3.0.2/gcc_6.html#SEC118
+    virtual ~bad_array_new_length() throw();
+
+    // See comment in eh_exception.cc.
+    virtual const char* what() const throw();
+  };
+#endif
+} // namespace std
+} // extern "C++"
+
+#pragma GCC visibility pop
+#endif

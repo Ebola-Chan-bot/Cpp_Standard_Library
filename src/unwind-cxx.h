@@ -24,7 +24,7 @@
 
 // This is derived from the C++ ABI for IA-64.  Where we diverge
 // for cross-architecture compatibility are noted with "@@@".
-//三大平台都没有这个头文件
+
 #ifndef _UNWIND_CXX_H
 #define _UNWIND_CXX_H 1
 
@@ -34,6 +34,7 @@
 #include <exception>
 #include <cstddef>
 #include "unwind.h"
+#include <bits/atomic_word.h>
 #include <cxxabi.h>
 
 #ifdef _GLIBCXX_HAVE_SYS_SDT_H
@@ -98,6 +99,8 @@ struct __cxa_exception
 
 struct __cxa_refcounted_exception
 {
+  // Manage this header.
+  _Atomic_word referenceCount;
   // __cxa_exception must be last, and no padding can be after it.
   __cxa_exception exc;
 };

@@ -186,6 +186,8 @@ namespace __gnu_cxx
 #ifdef ARDUINO_ARCH_SAM
 #include CSL_Official(arm-none-eabi/bits/c++config.h)
 #define _GLIBCXX_EXTERN_TEMPLATE 0
+#define __has_cpp_attribute(A) 0
+#define __constinit
 #endif
 #ifdef ARDUINO_ARCH_ESP32
 #include CSL_Official(xtensa-esp32s3-elf/bits/c++config.h)

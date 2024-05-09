@@ -40,10 +40,4 @@ namespace std
 	}
 #endif
 #endif
-#ifdef ARDUINO_ARCH_SAM
-	bool uncaught_exception() _GLIBCXX_USE_NOEXCEPT
-	{
-		return false;
-	}
-#endif
 }

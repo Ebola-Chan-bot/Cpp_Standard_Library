@@ -1,3 +1,4 @@
+#ifdef ARDUINO_ARCH_SAM
 // -*- C++ -*- Allocate exception objects.
 // Copyright (C) 2001-2024 Free Software Foundation, Inc.
 //
@@ -24,7 +25,6 @@
 
 // This is derived from the C++ ABI for IA-64.  Where we diverge
 // for cross-architecture compatibility are noted with "@@@".
-#ifndef ARDUINO_ARCH_ESP32
 #ifndef _GNU_SOURCE
 // Cygwin needs this for secure_getenv
 # define _GNU_SOURCE 1

@@ -119,3 +119,25 @@ extern "C++"
 #include "Cpp_Standard_Library.h"
 #include CSL_Official(exception)
 #endif
+#ifdef ARDUINO_ARCH_SAM
+extern "C++"
+{
+
+  namespace std _GLIBCXX_VISIBILITY(default)
+  {
+#if __cplusplus >= 201103L
+    /// Return the current terminate handler.
+    terminate_handler get_terminate() noexcept;
+
+      /** Return the current unexpected handler.
+   *
+   * @since C++11
+   * @deprecated Removed from the C++ standard in C++17
+   */
+  _GLIBCXX11_DEPRECATED
+  unexpected_handler get_unexpected() noexcept;
+#endif
+  } // namespace
+
+} // extern "C++"
+#endif

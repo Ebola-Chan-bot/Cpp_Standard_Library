@@ -1,5 +1,9 @@
 #pragma once
-#ifdef ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_AVR
+#include "Cpp_Standard_Library.h"
+#include CSL_Official(cxxabi.h)
+#endif
+#ifndef ARDUINO_ARCH_ESP32
 // ABI Support -*- C++ -*-
 
 // Copyright (C) 2000-2024 Free Software Foundation, Inc.
@@ -39,15 +43,14 @@
 /** @file cxxabi.h
  *  The header provides an interface to the C++ ABI.
  */
-#ifndef _CXXABI_H
-#define _CXXABI_H 1
 
 #pragma GCC system_header
 
 #pragma GCC visibility push(default)
-
+#ifdef ARDUINO_ARCH_AVR
 #include <stddef.h>
 #include <bits/c++config.h>
+#endif
 #include "bits/cxxabi_init_exception.h"
 
 #ifdef __cplusplus
@@ -56,7 +59,7 @@ namespace __cxxabiv1
   extern "C"
   {
 #endif
-
+#ifdef ARDUINO_ARCH_AVR
   // DSO destruction.
   int
 #ifdef _GLIBCXX_CDTOR_CALLABI
@@ -89,10 +92,10 @@ namespace __cxxabiv1
 
   void 
   __cxa_bad_typeid() __attribute__((__noreturn__));
-
+#endif
   void
   __cxa_throw_bad_array_new_length() __attribute__((__noreturn__));
-
+#ifdef ARDUINO_ARCH_AVR
   /**
    *  @brief Demangling routine.
    *  ABI-mandated entry point in the C++ runtime library for demangling.
@@ -137,12 +140,12 @@ namespace __cxxabiv1
   char*
   __cxa_demangle(const char* __mangled_name, char* __output_buffer,
 		 size_t* __length, int* __status);
-
+#endif
 #ifdef __cplusplus
   }
 } // namespace __cxxabiv1
 #endif
-
+#ifdef ARDUINO_ARCH_AVR
 #ifdef __cplusplus
 
 #include <typeinfo>
@@ -645,9 +648,5 @@ namespace __gnu_cxx
 #endif // __cplusplus
 
 #pragma GCC visibility pop
-
-#endif // __CXXABI_H
-#else
-#include "Cpp_Standard_Library.h"
-#include CSL_Official(cxxabi.h)
+#endif
 #endif

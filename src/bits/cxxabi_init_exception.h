@@ -1,3 +1,8 @@
+#pragma once
+#ifdef ARDUINO_ARCH_ESP32
+#include "../Cpp_Standard_Library.h"
+#include CSL_Official(bits/cxxabi_init_exception.h)
+#else
 // ABI Support -*- C++ -*-
 
 // Copyright (C) 2016-2024 Free Software Foundation, Inc.
@@ -27,10 +32,6 @@
  *  This is an internal header file, included by other library headers.
  *  Do not attempt to use it directly.
  */
-#ifdef ARDUINO_ARCH_ESP32
-#include "../Cpp_Standard_Library.h"
-#include CSL_Official(bits/cxxabi_init_exception.h)
-#else
 #ifndef _CXXABI_INIT_EXCEPTION_H
 #define _CXXABI_INIT_EXCEPTION_H 1
 
