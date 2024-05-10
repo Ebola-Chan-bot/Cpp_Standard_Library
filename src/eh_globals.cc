@@ -1,4 +1,4 @@
-#ifdef ARDUINO_ARCH_SAM
+#ifndef ARDUINO_ARCH_ESP32
 // -*- C++ -*- Manage the thread-local exception globals.
 // Copyright (C) 2001-2024 Free Software Foundation, Inc.
 //
@@ -28,7 +28,6 @@
 #include <cstdlib>
 #include "cxxabi.h"
 #include "unwind-cxx.h"
-#include "bits/gthr.h"
 
 #if _GLIBCXX_HOSTED
 using std::free;

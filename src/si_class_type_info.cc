@@ -1,4 +1,4 @@
-#ifdef ARDUINO_ARCH_SAM
+#ifndef ARDUINO_ARCH_ESP32
 // Copyright (C) 1994-2024 Free Software Foundation, Inc.
 //
 // This file is part of GCC.

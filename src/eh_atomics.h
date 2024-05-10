@@ -32,8 +32,10 @@
 #define _EH_ATOMICS_H 1
 
 #include <bits/c++config.h>
+#ifndef ARDUINO_ARCH_AVR
 #include <bits/atomic_word.h>
 #include <bits/atomic_lockfree_defines.h>
+#endif
 #if ATOMIC_INT_LOCK_FREE <= 1
 # include <ext/atomicity.h>
 #endif

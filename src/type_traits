@@ -486,8 +486,6 @@ namespace std
 #endif
 // 361
 // 375
-#define _EMIT_CDECL(FUNC, OPT1, OPT2, OPT3) FUNC(__cdecl, OPT1, OPT2, OPT3)
-
 #ifdef _M_CEE
 #define _EMIT_CLRCALL(FUNC, OPT1, OPT2, OPT3) FUNC(__clrcall, OPT1, OPT2, OPT3)
 #else // ^^^ defined(_M_CEE) / !defined(_M_CEE) vvv
@@ -515,59 +513,6 @@ namespace std
 #else // defined(_M_IX86) && _M_IX86_FP >= 2 etc.
 #define _EMIT_VECTORCALL(FUNC, OPT1, OPT2, OPT3)
 #endif // defined(_M_IX86) && _M_IX86_FP >= 2 etc.
-
-#define _NON_MEMBER_CALL(FUNC, CV_OPT, REF_OPT, NOEXCEPT_OPT) \
-    _EMIT_CDECL(FUNC, CV_OPT, REF_OPT, NOEXCEPT_OPT)          \
-    _EMIT_CLRCALL(FUNC, CV_OPT, REF_OPT, NOEXCEPT_OPT)        \
-    _EMIT_FASTCALL(FUNC, CV_OPT, REF_OPT, NOEXCEPT_OPT)       \
-    _EMIT_STDCALL(FUNC, CV_OPT, REF_OPT, NOEXCEPT_OPT)        \
-    _EMIT_VECTORCALL(FUNC, CV_OPT, REF_OPT, NOEXCEPT_OPT)
-
-#define _NON_MEMBER_CALL_CV(FUNC, REF_OPT, NOEXCEPT_OPT)    \
-    _NON_MEMBER_CALL(FUNC, , REF_OPT, NOEXCEPT_OPT)         \
-    _NON_MEMBER_CALL(FUNC, const, REF_OPT, NOEXCEPT_OPT)    \
-    _NON_MEMBER_CALL(FUNC, volatile, REF_OPT, NOEXCEPT_OPT) \
-    _NON_MEMBER_CALL(FUNC, const volatile, REF_OPT, NOEXCEPT_OPT)
-
-#define _NON_MEMBER_CALL_CV_REF(FUNC, NOEXCEPT_OPT) \
-    _NON_MEMBER_CALL_CV(FUNC, , NOEXCEPT_OPT)       \
-    _NON_MEMBER_CALL_CV(FUNC, &, NOEXCEPT_OPT)      \
-    _NON_MEMBER_CALL_CV(FUNC, &&, NOEXCEPT_OPT)
-
-#ifdef __cpp_noexcept_function_type
-#define _NON_MEMBER_CALL_CV_REF_NOEXCEPT(FUNC) \
-    _NON_MEMBER_CALL_CV_REF(FUNC, )            \
-    _NON_MEMBER_CALL_CV_REF(FUNC, noexcept)
-#else // ^^^ defined(__cpp_noexcept_function_type) / !defined(__cpp_noexcept_function_type) vvv
-#define _NON_MEMBER_CALL_CV_REF_NOEXCEPT(FUNC) _NON_MEMBER_CALL_CV_REF(FUNC, )
-#endif // ^^^ !defined(__cpp_noexcept_function_type) ^^^
-
-#define _MEMBER_CALL(FUNC, CV_OPT, REF_OPT, NOEXCEPT_OPT) \
-    _EMIT_CDECL(FUNC, CV_OPT, REF_OPT, NOEXCEPT_OPT)      \
-    _EMIT_CLRCALL(FUNC, CV_OPT, REF_OPT, NOEXCEPT_OPT)    \
-    _EMIT_FASTCALL(FUNC, CV_OPT, REF_OPT, NOEXCEPT_OPT)   \
-    _EMIT_STDCALL(FUNC, CV_OPT, REF_OPT, NOEXCEPT_OPT)    \
-    _EMIT_THISCALL(FUNC, CV_OPT, REF_OPT, NOEXCEPT_OPT)   \
-    _EMIT_VECTORCALL(FUNC, CV_OPT, REF_OPT, NOEXCEPT_OPT)
-
-#define _MEMBER_CALL_CV(FUNC, REF_OPT, NOEXCEPT_OPT)    \
-    _MEMBER_CALL(FUNC, , REF_OPT, NOEXCEPT_OPT)         \
-    _MEMBER_CALL(FUNC, const, REF_OPT, NOEXCEPT_OPT)    \
-    _MEMBER_CALL(FUNC, volatile, REF_OPT, NOEXCEPT_OPT) \
-    _MEMBER_CALL(FUNC, const volatile, REF_OPT, NOEXCEPT_OPT)
-
-#define _MEMBER_CALL_CV_REF(FUNC, NOEXCEPT_OPT) \
-    _MEMBER_CALL_CV(FUNC, , NOEXCEPT_OPT)       \
-    _MEMBER_CALL_CV(FUNC, &, NOEXCEPT_OPT)      \
-    _MEMBER_CALL_CV(FUNC, &&, NOEXCEPT_OPT)
-
-#ifdef __cpp_noexcept_function_type
-#define _MEMBER_CALL_CV_REF_NOEXCEPT(FUNC) \
-    _MEMBER_CALL_CV_REF(FUNC, )            \
-    _MEMBER_CALL_CV_REF(FUNC, noexcept)
-#else // ^^^ defined(__cpp_noexcept_function_type) / !defined(__cpp_noexcept_function_type) vvv
-#define _MEMBER_CALL_CV_REF_NOEXCEPT(FUNC) _MEMBER_CALL_CV_REF(FUNC, )
-#endif // ^^^ !defined(__cpp_noexcept_function_type) ^^^
 
 #ifdef __cpp_noexcept_function_type
 #define _CLASS_DEFINE_CV_REF_NOEXCEPT(CLASS) \
@@ -645,8 +590,6 @@ namespace std
         using _Class_type = _Arg0;                                                                           \
         using _Guide_type = enable_if<!_STRUCT14VALUE_V(is_same, int REF_OPT, int &&), _Ret(_Types...)>;     \
     };
-
-    _MEMBER_CALL_CV_REF_NOEXCEPT(_IS_MEMFUNPTR)
 #undef _IS_MEMFUNPTR
 
 #define _IS_MEMFUNPTR_ELLIPSIS(CV_REF_NOEXCEPT_OPT)                       \
