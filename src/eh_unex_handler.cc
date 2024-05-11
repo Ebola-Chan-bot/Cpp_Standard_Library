@@ -1,4 +1,4 @@
-#ifdef ARDUINO_ARCH_SAM
+#ifndef ARDUINO_ARCH_ESP32
 // -*- C++ -*- std::unexpected handler
 // Copyright (C) 2002-2024 Free Software Foundation, Inc.
 //

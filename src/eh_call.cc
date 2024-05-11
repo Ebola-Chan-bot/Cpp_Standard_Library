@@ -1,4 +1,4 @@
-#ifdef ARDUINO_ARCH_SAM
+#ifndef ARDUINO_ARCH_ESP32
 // -*- C++ -*- Helpers for calling unextected and terminate
 // Copyright (C) 2001-2024 Free Software Foundation, Inc.
 //

@@ -5,7 +5,7 @@
 [[gnu::weak]] void operator delete(void *ptr, std::size_t size) noexcept;
 [[gnu::weak]] void operator delete[](void *ptr, std::size_t size) noexcept;
 #endif // __cplusplus >= 201402L
-#ifdef ARDUINO_ARCH_SAM
+#ifndef ARDUINO_ARCH_ESP32
 // The -*- C++ -*- dynamic memory management header.
 
 // Copyright (C) 1994-2024 Free Software Foundation, Inc.
@@ -16,12 +16,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3, or (at your option)
 // any later version.
-// 
+//
 // GCC is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // Under Section 7 of GPL version 3, you are granted additional
 // permissions described in the GCC Runtime Library Exception, version
 // 3.1, as published by the Free Software Foundation.
@@ -41,28 +41,56 @@
  */
 
 #pragma GCC system_header
-
+#ifdef ARDUINO_ARCH_AVR
+#include <bits/exception.h>
+#endif
 #pragma GCC visibility push(default)
 
-extern "C++" {
-
-namespace std 
+extern "C++"
 {
-#if __cplusplus >= 201103L
-  class bad_array_new_length : public bad_alloc
+
+  namespace std
   {
-  public:
-    bad_array_new_length() throw() { }
+#ifdef ARDUINO_ARCH_AVR
+    /**
+     *  @brief  Exception possibly thrown by @c new.
+     *  @ingroup exceptions
+     *
+     *  @c bad_alloc (or classes derived from it) is used to report allocation
+     *  errors from the throwing forms of @c new.  */
+    class bad_alloc : public exception
+    {
+    public:
+      bad_alloc() throw() {}
 
-    // This declaration is not useless:
-    // http://gcc.gnu.org/onlinedocs/gcc-3.0.2/gcc_6.html#SEC118
-    virtual ~bad_array_new_length() throw();
-
-    // See comment in eh_exception.cc.
-    virtual const char* what() const throw();
-  };
+#if __cplusplus >= 201103L
+      bad_alloc(const bad_alloc &) = default;
+      bad_alloc &operator=(const bad_alloc &) = default;
 #endif
-} // namespace std
+
+      // This declaration is not useless:
+      // http://gcc.gnu.org/onlinedocs/gcc-3.0.2/gcc_6.html#SEC118
+      virtual ~bad_alloc() throw();
+
+      // See comment in eh_exception.cc.
+      virtual const char *what() const throw();
+    };
+#endif
+#if __cplusplus >= 201103L
+    class bad_array_new_length : public bad_alloc
+    {
+    public:
+      bad_array_new_length() throw() {}
+
+      // This declaration is not useless:
+      // http://gcc.gnu.org/onlinedocs/gcc-3.0.2/gcc_6.html#SEC118
+      virtual ~bad_array_new_length() throw();
+
+      // See comment in eh_exception.cc.
+      virtual const char *what() const throw();
+    };
+#endif
+  } // namespace std
 } // extern "C++"
 
 #pragma GCC visibility pop

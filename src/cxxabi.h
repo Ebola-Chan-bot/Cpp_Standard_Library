@@ -50,6 +50,7 @@
 #ifdef ARDUINO_ARCH_AVR
 #include <stddef.h>
 #include <bits/c++config.h>
+#include <bits/cxxabi_forced.h>
 #endif
 #include "bits/cxxabi_init_exception.h"
 
@@ -145,13 +146,13 @@ namespace __cxxabiv1
   }
 } // namespace __cxxabiv1
 #endif
-#ifdef ARDUINO_ARCH_AVR
 #ifdef __cplusplus
 
 #include <typeinfo>
 
 namespace __cxxabiv1
 {
+#ifdef ARDUINO_ARCH_AVR
   // Type information for int, float etc.
   class __fundamental_type_info : public std::type_info
   {
@@ -244,7 +245,7 @@ namespace __cxxabiv1
     __pointer_catch(const __pbase_type_info* __thr_type, void** __thr_obj,
 		    unsigned __outer) const;
   };
-
+#endif
   inline bool __pbase_type_info::
   __pointer_catch (const __pbase_type_info *thrown_type,
 		   void **thr_obj,
@@ -252,7 +253,7 @@ namespace __cxxabiv1
   {
     return __pointee->__do_catch (thrown_type->__pointee, thr_obj, outer + 2);
   }
-
+#ifdef ARDUINO_ARCH_AVR
   // Type information for simple pointers.
   class __pointer_type_info : public __pbase_type_info
   {
@@ -598,9 +599,9 @@ namespace __cxxabiv1
     virtual ~__foreign_exception() throw();
     virtual void __pure_dummy() = 0; // prevent catch by value
   };
-
+#endif
 } // namespace __cxxabiv1
-
+#ifdef ARDUINO_ARCH_AVR
 /** @namespace abi
  *  @brief The cross-vendor C++ Application Binary Interface. A
  *  namespace alias to __cxxabiv1, but user programs should use the

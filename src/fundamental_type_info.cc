@@ -1,6 +1,5 @@
 #ifndef ARDUINO_ARCH_ESP32
-// -*- C++ -*- std::terminate handler
-// Copyright (C) 2002-2024 Free Software Foundation, Inc.
+// Copyright (C) 1994-2024 Free Software Foundation, Inc.
 //
 // This file is part of GCC.
 //
@@ -8,12 +7,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3, or (at your option)
 // any later version.
-//
+
 // GCC is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//
+
 // Under Section 7 of GPL version 3, you are granted additional
 // permissions described in the GCC Runtime Library Exception, version
 // 3.1, as published by the Free Software Foundation.
@@ -23,11 +22,16 @@
 // see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
 // <http://www.gnu.org/licenses/>.
 
-#include <bits/c++config.h>
-#include "unwind-cxx.h"
-#include "eh_term_handler.h"
+#include "tinfo.h"
 
-/* The current installed user handler.  */
-std::terminate_handler __cxxabiv1::__terminate_handler =
-	_GLIBCXX_DEFAULT_TERM_HANDLER;
+namespace __cxxabiv1 {
+
+// This has special meaning to the compiler, and will cause it
+// to emit the type_info structures for the fundamental types which are
+// mandated to exist in the runtime.
+__fundamental_type_info::
+~__fundamental_type_info ()
+{}
+
+}
 #endif

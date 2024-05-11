@@ -1,4 +1,4 @@
-#ifdef ARDUINO_ARCH_SAM
+#ifndef ARDUINO_ARCH_ESP32
 // -*- C++ -*- std::terminate, std::unexpected and friends.
 // Copyright (C) 1994-2024 Free Software Foundation, Inc.
 //
