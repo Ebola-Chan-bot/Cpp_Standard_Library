@@ -593,7 +593,6 @@ namespace std
     template <class _Ty, class... _Types, enable_if_t<extent<_Ty>::value != 0, int> = 0>
     void make_unique(_Types &&...) = delete;
 #endif
-#if _HAS_CXX20
     template <class _Ty, enable_if_t<!is_array<_Ty>::value, int> = 0>
     _NODISCARD _CONSTEXPR23 unique_ptr<_Ty> make_unique_for_overwrite()
     {
@@ -611,7 +610,6 @@ namespace std
 
     template <class _Ty, class... _Types, enable_if_t<is_bounded_array<_Ty>::value, int> = 0>
     void make_unique_for_overwrite(_Types &&...) = delete;
-#endif // _HAS_CXX20
 #ifdef ARDUINO_ARCH_AVR
     template <class _Ty, class _Dx, enable_if_t<_Is_swappable<_Dx>::value, int> = 0>
     _CONSTEXPR23 void swap(unique_ptr<_Ty, _Dx> &_Left, unique_ptr<_Ty, _Dx> &_Right) noexcept

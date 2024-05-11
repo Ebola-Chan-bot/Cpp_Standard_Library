@@ -26,6 +26,10 @@
 #include CSL_Official(type_traits)
 #include <stddef.h>
 #endif
+#ifdef ARDUINO_ARCH_SAM
+#define __glibcxx_want_bounded_array_traits
+#include <bits/version.h>
+#endif
 #pragma GCC visibility push(default)
 
 namespace std
@@ -1603,5 +1607,45 @@ namespace std
     };
     // 1981
 #endif
+//3642
+#ifdef __cpp_lib_bounded_array_traits // C++ >= 20
+  /// True for a type that is an array of known bound.
+  /// @ingroup variable_templates
+  /// @since C++20
+# if _GLIBCXX_USE_BUILTIN_TRAIT(__is_bounded_array)
+  template<typename _Tp>
+    inline constexpr bool is_bounded_array_v = __is_bounded_array(_Tp);
+# else
+  template<typename _Tp>
+    inline constexpr bool is_bounded_array_v = false;
+
+  template<typename _Tp, size_t _Size>
+    inline constexpr bool is_bounded_array_v<_Tp[_Size]> = true;
+# endif
+
+  /// True for a type that is an array of unknown bound.
+  /// @ingroup variable_templates
+  /// @since C++20
+  template<typename _Tp>
+    inline constexpr bool is_unbounded_array_v = false;
+
+  template<typename _Tp>
+    inline constexpr bool is_unbounded_array_v<_Tp[]> = true;
+
+  /// True for a type that is an array of known bound.
+  /// @since C++20
+  template<typename _Tp>
+    struct is_bounded_array
+    : public bool_constant<is_bounded_array_v<_Tp>>
+    { };
+
+  /// True for a type that is an array of unknown bound.
+  /// @since C++20
+  template<typename _Tp>
+    struct is_unbounded_array
+    : public bool_constant<is_unbounded_array_v<_Tp>>
+    { };
+#endif // __cpp_lib_bounded_array_traits
+//3681
 }
 #pragma GCC visibility pop
