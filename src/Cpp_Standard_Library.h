@@ -11,4 +11,5 @@
 #else
 #define CSL_Official(Header) <_ansi.h/../c++/__GNUC__.__GNUC_MINOR__.__GNUC_PATCHLEVEL__/Header>
 #define CSL_OfficialC(Header) <_ansi.h/../../include/Header>
+#define CSL_OfficialB(Header) <bits/basic_file.h/../../Header>
 #endif

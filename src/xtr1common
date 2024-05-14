@@ -1,32 +1,6 @@
 #pragma once
 #include "yvals_core.h"
 _STD_BEGIN
-#ifdef ARDUINO_ARCH_AVR
-// 19
-template <class _Ty, _Ty _Val>
-struct integral_constant
-{
-    static constexpr _Ty value = _Val;
-
-    using value_type = _Ty;
-    using type = integral_constant;
-
-    constexpr operator value_type() const noexcept
-    {
-        return value;
-    }
-
-    _NODISCARD constexpr value_type operator()() const noexcept
-    {
-        return value;
-    }
-};
-
-template <bool _Val>
-using bool_constant = integral_constant<bool, _Val>;
-
-using true_type = bool_constant<true>;
-using false_type = bool_constant<false>;
 
 template <bool _Test, class _Ty = void>
 struct enable_if
@@ -38,9 +12,6 @@ struct enable_if<true, _Ty>
 { // type is _Ty for _Test
     using type = _Ty;
 };
-#endif
-template <bool _Test, class _Ty = void>
-using enable_if_t = typename enable_if<_Test, _Ty>::type;
 #ifdef ARDUINO_ARCH_AVR
 template <bool _Test, class _Ty1, class _Ty2>
 struct conditional
@@ -124,76 +95,6 @@ struct remove_cv<const volatile _Ty>
 
 _EXPORT_STD template <class _Ty>
 using remove_cv_t = typename remove_cv<_Ty>::type;
-
-template <bool _First_value, class _First, class... _Rest>
-struct _Disjunction
-{ // handle true trait or last trait
-    using type = _First;
-};
-
-template <class _False, class _Next, class... _Rest>
-struct _Disjunction<false, _False, _Next, _Rest...>
-{ // first trait is false, try the next trait
-    using type = typename _Disjunction<_Next::value, _Next, _Rest...>::type;
-};
-
-_EXPORT_STD template <class... _Traits>
-struct disjunction : false_type
-{
-}; // If _Traits is empty, false_type
-
-template <class _First, class... _Rest>
-struct disjunction<_First, _Rest...> : _Disjunction<_First::value, _First, _Rest...>::type
-{
-    // the first true trait in _Traits, or the last trait if none are true
-};
-#if _HAS_CXX14
-_EXPORT_STD template <class... _Traits>
-_INLINE_VAR constexpr bool disjunction_v = disjunction<_Traits...>::value;
-
-template <class _Ty, class... _Types>
-_INLINE_VAR constexpr bool _Is_any_of_v = // true if and only if _Ty is in _Types
-#if _HAS_CXX17
-    (is_same_v<_Ty, _Types> || ...);
-#else  // ^^^ _HAS_CXX17 / !_HAS_CXX17 vvv
-    disjunction_v<is_same<_Ty, _Types>...>;
-#endif // _HAS_CXX17
-_EXPORT_STD template <class _Ty>
-_INLINE_VAR constexpr bool is_integral_v = _Is_any_of_v<remove_cv_t<_Ty>, bool, char, signed char, unsigned char,
-                                                        wchar_t,
-#ifdef __cpp_char8_t
-                                                        char8_t,
-#endif // defined(__cpp_char8_t)
-                                                        char16_t, char32_t, short, unsigned short, int, unsigned int, long, unsigned long, long long, unsigned long long>;
-#endif
-template <class _Ty, class... _Types>
-using _Is_any_of = disjunction<is_same<_Ty, _Types>...>;
-_EXPORT_STD template <class _Ty>
-struct is_integral : _Is_any_of<remove_cv_t<_Ty>, bool, char, signed char, unsigned char,
-                                wchar_t,
-#ifdef __cpp_char8_t
-                                char8_t,
-#endif // defined(__cpp_char8_t)
-                                char16_t, char32_t, short, unsigned short, int, unsigned int, long, unsigned long, long long, unsigned long long>
-{
-};
-#if _HAS_CXX14
-_EXPORT_STD template <class _Ty>
-_INLINE_VAR constexpr bool is_floating_point_v = _Is_any_of_v<remove_cv_t<_Ty>, float, double, long double>;
-#endif
-_EXPORT_STD template <class _Ty>
-struct is_floating_point : _Is_any_of<remove_cv_t<_Ty>, float, double, long double>
-{
-};
-#if _HAS_CXX14
-_EXPORT_STD template <class _Ty>
-_INLINE_VAR constexpr bool is_arithmetic_v = // determine whether _Ty is an arithmetic type
-    is_integral_v<_Ty> || is_floating_point_v<_Ty>;
-#endif
-_EXPORT_STD template <class _Ty>
-struct is_arithmetic : bool_constant<is_integral<_Ty>::value || is_floating_point<_Ty>::value>
-{
-};
 
 _EXPORT_STD template <class _Ty>
 struct remove_reference

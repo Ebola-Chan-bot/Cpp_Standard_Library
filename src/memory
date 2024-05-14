@@ -22,8 +22,7 @@
 #include "functional"
 #else
 #include "Cpp_Standard_Library.h"
-#include CSL_Official(memory)
-#include "xtr1common"
+#include_next <memory>
 #endif
 #pragma GCC visibility push(default)
 

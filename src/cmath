@@ -285,13 +285,13 @@ namespace std
 #ifndef ARDUINO_ARCH_ESP32
 	// DR 568.
 #ifndef __CORRECT_ISO_CPP11_MATH_H_PROTO_FP
-	inline float
+	constexpr float
 	log2(float __x)
 	{
 		return __builtin_log2f(__x);
 	}
 
-	inline long double
+	constexpr long double
 	log2(long double __x)
 	{
 		return __builtin_log2l(__x);
@@ -299,7 +299,7 @@ namespace std
 #endif
 
 	template <typename _Tp>
-	inline typename __gnu_cxx::__enable_if<__is_integer<_Tp>::__value,
+	constexpr typename __gnu_cxx::__enable_if<__is_integer<_Tp>::__value,
 										   double>::__type
 	log2(_Tp __x)
 	{

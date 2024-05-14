@@ -1,4 +1,4 @@
-#ifdef ARDUINO_ARCH_SAM
+#ifndef ARDUINO_ARCH_AVR
 // Copyright (C) 2023-2024 Free Software Foundation, Inc.
 
 // This file is part of the GNU ISO C++ Library.  This library is free
@@ -410,7 +410,7 @@
 #undef __glibcxx_want_atomic_is_always_lock_free
 
 #if !defined(__cpp_lib_bool_constant)
-#if (__cplusplus >= 201703L)
+#if (__cplusplus >= 201703L || defined ARDUINO_ARCH_SAM)
 #define __glibcxx_bool_constant 201505L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_bool_constant)
 #define __cpp_lib_bool_constant 201505L
@@ -900,7 +900,7 @@
 #undef __glibcxx_want_bitops
 
 #if !defined(__cpp_lib_bounded_array_traits)
-#if (__cplusplus >= 202002L || defined ARDUINO_ARCH_SAM)
+#if (__cplusplus >= 202002L || !defined ARDUINO_ARCH_AVR)
 #define __glibcxx_bounded_array_traits 201902L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_bounded_array_traits)
 #define __cpp_lib_bounded_array_traits 201902L

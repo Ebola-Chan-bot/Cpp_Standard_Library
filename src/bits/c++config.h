@@ -181,10 +181,6 @@ namespace __gnu_cxx
 /* Define if code specialized for wchar_t should be used. */
 #define _GLIBCXX_USE_WCHAR_T 1
 #else
-#include_next <bits/c++config.h>
-#endif
-#ifdef ARDUINO_ARCH_SAM
-#define _GLIBCXX_EXTERN_TEMPLATE 0
 // 830
 #ifdef __has_builtin
 #ifdef __is_identifier
@@ -207,7 +203,13 @@ namespace __gnu_cxx
 #endif
 // 861
 #endif
-#ifndef ARDUINO_ARCH_ESP32
+#ifdef ARDUINO_ARCH_SAM
+#include <arm-none-eabi/bits/c++config.h>
+#define _GLIBCXX_EXTERN_TEMPLATE 0
+#endif
+#ifdef ARDUINO_ARCH_ESP32
+#include <xtensa-esp32s3-elf/bits/c++config.h>
+#else
 // 159
 #if __cplusplus
 

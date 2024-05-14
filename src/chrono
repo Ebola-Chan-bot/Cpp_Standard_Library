@@ -1,7 +1,7 @@
 #pragma once
-#ifndef ARDUINO_ARCH_AVR
-#include "Cpp_Standard_Library.h"
-#include CSL_Official(chrono)
-#else
+#ifdef ARDUINO_ARCH_AVR
 #include "__msvc_chrono.hpp"
+#else
+#include "Cpp_Standard_Library.h"
+#include_next <chrono>
 #endif
