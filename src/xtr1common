@@ -1,17 +1,6 @@
 #pragma once
 #include "yvals_core.h"
 _STD_BEGIN
-
-template <bool _Test, class _Ty = void>
-struct enable_if
-{
-}; // no member "type" when !_Test
-
-template <class _Ty>
-struct enable_if<true, _Ty>
-{ // type is _Ty for _Test
-    using type = _Ty;
-};
 #ifdef ARDUINO_ARCH_AVR
 template <bool _Test, class _Ty1, class _Ty2>
 struct conditional
@@ -37,12 +26,6 @@ struct is_same : bool_constant<__is_same(_Ty1, _Ty2)>
 {
 };
 #else // ^^^ Clang / not Clang vvv
-#if _HAS_CXX14
-template <class, class>
-_INLINE_VAR constexpr bool is_same_v = false; // determine whether arguments are the same type
-template <class _Ty>
-_INLINE_VAR constexpr bool is_same_v<_Ty, _Ty> = true;
-#endif
 
 template <class, class>
 struct is_same

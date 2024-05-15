@@ -1,3 +1,4 @@
+#pragma once
 #ifdef ARDUINO_ARCH_AVR
 /*	Copyright (C) 2004 Garrett A. Kajmowicz
 	This file is part of the uClibc++ Library.
@@ -15,10 +16,12 @@
 	License along with this library; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-#pragma once
 #include "yvals.h"
 #include "typeinfo"
 #include "xmemory"
+#include <bits/invoke.h>
+#define __glibcxx_want_invoke
+#include <bits/version.h>
 #pragma GCC visibility push(default)
 
 namespace std
@@ -510,7 +513,30 @@ namespace std
 	{
 		return mem_fun1_ref_t<S, T, A>(f);
 	}
-	// 652
+// 101
+#ifdef __cpp_lib_invoke // C++ >= 17
+
+	/** Invoke a callable object.
+	 *
+	 * `std::invoke` takes a callable object as its first argument and calls it
+	 * with the remaining arguments. The callable object can be a pointer or
+	 * reference to a function, a lambda closure, a class with `operator()`,
+	 * or even a pointer-to-member.  For a pointer-to-member the first argument
+	 * must be a reference or pointer to the object that the pointer-to-member
+	 * will be applied to.
+	 *
+	 *  @since C++17
+	 */
+	template <typename _Callable, typename... _Args>
+	inline _GLIBCXX20_CONSTEXPR invoke_result_t<_Callable, _Args...>
+	invoke(_Callable &&__fn, _Args &&...__args) noexcept(is_nothrow_invocable_v<_Callable, _Args...>)
+	{
+		return std::__invoke(std::forward<_Callable>(__fn),
+							 std::forward<_Args>(__args)...);
+	}
+#endif
+	// 124
+	//  652
 	extern "C++" [[noreturn]] _CRTIMP2_PURE void __CLRCALL_PURE_OR_CDECL _Xbad_function_call();
 
 	_EXPORT_STD template <class _Fty>
@@ -667,7 +693,6 @@ namespace std
 		// dtor non-virtual due to _Delete_this()
 
 	private:
-
 		_Rx _Do_call(_Types &&..._Args) override
 		{ // call wrapped function
 			if _CONSTEXPR14 ()

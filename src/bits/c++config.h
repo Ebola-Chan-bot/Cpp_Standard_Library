@@ -54,15 +54,44 @@
 #define _GLIBCXX17_DEPRECATED
 #define _GLIBCXX17_DEPRECATED_SUGGEST(ALT)
 #endif
-// 129
-// 150
-//  Macro to warn about unused results.
+
+#if defined(__DEPRECATED) && (__cplusplus >= 202002L)
+#define _GLIBCXX20_DEPRECATED [[__deprecated__]]
+#define _GLIBCXX20_DEPRECATED_SUGGEST(ALT) _GLIBCXX_DEPRECATED_SUGGEST(ALT)
+#else
+#define _GLIBCXX20_DEPRECATED
+#define _GLIBCXX20_DEPRECATED_SUGGEST(ALT)
+#endif
+// 137
+//  150
+//   Macro to warn about unused results.
 #if __cplusplus >= 201703L
 #define _GLIBCXX_NODISCARD [[__nodiscard__]]
 #else
 #define _GLIBCXX_NODISCARD
 #endif
 // 157
+// 830
+#ifdef __has_builtin
+#ifdef __is_identifier
+// Intel and older Clang require !__is_identifier for some built-ins:
+#define _GLIBCXX_HAS_BUILTIN(B) __has_builtin(B) || !__is_identifier(B)
+#else
+#define _GLIBCXX_HAS_BUILTIN(B) __has_builtin(B)
+#endif
+#endif
+// 839
+//  851
+//   Returns 1 if _GLIBCXX_DO_NOT_USE_BUILTIN_TRAITS is not defined and the
+//   compiler has a corresponding built-in type trait, 0 otherwise.
+//   _GLIBCXX_DO_NOT_USE_BUILTIN_TRAITS can be defined to disable the use of
+//   built-in traits.
+#ifndef _GLIBCXX_DO_NOT_USE_BUILTIN_TRAITS
+#define _GLIBCXX_USE_BUILTIN_TRAIT(BT) _GLIBCXX_HAS_BUILTIN(BT)
+#else
+#define _GLIBCXX_USE_BUILTIN_TRAIT(BT) 0
+#endif
+// 861
 #ifdef ARDUINO_ARCH_AVR
 // 56
 //  See below for C++
@@ -180,28 +209,6 @@ namespace __gnu_cxx
 // 689
 /* Define if code specialized for wchar_t should be used. */
 #define _GLIBCXX_USE_WCHAR_T 1
-#else
-// 830
-#ifdef __has_builtin
-#ifdef __is_identifier
-// Intel and older Clang require !__is_identifier for some built-ins:
-#define _GLIBCXX_HAS_BUILTIN(B) __has_builtin(B) || !__is_identifier(B)
-#else
-#define _GLIBCXX_HAS_BUILTIN(B) __has_builtin(B)
-#endif
-#endif
-// 839
-//  851
-//   Returns 1 if _GLIBCXX_DO_NOT_USE_BUILTIN_TRAITS is not defined and the
-//   compiler has a corresponding built-in type trait, 0 otherwise.
-//   _GLIBCXX_DO_NOT_USE_BUILTIN_TRAITS can be defined to disable the use of
-//   built-in traits.
-#ifndef _GLIBCXX_DO_NOT_USE_BUILTIN_TRAITS
-#define _GLIBCXX_USE_BUILTIN_TRAIT(BT) _GLIBCXX_HAS_BUILTIN(BT)
-#else
-#define _GLIBCXX_USE_BUILTIN_TRAIT(BT) 0
-#endif
-// 861
 #endif
 #ifdef ARDUINO_ARCH_SAM
 #include <arm-none-eabi/bits/c++config.h>
