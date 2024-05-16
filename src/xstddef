@@ -17,14 +17,4 @@ namespace std
 	};
 #endif
 	// 27
-	// 250
-	template <class _Ty>
-	_NODISCARD constexpr _Ty *addressof(_Ty &_Val) noexcept
-	{
-		return __builtin_addressof(_Val);
-	}
-
-	template <class _Ty>
-	const _Ty *addressof(const _Ty &&) = delete;
-	// 258
 }

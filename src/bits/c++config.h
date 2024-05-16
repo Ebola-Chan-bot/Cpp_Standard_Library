@@ -209,6 +209,9 @@ namespace __gnu_cxx
 // 689
 /* Define if code specialized for wchar_t should be used. */
 #define _GLIBCXX_USE_WCHAR_T 1
+
+/* Define to 1 if a full hosted library is built, or 0 if freestanding. */
+#define _GLIBCXX_HOSTED 1
 #endif
 #ifdef ARDUINO_ARCH_SAM
 #include <arm-none-eabi/bits/c++config.h>

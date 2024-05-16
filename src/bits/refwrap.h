@@ -38,7 +38,6 @@
 
 #include <bits/move.h>
 #include <bits/invoke.h>
-#include <bits/stl_function.h> // for unary_function and binary_function
 
 #if __glibcxx_reference_wrapper >= 202403L // >= C++26
 # include <compare>

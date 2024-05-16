@@ -39,6 +39,7 @@
 #else
 
 #include <type_traits>
+#include <bits/move.h> // forward
 
 namespace std _GLIBCXX_VISIBILITY(default)
 {

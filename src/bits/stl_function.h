@@ -1,3 +1,4 @@
+#ifdef ARDUINO_ARCH_AVR
 // Functor implementations -*- C++ -*-
 
 // Copyright (C) 2001-2024 Free Software Foundation, Inc.
@@ -52,13 +53,12 @@
  *  This is an internal header file, included by other library headers.
  *  Do not attempt to use it directly. @headername{functional}
  */
-#ifdef ARDUINO_ARCH_AVR
 #ifndef _STL_FUNCTION_H
 #define _STL_FUNCTION_H 1
 
 namespace std _GLIBCXX_VISIBILITY(default)
 {
-_GLIBCXX_BEGIN_NAMESPACE_VERSION
+  _GLIBCXX_BEGIN_NAMESPACE_VERSION
 
   // 20.3.1 base classes
   /** @defgroup functors Function Objects
@@ -109,32 +109,32 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
    *  Helper for defining adaptable unary function objects.
    *  @deprecated Deprecated in C++11, no longer in the standard since C++17.
    */
-  template<typename _Arg, typename _Result>
-    struct unary_function
-    {
-      /// @c argument_type is the type of the argument
-      typedef _Arg 	argument_type;   
+  template <typename _Arg, typename _Result>
+  struct unary_function
+  {
+    /// @c argument_type is the type of the argument
+    typedef _Arg argument_type;
 
-      /// @c result_type is the return type
-      typedef _Result 	result_type;  
-    } _GLIBCXX11_DEPRECATED;
+    /// @c result_type is the return type
+    typedef _Result result_type;
+  } _GLIBCXX11_DEPRECATED;
 
   /**
    *  Helper for defining adaptable binary function objects.
    *  @deprecated Deprecated in C++11, no longer in the standard since C++17.
    */
-  template<typename _Arg1, typename _Arg2, typename _Result>
-    struct binary_function
-    {
-      /// @c first_argument_type is the type of the first argument
-      typedef _Arg1 	first_argument_type; 
+  template <typename _Arg1, typename _Arg2, typename _Result>
+  struct binary_function
+  {
+    /// @c first_argument_type is the type of the first argument
+    typedef _Arg1 first_argument_type;
 
-      /// @c second_argument_type is the type of the second argument
-      typedef _Arg2 	second_argument_type;
+    /// @c second_argument_type is the type of the second argument
+    typedef _Arg2 second_argument_type;
 
-      /// @c result_type is the return type
-      typedef _Result 	result_type;
-    } _GLIBCXX11_DEPRECATED;
+    /// @c result_type is the return type
+    typedef _Result result_type;
+  } _GLIBCXX11_DEPRECATED;
   /** @}  */
 
   // 20.3.2 arithmetic
@@ -150,25 +150,25 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
    */
 
 #if __glibcxx_transparent_operators // C++ >= 14
-  struct __is_transparent;  // undefined
+  struct __is_transparent;          // undefined
 
-  template<typename _Tp = void>
-    struct plus;
+  template <typename _Tp = void>
+  struct plus;
 
-  template<typename _Tp = void>
-    struct minus;
+  template <typename _Tp = void>
+  struct minus;
 
-  template<typename _Tp = void>
-    struct multiplies;
+  template <typename _Tp = void>
+  struct multiplies;
 
-  template<typename _Tp = void>
-    struct divides;
+  template <typename _Tp = void>
+  struct divides;
 
-  template<typename _Tp = void>
-    struct modulus;
+  template <typename _Tp = void>
+  struct modulus;
 
-  template<typename _Tp = void>
-    struct negate;
+  template <typename _Tp = void>
+  struct negate;
 #endif
 
 // Ignore warnings about unary_function and binary_function.
@@ -176,156 +176,150 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
   /// One of the @link arithmetic_functors math functors@endlink.
-  template<typename _Tp>
-    struct plus : public binary_function<_Tp, _Tp, _Tp>
+  template <typename _Tp>
+  struct plus : public binary_function<_Tp, _Tp, _Tp>
+  {
+    /// Returns the sum
+    _GLIBCXX14_CONSTEXPR
+    _Tp
+    operator()(const _Tp &__x, const _Tp &__y) const
     {
-      /// Returns the sum
-      _GLIBCXX14_CONSTEXPR
-      _Tp
-      operator()(const _Tp& __x, const _Tp& __y) const
-      { return __x + __y; }
-    };
+      return __x + __y;
+    }
+  };
 
   /// One of the @link arithmetic_functors math functors@endlink.
-  template<typename _Tp>
-    struct minus : public binary_function<_Tp, _Tp, _Tp>
+  template <typename _Tp>
+  struct minus : public binary_function<_Tp, _Tp, _Tp>
+  {
+    _GLIBCXX14_CONSTEXPR
+    _Tp
+    operator()(const _Tp &__x, const _Tp &__y) const
     {
-      _GLIBCXX14_CONSTEXPR
-      _Tp
-      operator()(const _Tp& __x, const _Tp& __y) const
-      { return __x - __y; }
-    };
+      return __x - __y;
+    }
+  };
 
   /// One of the @link arithmetic_functors math functors@endlink.
-  template<typename _Tp>
-    struct multiplies : public binary_function<_Tp, _Tp, _Tp>
+  template <typename _Tp>
+  struct multiplies : public binary_function<_Tp, _Tp, _Tp>
+  {
+    _GLIBCXX14_CONSTEXPR
+    _Tp
+    operator()(const _Tp &__x, const _Tp &__y) const
     {
-      _GLIBCXX14_CONSTEXPR
-      _Tp
-      operator()(const _Tp& __x, const _Tp& __y) const
-      { return __x * __y; }
-    };
+      return __x * __y;
+    }
+  };
 
   /// One of the @link arithmetic_functors math functors@endlink.
-  template<typename _Tp>
-    struct divides : public binary_function<_Tp, _Tp, _Tp>
+  template <typename _Tp>
+  struct divides : public binary_function<_Tp, _Tp, _Tp>
+  {
+    _GLIBCXX14_CONSTEXPR
+    _Tp
+    operator()(const _Tp &__x, const _Tp &__y) const
     {
-      _GLIBCXX14_CONSTEXPR
-      _Tp
-      operator()(const _Tp& __x, const _Tp& __y) const
-      { return __x / __y; }
-    };
-
-  /// One of the @link arithmetic_functors math functors@endlink.
-  template<typename _Tp>
-    struct modulus : public binary_function<_Tp, _Tp, _Tp>
-    {
-      _GLIBCXX14_CONSTEXPR
-      _Tp
-      operator()(const _Tp& __x, const _Tp& __y) const
-      { return __x % __y; }
-    };
-
-  /// One of the @link arithmetic_functors math functors@endlink.
-  template<typename _Tp>
-    struct negate : public unary_function<_Tp, _Tp>
-    {
-      _GLIBCXX14_CONSTEXPR
-      _Tp
-      operator()(const _Tp& __x) const
-      { return -__x; }
-    };
+      return __x / __y;
+    }
+  };
 #pragma GCC diagnostic pop
 
 #ifdef __glibcxx_transparent_operators // C++ >= 14
-  template<>
-    struct plus<void>
+  template <>
+  struct plus<void>
+  {
+    template <typename _Tp, typename _Up>
+    _GLIBCXX14_CONSTEXPR auto
+    operator()(_Tp &&__t, _Up &&__u) const
+        noexcept(noexcept(std::forward<_Tp>(__t) + std::forward<_Up>(__u)))
+            -> decltype(std::forward<_Tp>(__t) + std::forward<_Up>(__u))
     {
-      template <typename _Tp, typename _Up>
-	_GLIBCXX14_CONSTEXPR
-	auto
-	operator()(_Tp&& __t, _Up&& __u) const
-	noexcept(noexcept(std::forward<_Tp>(__t) + std::forward<_Up>(__u)))
-	-> decltype(std::forward<_Tp>(__t) + std::forward<_Up>(__u))
-	{ return std::forward<_Tp>(__t) + std::forward<_Up>(__u); }
+      return std::forward<_Tp>(__t) + std::forward<_Up>(__u);
+    }
 
-      typedef __is_transparent is_transparent;
-    };
+    typedef __is_transparent is_transparent;
+  };
 
   /// One of the @link arithmetic_functors math functors@endlink.
-  template<>
-    struct minus<void>
+  template <>
+  struct minus<void>
+  {
+    template <typename _Tp, typename _Up>
+    _GLIBCXX14_CONSTEXPR auto
+    operator()(_Tp &&__t, _Up &&__u) const
+        noexcept(noexcept(std::forward<_Tp>(__t) - std::forward<_Up>(__u)))
+            -> decltype(std::forward<_Tp>(__t) - std::forward<_Up>(__u))
     {
-      template <typename _Tp, typename _Up>
-	_GLIBCXX14_CONSTEXPR
-	auto
-	operator()(_Tp&& __t, _Up&& __u) const
-	noexcept(noexcept(std::forward<_Tp>(__t) - std::forward<_Up>(__u)))
-	-> decltype(std::forward<_Tp>(__t) - std::forward<_Up>(__u))
-	{ return std::forward<_Tp>(__t) - std::forward<_Up>(__u); }
+      return std::forward<_Tp>(__t) - std::forward<_Up>(__u);
+    }
 
-      typedef __is_transparent is_transparent;
-    };
+    typedef __is_transparent is_transparent;
+  };
 
   /// One of the @link arithmetic_functors math functors@endlink.
-  template<>
-    struct multiplies<void>
+  template <>
+  struct multiplies<void>
+  {
+    template <typename _Tp, typename _Up>
+    _GLIBCXX14_CONSTEXPR auto
+    operator()(_Tp &&__t, _Up &&__u) const
+        noexcept(noexcept(std::forward<_Tp>(__t) * std::forward<_Up>(__u)))
+            -> decltype(std::forward<_Tp>(__t) * std::forward<_Up>(__u))
     {
-      template <typename _Tp, typename _Up>
-	_GLIBCXX14_CONSTEXPR
-	auto
-	operator()(_Tp&& __t, _Up&& __u) const
-	noexcept(noexcept(std::forward<_Tp>(__t) * std::forward<_Up>(__u)))
-	-> decltype(std::forward<_Tp>(__t) * std::forward<_Up>(__u))
-	{ return std::forward<_Tp>(__t) * std::forward<_Up>(__u); }
+      return std::forward<_Tp>(__t) * std::forward<_Up>(__u);
+    }
 
-      typedef __is_transparent is_transparent;
-    };
+    typedef __is_transparent is_transparent;
+  };
 
   /// One of the @link arithmetic_functors math functors@endlink.
-  template<>
-    struct divides<void>
+  template <>
+  struct divides<void>
+  {
+    template <typename _Tp, typename _Up>
+    _GLIBCXX14_CONSTEXPR auto
+    operator()(_Tp &&__t, _Up &&__u) const
+        noexcept(noexcept(std::forward<_Tp>(__t) / std::forward<_Up>(__u)))
+            -> decltype(std::forward<_Tp>(__t) / std::forward<_Up>(__u))
     {
-      template <typename _Tp, typename _Up>
-	_GLIBCXX14_CONSTEXPR
-	auto
-	operator()(_Tp&& __t, _Up&& __u) const
-	noexcept(noexcept(std::forward<_Tp>(__t) / std::forward<_Up>(__u)))
-	-> decltype(std::forward<_Tp>(__t) / std::forward<_Up>(__u))
-	{ return std::forward<_Tp>(__t) / std::forward<_Up>(__u); }
+      return std::forward<_Tp>(__t) / std::forward<_Up>(__u);
+    }
 
-      typedef __is_transparent is_transparent;
-    };
+    typedef __is_transparent is_transparent;
+  };
 
   /// One of the @link arithmetic_functors math functors@endlink.
-  template<>
-    struct modulus<void>
+  template <>
+  struct modulus<void>
+  {
+    template <typename _Tp, typename _Up>
+    _GLIBCXX14_CONSTEXPR auto
+    operator()(_Tp &&__t, _Up &&__u) const
+        noexcept(noexcept(std::forward<_Tp>(__t) % std::forward<_Up>(__u)))
+            -> decltype(std::forward<_Tp>(__t) % std::forward<_Up>(__u))
     {
-      template <typename _Tp, typename _Up>
-	_GLIBCXX14_CONSTEXPR
-	auto
-	operator()(_Tp&& __t, _Up&& __u) const
-	noexcept(noexcept(std::forward<_Tp>(__t) % std::forward<_Up>(__u)))
-	-> decltype(std::forward<_Tp>(__t) % std::forward<_Up>(__u))
-	{ return std::forward<_Tp>(__t) % std::forward<_Up>(__u); }
+      return std::forward<_Tp>(__t) % std::forward<_Up>(__u);
+    }
 
-      typedef __is_transparent is_transparent;
-    };
+    typedef __is_transparent is_transparent;
+  };
 
   /// One of the @link arithmetic_functors math functors@endlink.
-  template<>
-    struct negate<void>
+  template <>
+  struct negate<void>
+  {
+    template <typename _Tp>
+    _GLIBCXX14_CONSTEXPR auto
+    operator()(_Tp &&__t) const
+        noexcept(noexcept(-std::forward<_Tp>(__t)))
+            -> decltype(-std::forward<_Tp>(__t))
     {
-      template <typename _Tp>
-	_GLIBCXX14_CONSTEXPR
-	auto
-	operator()(_Tp&& __t) const
-	noexcept(noexcept(-std::forward<_Tp>(__t)))
-	-> decltype(-std::forward<_Tp>(__t))
-	{ return -std::forward<_Tp>(__t); }
+      return -std::forward<_Tp>(__t);
+    }
 
-      typedef __is_transparent is_transparent;
-    };
+    typedef __is_transparent is_transparent;
+  };
 #endif
   /** @}  */
 
@@ -339,425 +333,467 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
    *  @{
    */
 #if __glibcxx_transparent_operators // C++ >= 14
-  template<typename _Tp = void>
-    struct equal_to;
 
-  template<typename _Tp = void>
-    struct not_equal_to;
+  template <typename _Tp = void>
+  struct not_equal_to;
 
-  template<typename _Tp = void>
-    struct greater;
+  template <typename _Tp = void>
+  struct greater;
 
-  template<typename _Tp = void>
-    struct less;
+  template <typename _Tp = void>
+  struct less;
 
-  template<typename _Tp = void>
-    struct greater_equal;
+  template <typename _Tp = void>
+  struct greater_equal;
 
-  template<typename _Tp = void>
-    struct less_equal;
+  template <typename _Tp = void>
+  struct less_equal;
 #endif
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
   /// One of the @link comparison_functors comparison functors@endlink.
-  template<typename _Tp>
-    struct equal_to : public binary_function<_Tp, _Tp, bool>
+  template <typename _Tp>
+  struct not_equal_to : public binary_function<_Tp, _Tp, bool>
+  {
+    _GLIBCXX14_CONSTEXPR
+    bool
+    operator()(const _Tp &__x, const _Tp &__y) const
     {
-      _GLIBCXX14_CONSTEXPR
-      bool
-      operator()(const _Tp& __x, const _Tp& __y) const
-      { return __x == __y; }
-    };
+      return __x != __y;
+    }
+  };
 
   /// One of the @link comparison_functors comparison functors@endlink.
-  template<typename _Tp>
-    struct not_equal_to : public binary_function<_Tp, _Tp, bool>
+  template <typename _Tp>
+  struct greater : public binary_function<_Tp, _Tp, bool>
+  {
+    _GLIBCXX14_CONSTEXPR
+    bool
+    operator()(const _Tp &__x, const _Tp &__y) const
     {
-      _GLIBCXX14_CONSTEXPR
-      bool
-      operator()(const _Tp& __x, const _Tp& __y) const
-      { return __x != __y; }
-    };
+      return __x > __y;
+    }
+  };
 
   /// One of the @link comparison_functors comparison functors@endlink.
-  template<typename _Tp>
-    struct greater : public binary_function<_Tp, _Tp, bool>
+  template <typename _Tp>
+  struct less : public binary_function<_Tp, _Tp, bool>
+  {
+    _GLIBCXX14_CONSTEXPR
+    bool
+    operator()(const _Tp &__x, const _Tp &__y) const
     {
-      _GLIBCXX14_CONSTEXPR
-      bool
-      operator()(const _Tp& __x, const _Tp& __y) const
-      { return __x > __y; }
-    };
+      return __x < __y;
+    }
+  };
 
   /// One of the @link comparison_functors comparison functors@endlink.
-  template<typename _Tp>
-    struct less : public binary_function<_Tp, _Tp, bool>
+  template <typename _Tp>
+  struct greater_equal : public binary_function<_Tp, _Tp, bool>
+  {
+    _GLIBCXX14_CONSTEXPR
+    bool
+    operator()(const _Tp &__x, const _Tp &__y) const
     {
-      _GLIBCXX14_CONSTEXPR
-      bool
-      operator()(const _Tp& __x, const _Tp& __y) const
-      { return __x < __y; }
-    };
+      return __x >= __y;
+    }
+  };
 
   /// One of the @link comparison_functors comparison functors@endlink.
-  template<typename _Tp>
-    struct greater_equal : public binary_function<_Tp, _Tp, bool>
+  template <typename _Tp>
+  struct less_equal : public binary_function<_Tp, _Tp, bool>
+  {
+    _GLIBCXX14_CONSTEXPR
+    bool
+    operator()(const _Tp &__x, const _Tp &__y) const
     {
-      _GLIBCXX14_CONSTEXPR
-      bool
-      operator()(const _Tp& __x, const _Tp& __y) const
-      { return __x >= __y; }
-    };
-
-  /// One of the @link comparison_functors comparison functors@endlink.
-  template<typename _Tp>
-    struct less_equal : public binary_function<_Tp, _Tp, bool>
-    {
-      _GLIBCXX14_CONSTEXPR
-      bool
-      operator()(const _Tp& __x, const _Tp& __y) const
-      { return __x <= __y; }
-    };
+      return __x <= __y;
+    }
+  };
 
   // Partial specialization of std::greater for pointers.
-  template<typename _Tp>
-    struct greater<_Tp*> : public binary_function<_Tp*, _Tp*, bool>
+  template <typename _Tp>
+  struct greater<_Tp *> : public binary_function<_Tp *, _Tp *, bool>
+  {
+    _GLIBCXX14_CONSTEXPR bool
+    operator()(_Tp *__x, _Tp *__y) const _GLIBCXX_NOTHROW
     {
-      _GLIBCXX14_CONSTEXPR bool
-      operator()(_Tp* __x, _Tp* __y) const _GLIBCXX_NOTHROW
-      {
 #if __cplusplus >= 201402L
-	if (std::__is_constant_evaluated())
-	  return __x > __y;
+      if (std::__is_constant_evaluated())
+        return __x > __y;
 #endif
-	return (__UINTPTR_TYPE__)__x > (__UINTPTR_TYPE__)__y;
-      }
-    };
+      return (__UINTPTR_TYPE__)__x > (__UINTPTR_TYPE__)__y;
+    }
+  };
 
   // Partial specialization of std::less for pointers.
-  template<typename _Tp>
-    struct less<_Tp*> : public binary_function<_Tp*, _Tp*, bool>
+  template <typename _Tp>
+  struct less<_Tp *> : public binary_function<_Tp *, _Tp *, bool>
+  {
+    _GLIBCXX14_CONSTEXPR bool
+    operator()(_Tp *__x, _Tp *__y) const _GLIBCXX_NOTHROW
     {
-      _GLIBCXX14_CONSTEXPR bool
-      operator()(_Tp* __x, _Tp* __y) const _GLIBCXX_NOTHROW
-      {
 #if __cplusplus >= 201402L
-	if (std::__is_constant_evaluated())
-	  return __x < __y;
+      if (std::__is_constant_evaluated())
+        return __x < __y;
 #endif
-	return (__UINTPTR_TYPE__)__x < (__UINTPTR_TYPE__)__y;
-      }
-    };
+      return (__UINTPTR_TYPE__)__x < (__UINTPTR_TYPE__)__y;
+    }
+  };
 
   // Partial specialization of std::greater_equal for pointers.
-  template<typename _Tp>
-    struct greater_equal<_Tp*> : public binary_function<_Tp*, _Tp*, bool>
+  template <typename _Tp>
+  struct greater_equal<_Tp *> : public binary_function<_Tp *, _Tp *, bool>
+  {
+    _GLIBCXX14_CONSTEXPR bool
+    operator()(_Tp *__x, _Tp *__y) const _GLIBCXX_NOTHROW
     {
-      _GLIBCXX14_CONSTEXPR bool
-      operator()(_Tp* __x, _Tp* __y) const _GLIBCXX_NOTHROW
-      {
 #if __cplusplus >= 201402L
-	if (std::__is_constant_evaluated())
-	  return __x >= __y;
+      if (std::__is_constant_evaluated())
+        return __x >= __y;
 #endif
-	return (__UINTPTR_TYPE__)__x >= (__UINTPTR_TYPE__)__y;
-      }
-    };
+      return (__UINTPTR_TYPE__)__x >= (__UINTPTR_TYPE__)__y;
+    }
+  };
 
   // Partial specialization of std::less_equal for pointers.
-  template<typename _Tp>
-    struct less_equal<_Tp*> : public binary_function<_Tp*, _Tp*, bool>
+  template <typename _Tp>
+  struct less_equal<_Tp *> : public binary_function<_Tp *, _Tp *, bool>
+  {
+    _GLIBCXX14_CONSTEXPR bool
+    operator()(_Tp *__x, _Tp *__y) const _GLIBCXX_NOTHROW
     {
-      _GLIBCXX14_CONSTEXPR bool
-      operator()(_Tp* __x, _Tp* __y) const _GLIBCXX_NOTHROW
-      {
 #if __cplusplus >= 201402L
-	if (std::__is_constant_evaluated())
-	  return __x <= __y;
+      if (std::__is_constant_evaluated())
+        return __x <= __y;
 #endif
-	return (__UINTPTR_TYPE__)__x <= (__UINTPTR_TYPE__)__y;
-      }
-    };
+      return (__UINTPTR_TYPE__)__x <= (__UINTPTR_TYPE__)__y;
+    }
+  };
 #pragma GCC diagnostic pop
 
 #ifdef __glibcxx_transparent_operators // C++ >= 14
   /// One of the @link comparison_functors comparison functors@endlink.
-  template<>
-    struct equal_to<void>
+  template <>
+  struct equal_to<void>
+  {
+    template <typename _Tp, typename _Up>
+    constexpr auto
+    operator()(_Tp &&__t, _Up &&__u) const
+        noexcept(noexcept(std::forward<_Tp>(__t) == std::forward<_Up>(__u)))
+            -> decltype(std::forward<_Tp>(__t) == std::forward<_Up>(__u))
     {
-      template <typename _Tp, typename _Up>
-	constexpr auto
-	operator()(_Tp&& __t, _Up&& __u) const
-	noexcept(noexcept(std::forward<_Tp>(__t) == std::forward<_Up>(__u)))
-	-> decltype(std::forward<_Tp>(__t) == std::forward<_Up>(__u))
-	{ return std::forward<_Tp>(__t) == std::forward<_Up>(__u); }
+      return std::forward<_Tp>(__t) == std::forward<_Up>(__u);
+    }
 
-      typedef __is_transparent is_transparent;
-    };
+    typedef __is_transparent is_transparent;
+  };
 
   /// One of the @link comparison_functors comparison functors@endlink.
-  template<>
-    struct not_equal_to<void>
+  template <>
+  struct not_equal_to<void>
+  {
+    template <typename _Tp, typename _Up>
+    constexpr auto
+    operator()(_Tp &&__t, _Up &&__u) const
+        noexcept(noexcept(std::forward<_Tp>(__t) != std::forward<_Up>(__u)))
+            -> decltype(std::forward<_Tp>(__t) != std::forward<_Up>(__u))
     {
-      template <typename _Tp, typename _Up>
-	constexpr auto
-	operator()(_Tp&& __t, _Up&& __u) const
-	noexcept(noexcept(std::forward<_Tp>(__t) != std::forward<_Up>(__u)))
-	-> decltype(std::forward<_Tp>(__t) != std::forward<_Up>(__u))
-	{ return std::forward<_Tp>(__t) != std::forward<_Up>(__u); }
+      return std::forward<_Tp>(__t) != std::forward<_Up>(__u);
+    }
 
-      typedef __is_transparent is_transparent;
-    };
+    typedef __is_transparent is_transparent;
+  };
 
   /// One of the @link comparison_functors comparison functors@endlink.
-  template<>
-    struct greater<void>
+  template <>
+  struct greater<void>
+  {
+    template <typename _Tp, typename _Up>
+    constexpr auto
+    operator()(_Tp &&__t, _Up &&__u) const
+        noexcept(noexcept(std::forward<_Tp>(__t) > std::forward<_Up>(__u)))
+            -> decltype(std::forward<_Tp>(__t) > std::forward<_Up>(__u))
     {
-      template <typename _Tp, typename _Up>
-	constexpr auto
-	operator()(_Tp&& __t, _Up&& __u) const
-	noexcept(noexcept(std::forward<_Tp>(__t) > std::forward<_Up>(__u)))
-	-> decltype(std::forward<_Tp>(__t) > std::forward<_Up>(__u))
-	{
-	  return _S_cmp(std::forward<_Tp>(__t), std::forward<_Up>(__u),
-			__ptr_cmp<_Tp, _Up>{});
-	}
+      return _S_cmp(std::forward<_Tp>(__t), std::forward<_Up>(__u),
+                    __ptr_cmp<_Tp, _Up>{});
+    }
 
-      template<typename _Tp, typename _Up>
-	constexpr bool
-	operator()(_Tp* __t, _Up* __u) const noexcept
-	{ return greater<common_type_t<_Tp*, _Up*>>{}(__t, __u); }
+    template <typename _Tp, typename _Up>
+    constexpr bool
+    operator()(_Tp *__t, _Up *__u) const noexcept
+    {
+      return greater<common_type_t<_Tp *, _Up *>>{}(__t, __u);
+    }
 
-      typedef __is_transparent is_transparent;
+    typedef __is_transparent is_transparent;
 
-    private:
-      template <typename _Tp, typename _Up>
-	static constexpr decltype(auto)
-	_S_cmp(_Tp&& __t, _Up&& __u, false_type)
-	{ return std::forward<_Tp>(__t) > std::forward<_Up>(__u); }
+  private:
+    template <typename _Tp, typename _Up>
+    static constexpr decltype(auto)
+    _S_cmp(_Tp &&__t, _Up &&__u, false_type)
+    {
+      return std::forward<_Tp>(__t) > std::forward<_Up>(__u);
+    }
 
-      template <typename _Tp, typename _Up>
-	static constexpr bool
-	_S_cmp(_Tp&& __t, _Up&& __u, true_type) noexcept
-	{
-	  return greater<const volatile void*>{}(
-	      static_cast<const volatile void*>(std::forward<_Tp>(__t)),
-	      static_cast<const volatile void*>(std::forward<_Up>(__u)));
-	}
+    template <typename _Tp, typename _Up>
+    static constexpr bool
+    _S_cmp(_Tp &&__t, _Up &&__u, true_type) noexcept
+    {
+      return greater<const volatile void *>{}(
+          static_cast<const volatile void *>(std::forward<_Tp>(__t)),
+          static_cast<const volatile void *>(std::forward<_Up>(__u)));
+    }
 
-      // True if there is no viable operator> member function.
-      template<typename _Tp, typename _Up, typename = void>
-	struct __not_overloaded2 : true_type { };
-
-      // False if we can call T.operator>(U)
-      template<typename _Tp, typename _Up>
-	struct __not_overloaded2<_Tp, _Up, __void_t<
-	  decltype(std::declval<_Tp>().operator>(std::declval<_Up>()))>>
-	: false_type { };
-
-      // True if there is no overloaded operator> for these operands.
-      template<typename _Tp, typename _Up, typename = void>
-	struct __not_overloaded : __not_overloaded2<_Tp, _Up> { };
-
-      // False if we can call operator>(T,U)
-      template<typename _Tp, typename _Up>
-	struct __not_overloaded<_Tp, _Up, __void_t<
-	  decltype(operator>(std::declval<_Tp>(), std::declval<_Up>()))>>
-	: false_type { };
-
-      template<typename _Tp, typename _Up>
-	using __ptr_cmp = __and_<__not_overloaded<_Tp, _Up>,
-	      is_convertible<_Tp, const volatile void*>,
-	      is_convertible<_Up, const volatile void*>>;
+    // True if there is no viable operator> member function.
+    template <typename _Tp, typename _Up, typename = void>
+    struct __not_overloaded2 : true_type
+    {
     };
+
+    // False if we can call T.operator>(U)
+    template <typename _Tp, typename _Up>
+    struct __not_overloaded2<_Tp, _Up, __void_t<decltype(std::declval<_Tp>().operator>(std::declval<_Up>()))>>
+        : false_type
+    {
+    };
+
+    // True if there is no overloaded operator> for these operands.
+    template <typename _Tp, typename _Up, typename = void>
+    struct __not_overloaded : __not_overloaded2<_Tp, _Up>
+    {
+    };
+
+    // False if we can call operator>(T,U)
+    template <typename _Tp, typename _Up>
+    struct __not_overloaded<_Tp, _Up, __void_t<decltype(operator>(std::declval<_Tp>(), std::declval<_Up>()))>>
+        : false_type
+    {
+    };
+
+    template <typename _Tp, typename _Up>
+    using __ptr_cmp = __and_<__not_overloaded<_Tp, _Up>,
+                             is_convertible<_Tp, const volatile void *>,
+                             is_convertible<_Up, const volatile void *>>;
+  };
 
   /// One of the @link comparison_functors comparison functors@endlink.
-  template<>
-    struct less<void>
+  template <>
+  struct less<void>
+  {
+    template <typename _Tp, typename _Up>
+    constexpr auto
+    operator()(_Tp &&__t, _Up &&__u) const
+        noexcept(noexcept(std::forward<_Tp>(__t) < std::forward<_Up>(__u)))
+            -> decltype(std::forward<_Tp>(__t) < std::forward<_Up>(__u))
     {
-      template <typename _Tp, typename _Up>
-	constexpr auto
-	operator()(_Tp&& __t, _Up&& __u) const
-	noexcept(noexcept(std::forward<_Tp>(__t) < std::forward<_Up>(__u)))
-	-> decltype(std::forward<_Tp>(__t) < std::forward<_Up>(__u))
-	{
-	  return _S_cmp(std::forward<_Tp>(__t), std::forward<_Up>(__u),
-			__ptr_cmp<_Tp, _Up>{});
-	}
+      return _S_cmp(std::forward<_Tp>(__t), std::forward<_Up>(__u),
+                    __ptr_cmp<_Tp, _Up>{});
+    }
 
-      template<typename _Tp, typename _Up>
-	constexpr bool
-	operator()(_Tp* __t, _Up* __u) const noexcept
-	{ return less<common_type_t<_Tp*, _Up*>>{}(__t, __u); }
+    template <typename _Tp, typename _Up>
+    constexpr bool
+    operator()(_Tp *__t, _Up *__u) const noexcept
+    {
+      return less<common_type_t<_Tp *, _Up *>>{}(__t, __u);
+    }
 
-      typedef __is_transparent is_transparent;
+    typedef __is_transparent is_transparent;
 
-    private:
-      template <typename _Tp, typename _Up>
-	static constexpr decltype(auto)
-	_S_cmp(_Tp&& __t, _Up&& __u, false_type)
-	{ return std::forward<_Tp>(__t) < std::forward<_Up>(__u); }
+  private:
+    template <typename _Tp, typename _Up>
+    static constexpr decltype(auto)
+    _S_cmp(_Tp &&__t, _Up &&__u, false_type)
+    {
+      return std::forward<_Tp>(__t) < std::forward<_Up>(__u);
+    }
 
-      template <typename _Tp, typename _Up>
-	static constexpr bool
-	_S_cmp(_Tp&& __t, _Up&& __u, true_type) noexcept
-	{
-	  return less<const volatile void*>{}(
-	      static_cast<const volatile void*>(std::forward<_Tp>(__t)),
-	      static_cast<const volatile void*>(std::forward<_Up>(__u)));
-	}
+    template <typename _Tp, typename _Up>
+    static constexpr bool
+    _S_cmp(_Tp &&__t, _Up &&__u, true_type) noexcept
+    {
+      return less<const volatile void *>{}(
+          static_cast<const volatile void *>(std::forward<_Tp>(__t)),
+          static_cast<const volatile void *>(std::forward<_Up>(__u)));
+    }
 
-      // True if there is no viable operator< member function.
-      template<typename _Tp, typename _Up, typename = void>
-	struct __not_overloaded2 : true_type { };
-
-      // False if we can call T.operator<(U)
-      template<typename _Tp, typename _Up>
-	struct __not_overloaded2<_Tp, _Up, __void_t<
-	  decltype(std::declval<_Tp>().operator<(std::declval<_Up>()))>>
-	: false_type { };
-
-      // True if there is no overloaded operator< for these operands.
-      template<typename _Tp, typename _Up, typename = void>
-	struct __not_overloaded : __not_overloaded2<_Tp, _Up> { };
-
-      // False if we can call operator<(T,U)
-      template<typename _Tp, typename _Up>
-	struct __not_overloaded<_Tp, _Up, __void_t<
-	  decltype(operator<(std::declval<_Tp>(), std::declval<_Up>()))>>
-	: false_type { };
-
-      template<typename _Tp, typename _Up>
-	using __ptr_cmp = __and_<__not_overloaded<_Tp, _Up>,
-	      is_convertible<_Tp, const volatile void*>,
-	      is_convertible<_Up, const volatile void*>>;
+    // True if there is no viable operator< member function.
+    template <typename _Tp, typename _Up, typename = void>
+    struct __not_overloaded2 : true_type
+    {
     };
+
+    // False if we can call T.operator<(U)
+    template <typename _Tp, typename _Up>
+    struct __not_overloaded2<_Tp, _Up, __void_t<decltype(std::declval<_Tp>().operator<(std::declval<_Up>()))>>
+        : false_type
+    {
+    };
+
+    // True if there is no overloaded operator< for these operands.
+    template <typename _Tp, typename _Up, typename = void>
+    struct __not_overloaded : __not_overloaded2<_Tp, _Up>
+    {
+    };
+
+    // False if we can call operator<(T,U)
+    template <typename _Tp, typename _Up>
+    struct __not_overloaded<_Tp, _Up, __void_t<decltype(operator<(std::declval<_Tp>(), std::declval<_Up>()))>>
+        : false_type
+    {
+    };
+
+    template <typename _Tp, typename _Up>
+    using __ptr_cmp = __and_<__not_overloaded<_Tp, _Up>,
+                             is_convertible<_Tp, const volatile void *>,
+                             is_convertible<_Up, const volatile void *>>;
+  };
 
   /// One of the @link comparison_functors comparison functors@endlink.
-  template<>
-    struct greater_equal<void>
+  template <>
+  struct greater_equal<void>
+  {
+    template <typename _Tp, typename _Up>
+    constexpr auto
+    operator()(_Tp &&__t, _Up &&__u) const
+        noexcept(noexcept(std::forward<_Tp>(__t) >= std::forward<_Up>(__u)))
+            -> decltype(std::forward<_Tp>(__t) >= std::forward<_Up>(__u))
     {
-      template <typename _Tp, typename _Up>
-	constexpr auto
-	operator()(_Tp&& __t, _Up&& __u) const
-	noexcept(noexcept(std::forward<_Tp>(__t) >= std::forward<_Up>(__u)))
-	-> decltype(std::forward<_Tp>(__t) >= std::forward<_Up>(__u))
-	{
-	  return _S_cmp(std::forward<_Tp>(__t), std::forward<_Up>(__u),
-			__ptr_cmp<_Tp, _Up>{});
-	}
+      return _S_cmp(std::forward<_Tp>(__t), std::forward<_Up>(__u),
+                    __ptr_cmp<_Tp, _Up>{});
+    }
 
-      template<typename _Tp, typename _Up>
-	constexpr bool
-	operator()(_Tp* __t, _Up* __u) const noexcept
-	{ return greater_equal<common_type_t<_Tp*, _Up*>>{}(__t, __u); }
+    template <typename _Tp, typename _Up>
+    constexpr bool
+    operator()(_Tp *__t, _Up *__u) const noexcept
+    {
+      return greater_equal<common_type_t<_Tp *, _Up *>>{}(__t, __u);
+    }
 
-      typedef __is_transparent is_transparent;
+    typedef __is_transparent is_transparent;
 
-    private:
-      template <typename _Tp, typename _Up>
-	static constexpr decltype(auto)
-	_S_cmp(_Tp&& __t, _Up&& __u, false_type)
-	{ return std::forward<_Tp>(__t) >= std::forward<_Up>(__u); }
+  private:
+    template <typename _Tp, typename _Up>
+    static constexpr decltype(auto)
+    _S_cmp(_Tp &&__t, _Up &&__u, false_type)
+    {
+      return std::forward<_Tp>(__t) >= std::forward<_Up>(__u);
+    }
 
-      template <typename _Tp, typename _Up>
-	static constexpr bool
-	_S_cmp(_Tp&& __t, _Up&& __u, true_type) noexcept
-	{
-	  return greater_equal<const volatile void*>{}(
-	      static_cast<const volatile void*>(std::forward<_Tp>(__t)),
-	      static_cast<const volatile void*>(std::forward<_Up>(__u)));
-	}
+    template <typename _Tp, typename _Up>
+    static constexpr bool
+    _S_cmp(_Tp &&__t, _Up &&__u, true_type) noexcept
+    {
+      return greater_equal<const volatile void *>{}(
+          static_cast<const volatile void *>(std::forward<_Tp>(__t)),
+          static_cast<const volatile void *>(std::forward<_Up>(__u)));
+    }
 
-      // True if there is no viable operator>= member function.
-      template<typename _Tp, typename _Up, typename = void>
-	struct __not_overloaded2 : true_type { };
-
-      // False if we can call T.operator>=(U)
-      template<typename _Tp, typename _Up>
-	struct __not_overloaded2<_Tp, _Up, __void_t<
-	  decltype(std::declval<_Tp>().operator>=(std::declval<_Up>()))>>
-	: false_type { };
-
-      // True if there is no overloaded operator>= for these operands.
-      template<typename _Tp, typename _Up, typename = void>
-	struct __not_overloaded : __not_overloaded2<_Tp, _Up> { };
-
-      // False if we can call operator>=(T,U)
-      template<typename _Tp, typename _Up>
-	struct __not_overloaded<_Tp, _Up, __void_t<
-	  decltype(operator>=(std::declval<_Tp>(), std::declval<_Up>()))>>
-	: false_type { };
-
-      template<typename _Tp, typename _Up>
-	using __ptr_cmp = __and_<__not_overloaded<_Tp, _Up>,
-	      is_convertible<_Tp, const volatile void*>,
-	      is_convertible<_Up, const volatile void*>>;
+    // True if there is no viable operator>= member function.
+    template <typename _Tp, typename _Up, typename = void>
+    struct __not_overloaded2 : true_type
+    {
     };
+
+    // False if we can call T.operator>=(U)
+    template <typename _Tp, typename _Up>
+    struct __not_overloaded2<_Tp, _Up, __void_t<decltype(std::declval<_Tp>().operator>=(std::declval<_Up>()))>>
+        : false_type
+    {
+    };
+
+    // True if there is no overloaded operator>= for these operands.
+    template <typename _Tp, typename _Up, typename = void>
+    struct __not_overloaded : __not_overloaded2<_Tp, _Up>
+    {
+    };
+
+    // False if we can call operator>=(T,U)
+    template <typename _Tp, typename _Up>
+    struct __not_overloaded<_Tp, _Up, __void_t<decltype(operator>=(std::declval<_Tp>(), std::declval<_Up>()))>>
+        : false_type
+    {
+    };
+
+    template <typename _Tp, typename _Up>
+    using __ptr_cmp = __and_<__not_overloaded<_Tp, _Up>,
+                             is_convertible<_Tp, const volatile void *>,
+                             is_convertible<_Up, const volatile void *>>;
+  };
 
   /// One of the @link comparison_functors comparison functors@endlink.
-  template<>
-    struct less_equal<void>
+  template <>
+  struct less_equal<void>
+  {
+    template <typename _Tp, typename _Up>
+    constexpr auto
+    operator()(_Tp &&__t, _Up &&__u) const
+        noexcept(noexcept(std::forward<_Tp>(__t) <= std::forward<_Up>(__u)))
+            -> decltype(std::forward<_Tp>(__t) <= std::forward<_Up>(__u))
     {
-      template <typename _Tp, typename _Up>
-	constexpr auto
-	operator()(_Tp&& __t, _Up&& __u) const
-	noexcept(noexcept(std::forward<_Tp>(__t) <= std::forward<_Up>(__u)))
-	-> decltype(std::forward<_Tp>(__t) <= std::forward<_Up>(__u))
-	{
-	  return _S_cmp(std::forward<_Tp>(__t), std::forward<_Up>(__u),
-			__ptr_cmp<_Tp, _Up>{});
-	}
+      return _S_cmp(std::forward<_Tp>(__t), std::forward<_Up>(__u),
+                    __ptr_cmp<_Tp, _Up>{});
+    }
 
-      template<typename _Tp, typename _Up>
-	constexpr bool
-	operator()(_Tp* __t, _Up* __u) const noexcept
-	{ return less_equal<common_type_t<_Tp*, _Up*>>{}(__t, __u); }
+    template <typename _Tp, typename _Up>
+    constexpr bool
+    operator()(_Tp *__t, _Up *__u) const noexcept
+    {
+      return less_equal<common_type_t<_Tp *, _Up *>>{}(__t, __u);
+    }
 
-      typedef __is_transparent is_transparent;
+    typedef __is_transparent is_transparent;
 
-    private:
-      template <typename _Tp, typename _Up>
-	static constexpr decltype(auto)
-	_S_cmp(_Tp&& __t, _Up&& __u, false_type)
-	{ return std::forward<_Tp>(__t) <= std::forward<_Up>(__u); }
+  private:
+    template <typename _Tp, typename _Up>
+    static constexpr decltype(auto)
+    _S_cmp(_Tp &&__t, _Up &&__u, false_type)
+    {
+      return std::forward<_Tp>(__t) <= std::forward<_Up>(__u);
+    }
 
-      template <typename _Tp, typename _Up>
-	static constexpr bool
-	_S_cmp(_Tp&& __t, _Up&& __u, true_type) noexcept
-	{
-	  return less_equal<const volatile void*>{}(
-	      static_cast<const volatile void*>(std::forward<_Tp>(__t)),
-	      static_cast<const volatile void*>(std::forward<_Up>(__u)));
-	}
+    template <typename _Tp, typename _Up>
+    static constexpr bool
+    _S_cmp(_Tp &&__t, _Up &&__u, true_type) noexcept
+    {
+      return less_equal<const volatile void *>{}(
+          static_cast<const volatile void *>(std::forward<_Tp>(__t)),
+          static_cast<const volatile void *>(std::forward<_Up>(__u)));
+    }
 
-      // True if there is no viable operator<= member function.
-      template<typename _Tp, typename _Up, typename = void>
-	struct __not_overloaded2 : true_type { };
-
-      // False if we can call T.operator<=(U)
-      template<typename _Tp, typename _Up>
-	struct __not_overloaded2<_Tp, _Up, __void_t<
-	  decltype(std::declval<_Tp>().operator<=(std::declval<_Up>()))>>
-	: false_type { };
-
-      // True if there is no overloaded operator<= for these operands.
-      template<typename _Tp, typename _Up, typename = void>
-	struct __not_overloaded : __not_overloaded2<_Tp, _Up> { };
-
-      // False if we can call operator<=(T,U)
-      template<typename _Tp, typename _Up>
-	struct __not_overloaded<_Tp, _Up, __void_t<
-	  decltype(operator<=(std::declval<_Tp>(), std::declval<_Up>()))>>
-	: false_type { };
-
-      template<typename _Tp, typename _Up>
-	using __ptr_cmp = __and_<__not_overloaded<_Tp, _Up>,
-	      is_convertible<_Tp, const volatile void*>,
-	      is_convertible<_Up, const volatile void*>>;
+    // True if there is no viable operator<= member function.
+    template <typename _Tp, typename _Up, typename = void>
+    struct __not_overloaded2 : true_type
+    {
     };
+
+    // False if we can call T.operator<=(U)
+    template <typename _Tp, typename _Up>
+    struct __not_overloaded2<_Tp, _Up, __void_t<decltype(std::declval<_Tp>().operator<=(std::declval<_Up>()))>>
+        : false_type
+    {
+    };
+
+    // True if there is no overloaded operator<= for these operands.
+    template <typename _Tp, typename _Up, typename = void>
+    struct __not_overloaded : __not_overloaded2<_Tp, _Up>
+    {
+    };
+
+    // False if we can call operator<=(T,U)
+    template <typename _Tp, typename _Up>
+    struct __not_overloaded<_Tp, _Up, __void_t<decltype(operator<=(std::declval<_Tp>(), std::declval<_Up>()))>>
+        : false_type
+    {
+    };
+
+    template <typename _Tp, typename _Up>
+    using __ptr_cmp = __and_<__not_overloaded<_Tp, _Up>,
+                             is_convertible<_Tp, const volatile void *>,
+                             is_convertible<_Up, const volatile void *>>;
+  };
 #endif // __glibcxx_transparent_operators
   /** @}  */
 
@@ -771,110 +807,119 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
    *  @{
    */
 #ifdef __glibcxx_transparent_operators // C++ >= 14
-  template<typename _Tp = void>
-    struct logical_and;
+  template <typename _Tp = void>
+  struct logical_and;
 
-  template<typename _Tp = void>
-    struct logical_or;
+  template <typename _Tp = void>
+  struct logical_or;
 
-  template<typename _Tp = void>
-    struct logical_not;
+  template <typename _Tp = void>
+  struct logical_not;
 #endif
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
   /// One of the @link logical_functors Boolean operations functors@endlink.
-  template<typename _Tp>
-    struct logical_and : public binary_function<_Tp, _Tp, bool>
+  template <typename _Tp>
+  struct logical_and : public binary_function<_Tp, _Tp, bool>
+  {
+    _GLIBCXX14_CONSTEXPR
+    bool
+    operator()(const _Tp &__x, const _Tp &__y) const
     {
-      _GLIBCXX14_CONSTEXPR
-      bool
-      operator()(const _Tp& __x, const _Tp& __y) const
-      { return __x && __y; }
-    };
+      return __x && __y;
+    }
+  };
 
   /// One of the @link logical_functors Boolean operations functors@endlink.
-  template<typename _Tp>
-    struct logical_or : public binary_function<_Tp, _Tp, bool>
+  template <typename _Tp>
+  struct logical_or : public binary_function<_Tp, _Tp, bool>
+  {
+    _GLIBCXX14_CONSTEXPR
+    bool
+    operator()(const _Tp &__x, const _Tp &__y) const
     {
-      _GLIBCXX14_CONSTEXPR
-      bool
-      operator()(const _Tp& __x, const _Tp& __y) const
-      { return __x || __y; }
-    };
+      return __x || __y;
+    }
+  };
 
   /// One of the @link logical_functors Boolean operations functors@endlink.
-  template<typename _Tp>
-    struct logical_not : public unary_function<_Tp, bool>
+  template <typename _Tp>
+  struct logical_not : public unary_function<_Tp, bool>
+  {
+    _GLIBCXX14_CONSTEXPR
+    bool
+    operator()(const _Tp &__x) const
     {
-      _GLIBCXX14_CONSTEXPR
-      bool
-      operator()(const _Tp& __x) const
-      { return !__x; }
-    };
+      return !__x;
+    }
+  };
 #pragma GCC diagnostic pop
 
 #ifdef __glibcxx_transparent_operators // C++ >= 14
   /// One of the @link logical_functors Boolean operations functors@endlink.
-  template<>
-    struct logical_and<void>
+  template <>
+  struct logical_and<void>
+  {
+    template <typename _Tp, typename _Up>
+    _GLIBCXX14_CONSTEXPR auto
+    operator()(_Tp &&__t, _Up &&__u) const
+        noexcept(noexcept(std::forward<_Tp>(__t) && std::forward<_Up>(__u)))
+            -> decltype(std::forward<_Tp>(__t) && std::forward<_Up>(__u))
     {
-      template <typename _Tp, typename _Up>
-	_GLIBCXX14_CONSTEXPR
-	auto
-	operator()(_Tp&& __t, _Up&& __u) const
-	noexcept(noexcept(std::forward<_Tp>(__t) && std::forward<_Up>(__u)))
-	-> decltype(std::forward<_Tp>(__t) && std::forward<_Up>(__u))
-	{ return std::forward<_Tp>(__t) && std::forward<_Up>(__u); }
+      return std::forward<_Tp>(__t) && std::forward<_Up>(__u);
+    }
 
-      typedef __is_transparent is_transparent;
-    };
+    typedef __is_transparent is_transparent;
+  };
 
   /// One of the @link logical_functors Boolean operations functors@endlink.
-  template<>
-    struct logical_or<void>
+  template <>
+  struct logical_or<void>
+  {
+    template <typename _Tp, typename _Up>
+    _GLIBCXX14_CONSTEXPR auto
+    operator()(_Tp &&__t, _Up &&__u) const
+        noexcept(noexcept(std::forward<_Tp>(__t) || std::forward<_Up>(__u)))
+            -> decltype(std::forward<_Tp>(__t) || std::forward<_Up>(__u))
     {
-      template <typename _Tp, typename _Up>
-	_GLIBCXX14_CONSTEXPR
-	auto
-	operator()(_Tp&& __t, _Up&& __u) const
-	noexcept(noexcept(std::forward<_Tp>(__t) || std::forward<_Up>(__u)))
-	-> decltype(std::forward<_Tp>(__t) || std::forward<_Up>(__u))
-	{ return std::forward<_Tp>(__t) || std::forward<_Up>(__u); }
+      return std::forward<_Tp>(__t) || std::forward<_Up>(__u);
+    }
 
-      typedef __is_transparent is_transparent;
-    };
+    typedef __is_transparent is_transparent;
+  };
 
   /// One of the @link logical_functors Boolean operations functors@endlink.
-  template<>
-    struct logical_not<void>
+  template <>
+  struct logical_not<void>
+  {
+    template <typename _Tp>
+    _GLIBCXX14_CONSTEXPR auto
+    operator()(_Tp &&__t) const
+        noexcept(noexcept(!std::forward<_Tp>(__t)))
+            -> decltype(!std::forward<_Tp>(__t))
     {
-      template <typename _Tp>
-	_GLIBCXX14_CONSTEXPR
-	auto
-	operator()(_Tp&& __t) const
-	noexcept(noexcept(!std::forward<_Tp>(__t)))
-	-> decltype(!std::forward<_Tp>(__t))
-	{ return !std::forward<_Tp>(__t); }
+      return !std::forward<_Tp>(__t);
+    }
 
-      typedef __is_transparent is_transparent;
-    };
+    typedef __is_transparent is_transparent;
+  };
 #endif // __glibcxx_transparent_operators
   /** @}  */
 
 #ifdef __glibcxx_transparent_operators // C++ >= 14
-  template<typename _Tp = void>
-    struct bit_and;
+  template <typename _Tp = void>
+  struct bit_and;
 
-  template<typename _Tp = void>
-    struct bit_or;
+  template <typename _Tp = void>
+  struct bit_or;
 
-  template<typename _Tp = void>
-    struct bit_xor;
+  template <typename _Tp = void>
+  struct bit_xor;
 
-  template<typename _Tp = void>
-    struct bit_not;
+  template <typename _Tp = void>
+  struct bit_not;
 #endif
 
 #pragma GCC diagnostic push
@@ -882,99 +927,111 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 
   // _GLIBCXX_RESOLVE_LIB_DEFECTS
   // DR 660. Missing Bitwise Operations.
-  template<typename _Tp>
-    struct bit_and : public binary_function<_Tp, _Tp, _Tp>
-    {
-      _GLIBCXX14_CONSTEXPR
-      _Tp
-      operator()(const _Tp& __x, const _Tp& __y) const
-      { return __x & __y; }
-    };
-
-  template<typename _Tp>
-    struct bit_or : public binary_function<_Tp, _Tp, _Tp>
-    {
-      _GLIBCXX14_CONSTEXPR
-      _Tp
-      operator()(const _Tp& __x, const _Tp& __y) const
-      { return __x | __y; }
-    };
-
-  template<typename _Tp>
-    struct bit_xor : public binary_function<_Tp, _Tp, _Tp>
-    {
-      _GLIBCXX14_CONSTEXPR
-      _Tp
-      operator()(const _Tp& __x, const _Tp& __y) const
-      { return __x ^ __y; }
-    };
-
-  template<typename _Tp>
-    struct bit_not : public unary_function<_Tp, _Tp>
-    {
+  template <typename _Tp>
+  struct bit_and : public binary_function<_Tp, _Tp, _Tp>
+  {
     _GLIBCXX14_CONSTEXPR
-      _Tp
-      operator()(const _Tp& __x) const
-      { return ~__x; }
-    };
+    _Tp
+    operator()(const _Tp &__x, const _Tp &__y) const
+    {
+      return __x & __y;
+    }
+  };
+
+  template <typename _Tp>
+  struct bit_or : public binary_function<_Tp, _Tp, _Tp>
+  {
+    _GLIBCXX14_CONSTEXPR
+    _Tp
+    operator()(const _Tp &__x, const _Tp &__y) const
+    {
+      return __x | __y;
+    }
+  };
+
+  template <typename _Tp>
+  struct bit_xor : public binary_function<_Tp, _Tp, _Tp>
+  {
+    _GLIBCXX14_CONSTEXPR
+    _Tp
+    operator()(const _Tp &__x, const _Tp &__y) const
+    {
+      return __x ^ __y;
+    }
+  };
+
+  template <typename _Tp>
+  struct bit_not : public unary_function<_Tp, _Tp>
+  {
+    _GLIBCXX14_CONSTEXPR
+    _Tp
+    operator()(const _Tp &__x) const
+    {
+      return ~__x;
+    }
+  };
 #pragma GCC diagnostic pop
 
 #ifdef __glibcxx_transparent_operators // C++ >= 14
   template <>
-    struct bit_and<void>
+  struct bit_and<void>
+  {
+    template <typename _Tp, typename _Up>
+    _GLIBCXX14_CONSTEXPR auto
+    operator()(_Tp &&__t, _Up &&__u) const
+        noexcept(noexcept(std::forward<_Tp>(__t) & std::forward<_Up>(__u)))
+            -> decltype(std::forward<_Tp>(__t) & std::forward<_Up>(__u))
     {
-      template <typename _Tp, typename _Up>
-	_GLIBCXX14_CONSTEXPR
-	auto
-	operator()(_Tp&& __t, _Up&& __u) const
-	noexcept(noexcept(std::forward<_Tp>(__t) & std::forward<_Up>(__u)))
-	-> decltype(std::forward<_Tp>(__t) & std::forward<_Up>(__u))
-	{ return std::forward<_Tp>(__t) & std::forward<_Up>(__u); }
+      return std::forward<_Tp>(__t) & std::forward<_Up>(__u);
+    }
 
-      typedef __is_transparent is_transparent;
-    };
+    typedef __is_transparent is_transparent;
+  };
 
   template <>
-    struct bit_or<void>
+  struct bit_or<void>
+  {
+    template <typename _Tp, typename _Up>
+    _GLIBCXX14_CONSTEXPR auto
+    operator()(_Tp &&__t, _Up &&__u) const
+        noexcept(noexcept(std::forward<_Tp>(__t) | std::forward<_Up>(__u)))
+            -> decltype(std::forward<_Tp>(__t) | std::forward<_Up>(__u))
     {
-      template <typename _Tp, typename _Up>
-	_GLIBCXX14_CONSTEXPR
-	auto
-	operator()(_Tp&& __t, _Up&& __u) const
-	noexcept(noexcept(std::forward<_Tp>(__t) | std::forward<_Up>(__u)))
-	-> decltype(std::forward<_Tp>(__t) | std::forward<_Up>(__u))
-	{ return std::forward<_Tp>(__t) | std::forward<_Up>(__u); }
+      return std::forward<_Tp>(__t) | std::forward<_Up>(__u);
+    }
 
-      typedef __is_transparent is_transparent;
-    };
+    typedef __is_transparent is_transparent;
+  };
 
   template <>
-    struct bit_xor<void>
+  struct bit_xor<void>
+  {
+    template <typename _Tp, typename _Up>
+    _GLIBCXX14_CONSTEXPR auto
+    operator()(_Tp &&__t, _Up &&__u) const
+        noexcept(noexcept(std::forward<_Tp>(__t) ^ std::forward<_Up>(__u)))
+            -> decltype(std::forward<_Tp>(__t) ^ std::forward<_Up>(__u))
     {
-      template <typename _Tp, typename _Up>
-	_GLIBCXX14_CONSTEXPR
-	auto
-	operator()(_Tp&& __t, _Up&& __u) const
-	noexcept(noexcept(std::forward<_Tp>(__t) ^ std::forward<_Up>(__u)))
-	-> decltype(std::forward<_Tp>(__t) ^ std::forward<_Up>(__u))
-	{ return std::forward<_Tp>(__t) ^ std::forward<_Up>(__u); }
+      return std::forward<_Tp>(__t) ^ std::forward<_Up>(__u);
+    }
 
-      typedef __is_transparent is_transparent;
-    };
+    typedef __is_transparent is_transparent;
+  };
 
   template <>
-    struct bit_not<void>
+  struct bit_not<void>
+  {
+    template <typename _Tp>
+    _GLIBCXX14_CONSTEXPR auto
+    operator()(_Tp &&__t) const
+        noexcept(noexcept(~std::forward<_Tp>(__t)))
+            -> decltype(~std::forward<_Tp>(__t))
     {
-      template <typename _Tp>
-	_GLIBCXX14_CONSTEXPR
-	auto
-	operator()(_Tp&& __t) const
-	noexcept(noexcept(~std::forward<_Tp>(__t)))
-	-> decltype(~std::forward<_Tp>(__t))
-	{ return ~std::forward<_Tp>(__t); }
+      return ~std::forward<_Tp>(__t);
+    }
 
-      typedef __is_transparent is_transparent;
-    };
+    typedef __is_transparent is_transparent;
+  };
 #endif // C++14
 
 #pragma GCC diagnostic push
@@ -1013,60 +1070,64 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
    *  @{
    */
   /// One of the @link negators negation functors@endlink.
-  template<typename _Predicate>
-    class _GLIBCXX17_DEPRECATED unary_negate
-    : public unary_function<typename _Predicate::argument_type, bool>
-    {
-    protected:
-      _Predicate _M_pred;
+  template <typename _Predicate>
+  class _GLIBCXX17_DEPRECATED unary_negate
+      : public unary_function<typename _Predicate::argument_type, bool>
+  {
+  protected:
+    _Predicate _M_pred;
 
-    public:
-      _GLIBCXX14_CONSTEXPR
-      explicit
-      unary_negate(const _Predicate& __x) : _M_pred(__x) { }
-
-      _GLIBCXX14_CONSTEXPR
-      bool
-      operator()(const typename _Predicate::argument_type& __x) const
-      { return !_M_pred(__x); }
-    };
-
-  /// One of the @link negators negation functors@endlink.
-  template<typename _Predicate>
-    _GLIBCXX17_DEPRECATED_SUGGEST("std::not_fn")
+  public:
     _GLIBCXX14_CONSTEXPR
-    inline unary_negate<_Predicate>
-    not1(const _Predicate& __pred)
-    { return unary_negate<_Predicate>(__pred); }
+    explicit unary_negate(const _Predicate &__x) : _M_pred(__x) {}
 
-  /// One of the @link negators negation functors@endlink.
-  template<typename _Predicate>
-    class _GLIBCXX17_DEPRECATED binary_negate
-    : public binary_function<typename _Predicate::first_argument_type,
-			     typename _Predicate::second_argument_type, bool>
-    {
-    protected:
-      _Predicate _M_pred;
-
-    public:
-      _GLIBCXX14_CONSTEXPR
-      explicit
-      binary_negate(const _Predicate& __x) : _M_pred(__x) { }
-
-      _GLIBCXX14_CONSTEXPR
-      bool
-      operator()(const typename _Predicate::first_argument_type& __x,
-		 const typename _Predicate::second_argument_type& __y) const
-      { return !_M_pred(__x, __y); }
-    };
-
-  /// One of the @link negators negation functors@endlink.
-  template<typename _Predicate>
-    _GLIBCXX17_DEPRECATED_SUGGEST("std::not_fn")
     _GLIBCXX14_CONSTEXPR
-    inline binary_negate<_Predicate>
-    not2(const _Predicate& __pred)
-    { return binary_negate<_Predicate>(__pred); }
+    bool
+    operator()(const typename _Predicate::argument_type &__x) const
+    {
+      return !_M_pred(__x);
+    }
+  };
+
+  /// One of the @link negators negation functors@endlink.
+  template <typename _Predicate>
+  _GLIBCXX17_DEPRECATED_SUGGEST("std::not_fn")
+  _GLIBCXX14_CONSTEXPR
+      inline unary_negate<_Predicate> not1(const _Predicate &__pred)
+  {
+    return unary_negate<_Predicate>(__pred);
+  }
+
+  /// One of the @link negators negation functors@endlink.
+  template <typename _Predicate>
+  class _GLIBCXX17_DEPRECATED binary_negate
+      : public binary_function<typename _Predicate::first_argument_type,
+                               typename _Predicate::second_argument_type, bool>
+  {
+  protected:
+    _Predicate _M_pred;
+
+  public:
+    _GLIBCXX14_CONSTEXPR
+    explicit binary_negate(const _Predicate &__x) : _M_pred(__x) {}
+
+    _GLIBCXX14_CONSTEXPR
+    bool
+    operator()(const typename _Predicate::first_argument_type &__x,
+               const typename _Predicate::second_argument_type &__y) const
+    {
+      return !_M_pred(__x, __y);
+    }
+  };
+
+  /// One of the @link negators negation functors@endlink.
+  template <typename _Predicate>
+  _GLIBCXX17_DEPRECATED_SUGGEST("std::not_fn")
+  _GLIBCXX14_CONSTEXPR
+      inline binary_negate<_Predicate> not2(const _Predicate &__pred)
+  {
+    return binary_negate<_Predicate>(__pred);
+  }
   /** @}  */
 
   // 20.3.7 adaptors pointers functions
@@ -1094,112 +1155,135 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
    *  @{
    */
   /// One of the @link pointer_adaptors adaptors for function pointers@endlink.
-  template<typename _Arg, typename _Result>
-    class pointer_to_unary_function : public unary_function<_Arg, _Result>
+  template <typename _Arg, typename _Result>
+  class pointer_to_unary_function : public unary_function<_Arg, _Result>
+  {
+  protected:
+    _Result (*_M_ptr)(_Arg);
+
+  public:
+    pointer_to_unary_function() {}
+
+    explicit pointer_to_unary_function(_Result (*__x)(_Arg))
+        : _M_ptr(__x) {}
+
+    _Result
+    operator()(_Arg __x) const
     {
-    protected:
-      _Result (*_M_ptr)(_Arg);
-
-    public:
-      pointer_to_unary_function() { }
-
-      explicit
-      pointer_to_unary_function(_Result (*__x)(_Arg))
-      : _M_ptr(__x) { }
-
-      _Result
-      operator()(_Arg __x) const
-      { return _M_ptr(__x); }
-    } _GLIBCXX11_DEPRECATED;
+      return _M_ptr(__x);
+    }
+  } _GLIBCXX11_DEPRECATED;
 
   /// One of the @link pointer_adaptors adaptors for function pointers@endlink.
-  template<typename _Arg, typename _Result>
-    _GLIBCXX11_DEPRECATED_SUGGEST("std::function")
-    inline pointer_to_unary_function<_Arg, _Result>
-    ptr_fun(_Result (*__x)(_Arg))
-    { return pointer_to_unary_function<_Arg, _Result>(__x); }
+  template <typename _Arg, typename _Result>
+  _GLIBCXX11_DEPRECATED_SUGGEST("std::function")
+  inline pointer_to_unary_function<_Arg, _Result> ptr_fun(_Result (*__x)(_Arg))
+  {
+    return pointer_to_unary_function<_Arg, _Result>(__x);
+  }
 
   /// One of the @link pointer_adaptors adaptors for function pointers@endlink.
-  template<typename _Arg1, typename _Arg2, typename _Result>
-    class pointer_to_binary_function
-    : public binary_function<_Arg1, _Arg2, _Result>
+  template <typename _Arg1, typename _Arg2, typename _Result>
+  class pointer_to_binary_function
+      : public binary_function<_Arg1, _Arg2, _Result>
+  {
+  protected:
+    _Result (*_M_ptr)(_Arg1, _Arg2);
+
+  public:
+    pointer_to_binary_function() {}
+
+    explicit pointer_to_binary_function(_Result (*__x)(_Arg1, _Arg2))
+        : _M_ptr(__x) {}
+
+    _Result
+    operator()(_Arg1 __x, _Arg2 __y) const
     {
-    protected:
-      _Result (*_M_ptr)(_Arg1, _Arg2);
-
-    public:
-      pointer_to_binary_function() { }
-
-      explicit
-      pointer_to_binary_function(_Result (*__x)(_Arg1, _Arg2))
-      : _M_ptr(__x) { }
-
-      _Result
-      operator()(_Arg1 __x, _Arg2 __y) const
-      { return _M_ptr(__x, __y); }
-    } _GLIBCXX11_DEPRECATED;
+      return _M_ptr(__x, __y);
+    }
+  } _GLIBCXX11_DEPRECATED;
 
   /// One of the @link pointer_adaptors adaptors for function pointers@endlink.
-  template<typename _Arg1, typename _Arg2, typename _Result>
-    _GLIBCXX11_DEPRECATED_SUGGEST("std::function")
-    inline pointer_to_binary_function<_Arg1, _Arg2, _Result>
-    ptr_fun(_Result (*__x)(_Arg1, _Arg2))
-    { return pointer_to_binary_function<_Arg1, _Arg2, _Result>(__x); }
+  template <typename _Arg1, typename _Arg2, typename _Result>
+  _GLIBCXX11_DEPRECATED_SUGGEST("std::function")
+  inline pointer_to_binary_function<_Arg1, _Arg2, _Result> ptr_fun(_Result (*__x)(_Arg1, _Arg2))
+  {
+    return pointer_to_binary_function<_Arg1, _Arg2, _Result>(__x);
+  }
   /** @}  */
 
-  template<typename _Tp>
-    struct _Identity
-    : public unary_function<_Tp, _Tp>
+  template <typename _Tp>
+  struct _Identity
+      : public unary_function<_Tp, _Tp>
+  {
+    _Tp &
+    operator()(_Tp &__x) const
     {
-      _Tp&
-      operator()(_Tp& __x) const
-      { return __x; }
+      return __x;
+    }
 
-      const _Tp&
-      operator()(const _Tp& __x) const
-      { return __x; }
-    };
+    const _Tp &
+    operator()(const _Tp &__x) const
+    {
+      return __x;
+    }
+  };
 
   // Partial specialization, avoids confusing errors in e.g. std::set<const T>.
-  template<typename _Tp> struct _Identity<const _Tp> : _Identity<_Tp> { };
+  template <typename _Tp>
+  struct _Identity<const _Tp> : _Identity<_Tp>
+  {
+  };
 
-  template<typename _Pair>
-    struct _Select1st
-    : public unary_function<_Pair, typename _Pair::first_type>
+  template <typename _Pair>
+  struct _Select1st
+      : public unary_function<_Pair, typename _Pair::first_type>
+  {
+    typename _Pair::first_type &
+    operator()(_Pair &__x) const
     {
-      typename _Pair::first_type&
-      operator()(_Pair& __x) const
-      { return __x.first; }
+      return __x.first;
+    }
 
-      const typename _Pair::first_type&
-      operator()(const _Pair& __x) const
-      { return __x.first; }
+    const typename _Pair::first_type &
+    operator()(const _Pair &__x) const
+    {
+      return __x.first;
+    }
 
 #if __cplusplus >= 201103L
-      template<typename _Pair2>
-        typename _Pair2::first_type&
-        operator()(_Pair2& __x) const
-        { return __x.first; }
-
-      template<typename _Pair2>
-        const typename _Pair2::first_type&
-        operator()(const _Pair2& __x) const
-        { return __x.first; }
-#endif
-    };
-
-  template<typename _Pair>
-    struct _Select2nd
-    : public unary_function<_Pair, typename _Pair::second_type>
+    template <typename _Pair2>
+    typename _Pair2::first_type &
+    operator()(_Pair2 &__x) const
     {
-      typename _Pair::second_type&
-      operator()(_Pair& __x) const
-      { return __x.second; }
+      return __x.first;
+    }
 
-      const typename _Pair::second_type&
-      operator()(const _Pair& __x) const
-      { return __x.second; }
-    };
+    template <typename _Pair2>
+    const typename _Pair2::first_type &
+    operator()(const _Pair2 &__x) const
+    {
+      return __x.first;
+    }
+#endif
+  };
+
+  template <typename _Pair>
+  struct _Select2nd
+      : public unary_function<_Pair, typename _Pair::second_type>
+  {
+    typename _Pair::second_type &
+    operator()(_Pair &__x) const
+    {
+      return __x.second;
+    }
+
+    const typename _Pair::second_type &
+    operator()(const _Pair &__x) const
+    {
+      return __x.second;
+    }
+  };
 
   // 20.3.8 adaptors pointers members
   /** @defgroup ptrmem_adaptors Adaptors for pointers to members
@@ -1221,218 +1305,235 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
    *  @{
    */
   /// One of the @link ptrmem_adaptors adaptors for member pointers@endlink.
-  template<typename _Ret, typename _Tp>
-    class mem_fun_t : public unary_function<_Tp*, _Ret>
+  template <typename _Ret, typename _Tp>
+  class mem_fun_t : public unary_function<_Tp *, _Ret>
+  {
+  public:
+    explicit mem_fun_t(_Ret (_Tp::*__pf)())
+        : _M_f(__pf) {}
+
+    _Ret
+    operator()(_Tp *__p) const
     {
-    public:
-      explicit
-      mem_fun_t(_Ret (_Tp::*__pf)())
-      : _M_f(__pf) { }
+      return (__p->*_M_f)();
+    }
 
-      _Ret
-      operator()(_Tp* __p) const
-      { return (__p->*_M_f)(); }
-
-    private:
-      _Ret (_Tp::*_M_f)();
-    } _GLIBCXX11_DEPRECATED;
+  private:
+    _Ret (_Tp::*_M_f)();
+  } _GLIBCXX11_DEPRECATED;
 
   /// One of the @link ptrmem_adaptors adaptors for member pointers@endlink.
-  template<typename _Ret, typename _Tp>
-    class const_mem_fun_t : public unary_function<const _Tp*, _Ret>
+  template <typename _Ret, typename _Tp>
+  class const_mem_fun_t : public unary_function<const _Tp *, _Ret>
+  {
+  public:
+    explicit const_mem_fun_t(_Ret (_Tp::*__pf)() const)
+        : _M_f(__pf) {}
+
+    _Ret
+    operator()(const _Tp *__p) const
     {
-    public:
-      explicit
-      const_mem_fun_t(_Ret (_Tp::*__pf)() const)
-      : _M_f(__pf) { }
+      return (__p->*_M_f)();
+    }
 
-      _Ret
-      operator()(const _Tp* __p) const
-      { return (__p->*_M_f)(); }
-
-    private:
-      _Ret (_Tp::*_M_f)() const;
-    } _GLIBCXX11_DEPRECATED;
+  private:
+    _Ret (_Tp::*_M_f)() const;
+  } _GLIBCXX11_DEPRECATED;
 
   /// One of the @link ptrmem_adaptors adaptors for member pointers@endlink.
-  template<typename _Ret, typename _Tp>
-    class mem_fun_ref_t : public unary_function<_Tp, _Ret>
+  template <typename _Ret, typename _Tp>
+  class mem_fun_ref_t : public unary_function<_Tp, _Ret>
+  {
+  public:
+    explicit mem_fun_ref_t(_Ret (_Tp::*__pf)())
+        : _M_f(__pf) {}
+
+    _Ret
+    operator()(_Tp &__r) const
     {
-    public:
-      explicit
-      mem_fun_ref_t(_Ret (_Tp::*__pf)())
-      : _M_f(__pf) { }
+      return (__r.*_M_f)();
+    }
 
-      _Ret
-      operator()(_Tp& __r) const
-      { return (__r.*_M_f)(); }
-
-    private:
-      _Ret (_Tp::*_M_f)();
-    } _GLIBCXX11_DEPRECATED;
+  private:
+    _Ret (_Tp::*_M_f)();
+  } _GLIBCXX11_DEPRECATED;
 
   /// One of the @link ptrmem_adaptors adaptors for member pointers@endlink.
-  template<typename _Ret, typename _Tp>
-    class const_mem_fun_ref_t : public unary_function<_Tp, _Ret>
+  template <typename _Ret, typename _Tp>
+  class const_mem_fun_ref_t : public unary_function<_Tp, _Ret>
+  {
+  public:
+    explicit const_mem_fun_ref_t(_Ret (_Tp::*__pf)() const)
+        : _M_f(__pf) {}
+
+    _Ret
+    operator()(const _Tp &__r) const
     {
-    public:
-      explicit
-      const_mem_fun_ref_t(_Ret (_Tp::*__pf)() const)
-      : _M_f(__pf) { }
+      return (__r.*_M_f)();
+    }
 
-      _Ret
-      operator()(const _Tp& __r) const
-      { return (__r.*_M_f)(); }
-
-    private:
-      _Ret (_Tp::*_M_f)() const;
-    } _GLIBCXX11_DEPRECATED;
+  private:
+    _Ret (_Tp::*_M_f)() const;
+  } _GLIBCXX11_DEPRECATED;
 
   /// One of the @link ptrmem_adaptors adaptors for member pointers@endlink.
-  template<typename _Ret, typename _Tp, typename _Arg>
-    class mem_fun1_t : public binary_function<_Tp*, _Arg, _Ret>
+  template <typename _Ret, typename _Tp, typename _Arg>
+  class mem_fun1_t : public binary_function<_Tp *, _Arg, _Ret>
+  {
+  public:
+    explicit mem_fun1_t(_Ret (_Tp::*__pf)(_Arg))
+        : _M_f(__pf) {}
+
+    _Ret
+    operator()(_Tp *__p, _Arg __x) const
     {
-    public:
-      explicit
-      mem_fun1_t(_Ret (_Tp::*__pf)(_Arg))
-      : _M_f(__pf) { }
+      return (__p->*_M_f)(__x);
+    }
 
-      _Ret
-      operator()(_Tp* __p, _Arg __x) const
-      { return (__p->*_M_f)(__x); }
-
-    private:
-      _Ret (_Tp::*_M_f)(_Arg);
-    } _GLIBCXX11_DEPRECATED;
+  private:
+    _Ret (_Tp::*_M_f)(_Arg);
+  } _GLIBCXX11_DEPRECATED;
 
   /// One of the @link ptrmem_adaptors adaptors for member pointers@endlink.
-  template<typename _Ret, typename _Tp, typename _Arg>
-    class const_mem_fun1_t : public binary_function<const _Tp*, _Arg, _Ret>
+  template <typename _Ret, typename _Tp, typename _Arg>
+  class const_mem_fun1_t : public binary_function<const _Tp *, _Arg, _Ret>
+  {
+  public:
+    explicit const_mem_fun1_t(_Ret (_Tp::*__pf)(_Arg) const)
+        : _M_f(__pf) {}
+
+    _Ret
+    operator()(const _Tp *__p, _Arg __x) const
     {
-    public:
-      explicit
-      const_mem_fun1_t(_Ret (_Tp::*__pf)(_Arg) const)
-      : _M_f(__pf) { }
+      return (__p->*_M_f)(__x);
+    }
 
-      _Ret
-      operator()(const _Tp* __p, _Arg __x) const
-      { return (__p->*_M_f)(__x); }
-
-    private:
-      _Ret (_Tp::*_M_f)(_Arg) const;
-    } _GLIBCXX11_DEPRECATED;
+  private:
+    _Ret (_Tp::*_M_f)(_Arg) const;
+  } _GLIBCXX11_DEPRECATED;
 
   /// One of the @link ptrmem_adaptors adaptors for member pointers@endlink.
-  template<typename _Ret, typename _Tp, typename _Arg>
-    class mem_fun1_ref_t : public binary_function<_Tp, _Arg, _Ret>
+  template <typename _Ret, typename _Tp, typename _Arg>
+  class mem_fun1_ref_t : public binary_function<_Tp, _Arg, _Ret>
+  {
+  public:
+    explicit mem_fun1_ref_t(_Ret (_Tp::*__pf)(_Arg))
+        : _M_f(__pf) {}
+
+    _Ret
+    operator()(_Tp &__r, _Arg __x) const
     {
-    public:
-      explicit
-      mem_fun1_ref_t(_Ret (_Tp::*__pf)(_Arg))
-      : _M_f(__pf) { }
+      return (__r.*_M_f)(__x);
+    }
 
-      _Ret
-      operator()(_Tp& __r, _Arg __x) const
-      { return (__r.*_M_f)(__x); }
-
-    private:
-      _Ret (_Tp::*_M_f)(_Arg);
-    } _GLIBCXX11_DEPRECATED;
+  private:
+    _Ret (_Tp::*_M_f)(_Arg);
+  } _GLIBCXX11_DEPRECATED;
 
   /// One of the @link ptrmem_adaptors adaptors for member pointers@endlink.
-  template<typename _Ret, typename _Tp, typename _Arg>
-    class const_mem_fun1_ref_t : public binary_function<_Tp, _Arg, _Ret>
+  template <typename _Ret, typename _Tp, typename _Arg>
+  class const_mem_fun1_ref_t : public binary_function<_Tp, _Arg, _Ret>
+  {
+  public:
+    explicit const_mem_fun1_ref_t(_Ret (_Tp::*__pf)(_Arg) const)
+        : _M_f(__pf) {}
+
+    _Ret
+    operator()(const _Tp &__r, _Arg __x) const
     {
-    public:
-      explicit
-      const_mem_fun1_ref_t(_Ret (_Tp::*__pf)(_Arg) const)
-      : _M_f(__pf) { }
+      return (__r.*_M_f)(__x);
+    }
 
-      _Ret
-      operator()(const _Tp& __r, _Arg __x) const
-      { return (__r.*_M_f)(__x); }
-
-    private:
-      _Ret (_Tp::*_M_f)(_Arg) const;
-    } _GLIBCXX11_DEPRECATED;
+  private:
+    _Ret (_Tp::*_M_f)(_Arg) const;
+  } _GLIBCXX11_DEPRECATED;
 
   // Mem_fun adaptor helper functions.  There are only two:
   // mem_fun and mem_fun_ref.
-  template<typename _Ret, typename _Tp>
-    _GLIBCXX11_DEPRECATED_SUGGEST("std::mem_fn")
-    inline mem_fun_t<_Ret, _Tp>
-    mem_fun(_Ret (_Tp::*__f)())
-    { return mem_fun_t<_Ret, _Tp>(__f); }
+  template <typename _Ret, typename _Tp>
+  _GLIBCXX11_DEPRECATED_SUGGEST("std::mem_fn")
+  inline mem_fun_t<_Ret, _Tp> mem_fun(_Ret (_Tp::*__f)())
+  {
+    return mem_fun_t<_Ret, _Tp>(__f);
+  }
 
-  template<typename _Ret, typename _Tp>
-    _GLIBCXX11_DEPRECATED_SUGGEST("std::mem_fn")
-    inline const_mem_fun_t<_Ret, _Tp>
-    mem_fun(_Ret (_Tp::*__f)() const)
-    { return const_mem_fun_t<_Ret, _Tp>(__f); }
+  template <typename _Ret, typename _Tp>
+  _GLIBCXX11_DEPRECATED_SUGGEST("std::mem_fn")
+  inline const_mem_fun_t<_Ret, _Tp> mem_fun(_Ret (_Tp::*__f)() const)
+  {
+    return const_mem_fun_t<_Ret, _Tp>(__f);
+  }
 
-  template<typename _Ret, typename _Tp>
-    _GLIBCXX11_DEPRECATED_SUGGEST("std::mem_fn")
-    inline mem_fun_ref_t<_Ret, _Tp>
-    mem_fun_ref(_Ret (_Tp::*__f)())
-    { return mem_fun_ref_t<_Ret, _Tp>(__f); }
+  template <typename _Ret, typename _Tp>
+  _GLIBCXX11_DEPRECATED_SUGGEST("std::mem_fn")
+  inline mem_fun_ref_t<_Ret, _Tp> mem_fun_ref(_Ret (_Tp::*__f)())
+  {
+    return mem_fun_ref_t<_Ret, _Tp>(__f);
+  }
 
-  template<typename _Ret, typename _Tp>
-    _GLIBCXX11_DEPRECATED_SUGGEST("std::mem_fn")
-    inline const_mem_fun_ref_t<_Ret, _Tp>
-    mem_fun_ref(_Ret (_Tp::*__f)() const)
-    { return const_mem_fun_ref_t<_Ret, _Tp>(__f); }
+  template <typename _Ret, typename _Tp>
+  _GLIBCXX11_DEPRECATED_SUGGEST("std::mem_fn")
+  inline const_mem_fun_ref_t<_Ret, _Tp> mem_fun_ref(_Ret (_Tp::*__f)() const)
+  {
+    return const_mem_fun_ref_t<_Ret, _Tp>(__f);
+  }
 
-  template<typename _Ret, typename _Tp, typename _Arg>
-    _GLIBCXX11_DEPRECATED_SUGGEST("std::mem_fn")
-    inline mem_fun1_t<_Ret, _Tp, _Arg>
-    mem_fun(_Ret (_Tp::*__f)(_Arg))
-    { return mem_fun1_t<_Ret, _Tp, _Arg>(__f); }
+  template <typename _Ret, typename _Tp, typename _Arg>
+  _GLIBCXX11_DEPRECATED_SUGGEST("std::mem_fn")
+  inline mem_fun1_t<_Ret, _Tp, _Arg> mem_fun(_Ret (_Tp::*__f)(_Arg))
+  {
+    return mem_fun1_t<_Ret, _Tp, _Arg>(__f);
+  }
 
-  template<typename _Ret, typename _Tp, typename _Arg>
-    _GLIBCXX11_DEPRECATED_SUGGEST("std::mem_fn")
-    inline const_mem_fun1_t<_Ret, _Tp, _Arg>
-    mem_fun(_Ret (_Tp::*__f)(_Arg) const)
-    { return const_mem_fun1_t<_Ret, _Tp, _Arg>(__f); }
+  template <typename _Ret, typename _Tp, typename _Arg>
+  _GLIBCXX11_DEPRECATED_SUGGEST("std::mem_fn")
+  inline const_mem_fun1_t<_Ret, _Tp, _Arg> mem_fun(_Ret (_Tp::*__f)(_Arg) const)
+  {
+    return const_mem_fun1_t<_Ret, _Tp, _Arg>(__f);
+  }
 
-  template<typename _Ret, typename _Tp, typename _Arg>
-    _GLIBCXX11_DEPRECATED_SUGGEST("std::mem_fn")
-    inline mem_fun1_ref_t<_Ret, _Tp, _Arg>
-    mem_fun_ref(_Ret (_Tp::*__f)(_Arg))
-    { return mem_fun1_ref_t<_Ret, _Tp, _Arg>(__f); }
+  template <typename _Ret, typename _Tp, typename _Arg>
+  _GLIBCXX11_DEPRECATED_SUGGEST("std::mem_fn")
+  inline mem_fun1_ref_t<_Ret, _Tp, _Arg> mem_fun_ref(_Ret (_Tp::*__f)(_Arg))
+  {
+    return mem_fun1_ref_t<_Ret, _Tp, _Arg>(__f);
+  }
 
-  template<typename _Ret, typename _Tp, typename _Arg>
-    _GLIBCXX11_DEPRECATED_SUGGEST("std::mem_fn")
-    inline const_mem_fun1_ref_t<_Ret, _Tp, _Arg>
-    mem_fun_ref(_Ret (_Tp::*__f)(_Arg) const)
-    { return const_mem_fun1_ref_t<_Ret, _Tp, _Arg>(__f); }
+  template <typename _Ret, typename _Tp, typename _Arg>
+  _GLIBCXX11_DEPRECATED_SUGGEST("std::mem_fn")
+  inline const_mem_fun1_ref_t<_Ret, _Tp, _Arg> mem_fun_ref(_Ret (_Tp::*__f)(_Arg) const)
+  {
+    return const_mem_fun1_ref_t<_Ret, _Tp, _Arg>(__f);
+  }
 #pragma GCC diagnostic pop
 
   /** @}  */
 
 #ifdef __glibcxx_transparent_operators // C++ >= 14
-  template<typename _Func, typename _SfinaeType, typename = __void_t<>>
-    struct __has_is_transparent
-    { };
+  template <typename _Func, typename _SfinaeType, typename = __void_t<>>
+  struct __has_is_transparent
+  {
+  };
 
-  template<typename _Func, typename _SfinaeType>
-    struct __has_is_transparent<_Func, _SfinaeType,
-				__void_t<typename _Func::is_transparent>>
-    { typedef void type; };
+  template <typename _Func, typename _SfinaeType>
+  struct __has_is_transparent<_Func, _SfinaeType,
+                              __void_t<typename _Func::is_transparent>>
+  {
+    typedef void type;
+  };
 
-  template<typename _Func, typename _SfinaeType>
-    using __has_is_transparent_t
-      = typename __has_is_transparent<_Func, _SfinaeType>::type;
+  template <typename _Func, typename _SfinaeType>
+  using __has_is_transparent_t = typename __has_is_transparent<_Func, _SfinaeType>::type;
 #endif
 
-_GLIBCXX_END_NAMESPACE_VERSION
+  _GLIBCXX_END_NAMESPACE_VERSION
 } // namespace
 
 #if (__cplusplus < 201103L) || _GLIBCXX_USE_DEPRECATED
-//# include <backward/binders.h>
+// # include <backward/binders.h>
 #endif
 
 #endif /* _STL_FUNCTION_H */
 #else
-#include "../Cpp_Standard_Library.h"
-#include CSL_Official(bits/stl_function.h)
+#include_next <bits/stl_function.h>
 #endif
