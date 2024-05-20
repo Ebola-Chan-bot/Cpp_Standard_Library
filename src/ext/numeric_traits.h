@@ -1,5 +1,4 @@
 #pragma once
-#ifdef ARDUINO_ARCH_AVR
 // -*- C++ -*-
 
 // Copyright (C) 2007-2024 Free Software Foundation, Inc.
@@ -28,13 +27,12 @@
  *  This file is a GNU extension to the Standard C++ Library.
  */
 
-#ifndef _EXT_NUMERIC_TRAITS
-#define _EXT_NUMERIC_TRAITS 1
-
 #pragma GCC system_header
-
+#ifdef ARDUINO_ARCH_AVR
 #include <ext/type_traits.h>
-
+#else
+#include_next <ext/numeric_traits.h>
+#endif
 namespace __gnu_cxx _GLIBCXX_VISIBILITY(default)
 {
 	_GLIBCXX_BEGIN_NAMESPACE_VERSION
@@ -60,7 +58,7 @@ namespace __gnu_cxx _GLIBCXX_VISIBILITY(default)
 			__width = __value ? sizeof(_Tp) * __CHAR_BIT__ : 0
 		};
 	};
-
+#ifdef ARDUINO_ARCH_AVR
 	template <typename _Value>
 	struct __numeric_traits_integer
 	{
@@ -92,7 +90,7 @@ namespace __gnu_cxx _GLIBCXX_VISIBILITY(default)
 
 	template <typename _Value>
 	const int __numeric_traits_integer<_Value>::__digits;
-
+#endif
 	// Enable __numeric_traits_integer for types where the __is_integer_nonstrict
 	// primary template doesn't give the right answer.
 #define _GLIBCXX_INT_N_TRAITS(T, WIDTH)       \
@@ -174,13 +172,13 @@ namespace __gnu_cxx _GLIBCXX_VISIBILITY(default)
 #undef __glibcxx_max_digits10
 #undef __glibcxx_digits10
 #undef __glibcxx_max_exponent10
-
+#ifdef ARDUINO_ARCH_AVR
 	template <typename _Value>
 	struct __numeric_traits
 		: public __numeric_traits_integer<_Value>
 	{
 	};
-
+#endif
 #ifdef _GLIBCXX_LONG_DOUBLE_ALT128_COMPAT
 #if defined __LONG_DOUBLE_IEEE128__
 	// long double is __ieee128, define traits for __ibm128
@@ -217,8 +215,3 @@ namespace __gnu_cxx _GLIBCXX_VISIBILITY(default)
 
 	_GLIBCXX_END_NAMESPACE_VERSION
 } // namespace
-
-#endif
-#else
-#include_next <ext/numeric_traits.h>
-#endif

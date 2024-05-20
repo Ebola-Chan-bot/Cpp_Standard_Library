@@ -6,10 +6,12 @@
 
 如果你需要某些标准库中应有而本库中尚未提供的功能，也欢迎提交Issue，作者将会优先为你实现。
 
-支持以下架构，但需要额外配置：
+支持以下架构，但需要额外配置编译选项：
 - AVR。要求C++17：需要更改`%LOCALAPPDATA%\Arduino15\packages\arduino\hardware\avr\*.*.*\platform.txt`中的`-std=gnu++11`为`-std=gnu++17`
 - SAM。要求C++11。
 - ESP32。要求C++17：需要更改`%LOCALAPPDATA%\Arduino15\packages\arduino\hardware\esp32\*.*.*\platform.txt`中的所有`-std=gnu++11`为`-std=gnu++17`
+
+如欲使用C++标准异常处理和运行时类型识别（RTTI, typeid），还需要确保编译选项包含-fexceptions且不含-fno-rtti。
 
 在包含任何C++标准头文件之前，必须先包含`Cpp_Standard_Library.h`。这是对 Arduino IDE 的提示，告诉编译器必须要将本库纳入编译流程。
 # 招牌功能（不限于此）
@@ -28,6 +30,7 @@
 - `<vector>`
 - `std::begin std::end`
 - 如果编译器随附了某些重名的标准库功能，将优先使用随附的版本。编译器可能还随附了本库未提供的其它标准库功能，那些功能也不会与本库冲突。
+- C++标准异常处理和RTTI。要使用此功能，请确保编译选项包含-fexceptions且不含-fno-rtti。异常处理代码依赖RTTI，因此不能在关闭RTTI的情况下使用异常处理。
 
 安装后记得查看示例项目！
 # 原版README（仅供参考，部分内容已过时）

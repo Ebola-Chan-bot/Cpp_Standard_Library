@@ -1,5 +1,5 @@
 #pragma once
-#ifdef ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
 // <bit> -*- C++ -*-
 
 // Copyright (C) 2018-2024 Free Software Foundation, Inc.
@@ -33,7 +33,7 @@
 
 #pragma GCC system_header
 
-#if __cplusplus >= 201402L
+#if __cplusplus >= 201402L || defined ARDUINO_ARCH_SAM
 
 #include <type_traits>
 
