@@ -235,6 +235,7 @@ namespace std
 #endif
 // 122
 #endif
+#ifdef ARDUINO_ARCH_AVR
     // Metaprogramming helper types.
 
     // Primary template.
@@ -254,7 +255,6 @@ namespace std
     // __enable_if_t (std::enable_if_t for C++11)
     template <bool _Cond, typename _Tp = void>
     using __enable_if_t = typename enable_if<_Cond, _Tp>::type;
-#ifdef ARDUINO_ARCH_AVR
     // 105
     template <class _Ty, class = void>
     struct _Add_reference
@@ -921,163 +921,6 @@ namespace std
     {
     };
     // 524
-// 375
-#ifdef _M_CEE
-#define _EMIT_CLRCALL(FUNC, OPT1, OPT2, OPT3) FUNC(__clrcall, OPT1, OPT2, OPT3)
-#else // ^^^ defined(_M_CEE) / !defined(_M_CEE) vvv
-#define _EMIT_CLRCALL(FUNC, OPT1, OPT2, OPT3)
-#endif // ^^^ !defined(_M_CEE) ^^^
-
-#if defined(_M_IX86) && !defined(_M_CEE)
-#define _EMIT_FASTCALL(FUNC, OPT1, OPT2, OPT3) FUNC(__fastcall, OPT1, OPT2, OPT3)
-
-#else // defined(_M_IX86) && !defined(_M_CEE)
-#define _EMIT_FASTCALL(FUNC, OPT1, OPT2, OPT3)
-#endif // defined(_M_IX86) && !defined(_M_CEE)
-
-#ifdef _M_IX86
-#define _EMIT_STDCALL(FUNC, OPT1, OPT2, OPT3) FUNC(__stdcall, OPT1, OPT2, OPT3)
-#define _EMIT_THISCALL(FUNC, OPT1, OPT2, OPT3) FUNC(__thiscall, OPT1, OPT2, OPT3)
-#else // ^^^ defined(_M_IX86) / !defined(_M_IX86) vvv
-#define _EMIT_STDCALL(FUNC, OPT1, OPT2, OPT3)
-#define _EMIT_THISCALL(FUNC, OPT1, OPT2, OPT3)
-#endif // ^^^ !defined(_M_IX86) ^^^
-
-#if ((defined(_M_IX86) && _M_IX86_FP >= 2) || defined(_M_X64)) && !defined(_M_CEE)
-#define _EMIT_VECTORCALL(FUNC, OPT1, OPT2, OPT3) FUNC(__vectorcall, OPT1, OPT2, OPT3)
-
-#else // defined(_M_IX86) && _M_IX86_FP >= 2 etc.
-#define _EMIT_VECTORCALL(FUNC, OPT1, OPT2, OPT3)
-#endif // defined(_M_IX86) && _M_IX86_FP >= 2 etc.
-
-#ifdef __cpp_noexcept_function_type
-#define _CLASS_DEFINE_CV_REF_NOEXCEPT(CLASS) \
-    CLASS(_EMPTY_ARGUMENT)                   \
-    CLASS(const)                             \
-    CLASS(volatile)                          \
-    CLASS(const volatile)                    \
-    CLASS(&)                                 \
-    CLASS(const &)                           \
-    CLASS(volatile &)                        \
-    CLASS(const volatile &)                  \
-    CLASS(&&)                                \
-    CLASS(const &&)                          \
-    CLASS(volatile &&)                       \
-    CLASS(const volatile &&)                 \
-    CLASS(noexcept)                          \
-    CLASS(const noexcept)                    \
-    CLASS(volatile noexcept)                 \
-    CLASS(const volatile noexcept)           \
-    CLASS(& noexcept)                        \
-    CLASS(const & noexcept)                  \
-    CLASS(volatile & noexcept)               \
-    CLASS(const volatile & noexcept)         \
-    CLASS(&& noexcept)                       \
-    CLASS(const && noexcept)                 \
-    CLASS(volatile && noexcept)              \
-    CLASS(const volatile && noexcept)
-#else // ^^^ defined(__cpp_noexcept_function_type) / !defined(__cpp_noexcept_function_type) vvv
-#define _CLASS_DEFINE_CV_REF_NOEXCEPT(CLASS) \
-    CLASS(_EMPTY_ARGUMENT)                   \
-    CLASS(const)                             \
-    CLASS(volatile)                          \
-    CLASS(const volatile)                    \
-    CLASS(&)                                 \
-    CLASS(const &)                           \
-    CLASS(volatile &)                        \
-    CLASS(const volatile &)                  \
-    CLASS(&&)                                \
-    CLASS(const &&)                          \
-    CLASS(volatile &&)                       \
-    CLASS(const volatile &&)
-#endif // ^^^ !defined(__cpp_noexcept_function_type) ^^^
-
-    template <class... _Types>
-    struct _Arg_types
-    {
-    }; // provide argument_type, etc. when sizeof...(_Types) is 1 or 2
-
-    template <class _Ty1>
-    struct _Arg_types<_Ty1>
-    {
-        using _ARGUMENT_TYPE_NAME _CXX17_DEPRECATE_ADAPTOR_TYPEDEFS = _Ty1;
-    };
-
-    template <class _Ty1, class _Ty2>
-    struct _Arg_types<_Ty1, _Ty2>
-    {
-        using _FIRST_ARGUMENT_TYPE_NAME _CXX17_DEPRECATE_ADAPTOR_TYPEDEFS = _Ty1;
-        using _SECOND_ARGUMENT_TYPE_NAME _CXX17_DEPRECATE_ADAPTOR_TYPEDEFS = _Ty2;
-    };
-
-    template <class _Ty>
-    struct _Is_memfunptr
-    {                                  // base class for member function pointer predicates
-        using _Bool_type = false_type; // NB: members are user-visible via _Weak_types
-    };
-
-#define _IS_MEMFUNPTR(CALL_OPT, CV_OPT, REF_OPT, NOEXCEPT_OPT)                                               \
-    template <class _Ret, class _Arg0, class... _Types>                                                      \
-    struct _Is_memfunptr<_Ret (/*Arduino不支持：CALL_OPT*/ _Arg0::*)(_Types...) CV_OPT REF_OPT NOEXCEPT_OPT> \
-        : _Arg_types<CV_OPT _Arg0 *, _Types...>                                                              \
-    {                                                                                                        \
-        using _Bool_type = true_type;                                                                        \
-        using _RESULT_TYPE_NAME _CXX17_DEPRECATE_ADAPTOR_TYPEDEFS = _Ret;                                    \
-        using _Class_type = _Arg0;                                                                           \
-        using _Guide_type = enable_if<!_STRUCT14VALUE_V(is_same, int REF_OPT, int &&), _Ret(_Types...)>;     \
-    };
-#undef _IS_MEMFUNPTR
-
-#define _IS_MEMFUNPTR_ELLIPSIS(CV_REF_NOEXCEPT_OPT)                       \
-    template <class _Ret, class _Arg0, class... _Types>                   \
-    struct _Is_memfunptr<_Ret (_Arg0::*)(_Types..., ...)                  \
-                             CV_REF_NOEXCEPT_OPT>                         \
-    { /* no calling conventions for ellipsis */                           \
-        using _Bool_type = true_type;                                     \
-        using _RESULT_TYPE_NAME _CXX17_DEPRECATE_ADAPTOR_TYPEDEFS = _Ret; \
-        using _Class_type = _Arg0;                                        \
-        using _Guide_type = enable_if<false>;                             \
-    };
-
-    _CLASS_DEFINE_CV_REF_NOEXCEPT(_IS_MEMFUNPTR_ELLIPSIS)
-#undef _IS_MEMFUNPTR_ELLIPSIS
-
-#if _HAS_CXX23 && !defined(__clang__) // TRANSITION, DevCom-10107077, Clang has not implemented Deducing this
-#define _IS_MEMFUNPTR_EXPLICIT_THIS_GUIDES(CALL_OPT, CV_OPT, REF_OPT, NOEXCEPT_OPT) \
-    template <class _Ret, class _Self, class... _Args>                              \
-    struct _Is_memfunptr<_Ret(CALL_OPT *)(_Self, _Args...) NOEXCEPT_OPT>            \
-    {                                                                               \
-        using _Bool_type = false_type;                                              \
-        using _Guide_type = _Identity<_Ret(_Args...)>;                              \
-    };
-
-    _NON_MEMBER_CALL(_IS_MEMFUNPTR_EXPLICIT_THIS_GUIDES, , , )
-#ifdef __cpp_noexcept_function_type
-    _NON_MEMBER_CALL(_IS_MEMFUNPTR_EXPLICIT_THIS_GUIDES, , , noexcept)
-#endif // defined(__cpp_noexcept_function_type)
-
-#undef _IS_MEMFUNPTR_EXPLICIT_THIS_GUIDES
-#endif // _HAS_CXX23 && !defined(__clang__)
-#if _HAS_CXX14
-#ifdef __clang__
-    _EXPORT_STD template <class _Ty>
-    _INLINE_VAR constexpr bool is_member_function_pointer_v = __is_member_function_pointer(_Ty);
-#else  // ^^^ Clang / Other vvv
-    _EXPORT_STD template <class _Ty>
-    _INLINE_VAR constexpr bool is_member_function_pointer_v = _Is_memfunptr<remove_cv_t<_Ty>>::_Bool_type::value;
-#endif // ^^^ Other ^^^
-
-    _EXPORT_STD template <class _Ty>
-    struct is_member_function_pointer : bool_constant<is_member_function_pointer_v<_Ty>>
-    {
-    };
-#else
-    _EXPORT_STD template <class _Ty>
-    struct is_member_function_pointer : _Is_memfunptr<remove_cv_t<_Ty>>::_Bool_type
-    {
-    };
-#endif
-    // 572
     // 576
     /// is_member_object_pointer
 #if _GLIBCXX_USE_BUILTIN_TRAIT(__is_member_object_pointer)
@@ -1105,8 +948,36 @@ namespace std
     {
     };
 #endif
-    // 598
-    //   650
+
+#if _GLIBCXX_USE_BUILTIN_TRAIT(__is_member_function_pointer)
+    /// is_member_function_pointer
+    template <typename _Tp>
+    struct is_member_function_pointer
+        : public __bool_constant<__is_member_function_pointer(_Tp)>
+    {
+    };
+#else
+    template <typename>
+    struct __is_member_function_pointer_helper
+        : public false_type
+    {
+    };
+
+    template <typename _Tp, typename _Cp>
+    struct __is_member_function_pointer_helper<_Tp _Cp::*>
+        : public is_function<_Tp>::type
+    {
+    };
+
+    /// is_member_function_pointer
+    template <typename _Tp>
+    struct is_member_function_pointer
+        : public __is_member_function_pointer_helper<__remove_cv_t<_Tp>>::type
+    {
+    };
+#endif
+    // 620
+    //    650
     template <class _Ty>
     struct is_empty : bool_constant<__is_empty(_Ty)>
     {
@@ -1925,8 +1796,9 @@ namespace std
         static constexpr bool value = true;
     };
 #endif
-    // 2693
-    // 1423
+// 2693
+// 1423
+#ifdef ARDUINO_ARCH_AVR
     // type property queries.
 
     /// alignment_of
@@ -1935,6 +1807,7 @@ namespace std
         : public integral_constant<std::size_t, alignof(_Tp)>
     {
     };
+#endif
     // 1434
     /// Alias template for enable_if
     template <bool _Cond, typename _Tp = void>
@@ -1946,7 +1819,7 @@ namespace std
     // 2299
     // 2303
     /// @cond undocumented
-
+#ifdef ARDUINO_ARCH_AVR
     // Helper for SFINAE constraints
     template <typename... _Cond>
     using _Require = __enable_if_t<__and_<_Cond...>::value>;
@@ -2078,7 +1951,7 @@ namespace std
     struct __common_type_fold<_CTp, _Rp, void>
     {
     };
-    // 2439
+// 2439
     //    2456
     /// @cond undocumented
     template <typename _Tp>
@@ -2099,7 +1972,7 @@ namespace std
                       "declval() must not be used!");
         return __declval<_Tp>(0);
     }
-
+#endif
     /// result_of
     template <typename _Signature>
     struct result_of;
@@ -2129,7 +2002,7 @@ namespace std
     {
         using __invoke_type = _Tag;
     };
-
+#ifdef ARDUINO_ARCH_AVR
     // [func.require] paragraph 1 bullet 1:
     struct __result_of_memfun_ref_impl
     {
@@ -2278,7 +2151,7 @@ namespace std
     {
         using type = decltype(_S_test<_Functor, _ArgTypes...>(0));
     };
-
+#endif
     // __invoke_result (std::invoke_result for C++11)
     template <typename _Functor, typename... _ArgTypes>
     struct __invoke_result
@@ -2307,7 +2180,7 @@ namespace std
     struct __is_tuple_like_impl : false_type
     {
     };
-
+#ifdef ARDUINO_ARCH_AVR
     // Internal type trait that allows us to sfinae-protect tuple_cat.
     template <typename _Tp>
     struct __is_tuple_like
@@ -2326,7 +2199,7 @@ namespace std
     template <typename _Tp, size_t _Nm>
     _GLIBCXX20_CONSTEXPR inline __enable_if_t<__is_swappable<_Tp>::value>
         swap(_Tp (&__a)[_Nm], _Tp (&__b)[_Nm]) noexcept(__is_nothrow_swappable<_Tp>::value);
-
+#endif
     /// @cond undocumented
     namespace __swappable_details
     {
@@ -2382,6 +2255,7 @@ namespace std
     /// @endcond
 
 #ifdef __cpp_lib_is_swappable // C++ >= 17 || GNU++ >= 11
+#ifdef ARDUINO_ARCH_AVR
     /// Metafunctions used for detecting swappable types: p0185r1
 
     /// is_swappable
@@ -2401,7 +2275,7 @@ namespace std
         static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
                       "template argument must be a complete class or an unbounded array");
     };
-
+#endif
 #if __cplusplus >= 201402L
     /// is_swappable_v
     template <typename _Tp>
@@ -2473,7 +2347,7 @@ namespace std
         using type = decltype(__test<_Tp &>(0));
     };
     /// @endcond
-
+#ifdef ARDUINO_ARCH_AVR
     /// is_swappable_with
     template <typename _Tp, typename _Up>
     struct is_swappable_with
@@ -2495,7 +2369,7 @@ namespace std
         static_assert(std::__is_complete_or_unbounded(__type_identity<_Up>{}),
                       "second template argument must be a complete class or an unbounded array");
     };
-
+#endif
 #if __cplusplus >= 201402L
     /// is_swappable_with_v
     template <typename _Tp, typename _Up>
@@ -2522,7 +2396,7 @@ namespace std
     {
         using __nothrow_conv = false_type; // For is_nothrow_invocable_r
     };
-
+#ifdef ARDUINO_ARCH_AVR
     // Used for valid INVOKE and INVOKE<void> expressions.
     template <typename _Result, typename _Ret>
     struct __is_invocable_impl<_Result, _Ret,
@@ -2578,7 +2452,7 @@ namespace std
         using __nothrow_conv = decltype(_S_test<_Ret>(1));
     };
 #pragma GCC diagnostic pop
-
+#endif
     template <typename _Fn, typename... _ArgTypes>
     struct __is_invocable
         : __is_invocable_impl<__invoke_result<_Fn, _ArgTypes...>, void>::type
