@@ -2151,7 +2151,7 @@ namespace std
     {
         using type = decltype(_S_test<_Functor, _ArgTypes...>(0));
     };
-#endif
+
     // __invoke_result (std::invoke_result for C++11)
     template <typename _Functor, typename... _ArgTypes>
     struct __invoke_result
@@ -2180,7 +2180,7 @@ namespace std
     struct __is_tuple_like_impl : false_type
     {
     };
-#ifdef ARDUINO_ARCH_AVR
+
     // Internal type trait that allows us to sfinae-protect tuple_cat.
     template <typename _Tp>
     struct __is_tuple_like
@@ -2199,7 +2199,7 @@ namespace std
     template <typename _Tp, size_t _Nm>
     _GLIBCXX20_CONSTEXPR inline __enable_if_t<__is_swappable<_Tp>::value>
         swap(_Tp (&__a)[_Nm], _Tp (&__b)[_Nm]) noexcept(__is_nothrow_swappable<_Tp>::value);
-#endif
+
     /// @cond undocumented
     namespace __swappable_details
     {
@@ -2255,7 +2255,7 @@ namespace std
     /// @endcond
 
 #ifdef __cpp_lib_is_swappable // C++ >= 17 || GNU++ >= 11
-#ifdef ARDUINO_ARCH_AVR
+
     /// Metafunctions used for detecting swappable types: p0185r1
 
     /// is_swappable
@@ -2452,7 +2452,7 @@ namespace std
         using __nothrow_conv = decltype(_S_test<_Ret>(1));
     };
 #pragma GCC diagnostic pop
-#endif
+
     template <typename _Fn, typename... _ArgTypes>
     struct __is_invocable
         : __is_invocable_impl<__invoke_result<_Fn, _ArgTypes...>, void>::type
@@ -2511,6 +2511,7 @@ namespace std
     {
     };
     // 3128
+    #endif
 // 3139
 #ifdef __cpp_lib_is_invocable // C++ >= 17
     /// std::invoke_result
