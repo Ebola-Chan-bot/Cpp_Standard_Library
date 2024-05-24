@@ -538,7 +538,7 @@ namespace std
 	// 124
 }
 #if _GLIBCXX_HOSTED
-# include <bits/std_function.h>	// std::function
+#include <bits/std_function.h> // std::function
 #endif
 // These are SGI extensions which are checked for by some conformance checks.  They
 //  are *NOT* part of the C++ standard, however
@@ -592,6 +592,5 @@ compose2(const Op1 &fn1, const Op2 &fn2, const Op3 &fn3)
 
 #pragma GCC visibility pop
 #else
-#include "Cpp_Standard_Library.h"
-#include CSL_Official(functional)
+#include_next <functional>
 #endif
