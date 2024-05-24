@@ -149,7 +149,31 @@ namespace std _GLIBCXX_VISIBILITY(default)
 #endif // __cpp_lib_byteswap
 
   /// @cond undocumented
-
+#ifdef ARDUINO_ARCH_SAM
+  template <typename _Tp>
+  constexpr _Tp
+  __rotl_1(_Tp __x, int __s, int _Nd, int __r) noexcept
+  {
+    return __r == 0 ? __x : __r > 0 ? (__x << __r) | (__x >> ((_Nd - __r) % _Nd))
+                                    : (__x >> -__r) | (__x << ((_Nd + __r) % _Nd)); // rotr(x, -r)
+  }
+  template <typename _Tp>
+  constexpr _Tp
+  __rotl_0(_Tp __x, int __s, int _Nd) noexcept
+  {
+    return (_Nd & (_Nd - 1)) == 0 ?
+                                  // Variant for power of two _Nd which the compiler can
+                                  // easily pattern match.
+               (__x << (__s % _Nd)) | (__x >> ((-__s) % _Nd))
+                                  : __rotl_1(__x, __s, _Nd, __s % _Nd);
+  }
+  template <typename _Tp>
+  constexpr _Tp
+  __rotl(_Tp __x, int __s) noexcept
+  {
+    return __rotl_0(__x, __s, __gnu_cxx::__int_traits<_Tp>::__digits);
+  }
+#else
   template <typename _Tp>
   constexpr _Tp
   __rotl(_Tp __x, int __s) noexcept
@@ -171,12 +195,12 @@ namespace std _GLIBCXX_VISIBILITY(default)
     else
       return (__x >> -__r) | (__x << ((_Nd + __r) % _Nd)); // rotr(x, -r)
   }
-
+#endif
   template <typename _Tp>
   constexpr _Tp
   __rotr(_Tp __x, int __s) noexcept
   {
-    constexpr auto _Nd = __gnu_cxx::__int_traits<_Tp>::__digits;
+    constexpr int _Nd = __gnu_cxx::__int_traits<_Tp>::__digits;
     if _GLIBCXX17_CONSTEXPR ((_Nd & (_Nd - 1)) == 0)
     {
       // Variant for power of two _Nd which the compiler can
@@ -193,7 +217,36 @@ namespace std _GLIBCXX_VISIBILITY(default)
     else
       return (__x << -__r) | (__x >> ((_Nd + __r) % _Nd)); // rotl(x, -r)
   }
+#ifdef ARDUINO_ARCH_SAM
+  template <typename _Tp>
+  constexpr int
+  __countl_zero_2(_Tp __x, int _Nd, int _Nd_ull, unsigned long long __high) noexcept
+  {
+    return __high != 0 ? __builtin_clzll(__high) - (2 * _Nd_ull) - _Nd : (_Nd - _Nd_ull) + __builtin_clzll(__x & __gnu_cxx::__int_traits<unsigned long long>::__max);
+  }
+  template <typename _Tp>
+  constexpr int
+  __countl_zero_1(_Tp __x, int _Nd, int _Nd_ull, int _Nd_ul, int _Nd_u) noexcept
+  {
+    return _Nd <= _Nd_u ? __builtin_clz(__x) - _Nd_u - _Nd : _Nd <= _Nd_ul ? __builtin_clzl(__x) - _Nd_ul - _Nd
+                                                         : _Nd <= _Nd_ull  ? __builtin_clzll(__x) - _Nd_ull - _Nd
+                                                                           : __countl_zero_2(__x, _Nd, _Nd_ull, __x >> _Nd_ull);
+  }
+  template <typename _Tp>
+  constexpr int
+  __countl_zero_0(_Tp __x, int _Nd) noexcept
+  {
+    using __gnu_cxx::__int_traits;
 
+    return __x == 0 ? _Nd : __countl_zero_1(__x, _Nd, __int_traits<unsigned long long>::__digits, __int_traits<unsigned long>::__digits, __int_traits<unsigned>::__digits);
+  }
+  template <typename _Tp>
+  constexpr int
+  __countl_zero(_Tp __x) noexcept
+  {
+    return __countl_zero_0(__x, __gnu_cxx::__int_traits<_Tp>::__digits);
+  }
+#else
   template <typename _Tp>
   constexpr int
   __countl_zero(_Tp __x) noexcept
@@ -239,7 +292,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
       return (_Nd - _Nd_ull) + __builtin_clzll(__low);
     }
   }
-
+#endif
   template <typename _Tp>
   constexpr int
   __countl_one(_Tp __x) noexcept
@@ -370,8 +423,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   constexpr int
   __bit_width(_Tp __x) noexcept
   {
-    constexpr auto _Nd = __gnu_cxx::__int_traits<_Tp>::__digits;
-    return _Nd - std::__countl_zero(__x);
+    return __gnu_cxx::__int_traits<_Tp>::__digits - std::__countl_zero(__x);
   }
 
   /// @endcond
@@ -381,7 +433,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   /// @cond undocumented
   template <typename _Tp>
   concept __unsigned_integer = __is_unsigned_integer<_Tp>::value;
-  /// @endcond
+/// @endcond
 #else
 #define __unsigned_integer typename
 #endif

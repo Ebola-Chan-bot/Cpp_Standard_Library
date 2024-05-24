@@ -236,9 +236,9 @@ namespace __gnu_cxx
 
 #ifndef _GLIBCXX14_CONSTEXPR
 #if __cplusplus >= 201402L
-#define _GLIBCXX14_CONSTEXPR constexpr
+#define _GLIBCXX14_CONSTEXPR(Alternative) constexpr
 #else
-#define _GLIBCXX14_CONSTEXPR
+#define _GLIBCXX14_CONSTEXPR(Alternative) Alternative
 #endif
 #endif
 
