@@ -36,7 +36,7 @@ using namespace __cxxabiv1;
 // a match and if so, update *THROWN_PTR_P to point to either the
 // type-matched object, or in the case of a pointer type, the object
 // pointed to by the pointer.
-
+#ifdef __GXX_RTTI
 extern "C" __cxa_type_match_result
 __cxa_type_match(_Unwind_Exception* ue_header,
 		 const std::type_info* catch_type,
@@ -92,7 +92,7 @@ __cxa_type_match(_Unwind_Exception* ue_header,
 
   return ctm_failed;
 }
-
+#endif
 // ABI defined routine called at the start of a cleanup handler.
 extern "C" bool
 __cxa_begin_cleanup(_Unwind_Exception* ue_header)

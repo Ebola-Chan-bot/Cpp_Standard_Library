@@ -11,7 +11,7 @@ void Translate(std::chrono::hours H) {
 }
 std::function<void()> FF;
 void setup() {
-  std::unique_ptr<std::chrono::hours[]> US = std::make_unique<std::chrono::hours[]>(10);
+  std::unique_ptr<std::chrono::hours[]> US = std::make_unique_for_overwrite<std::chrono::hours[]>(10);
   std::fill_n(US.get(), 10, std::chrono::hours(1));
   std::chrono::hours H = US[5];
   FF = [H]() {
