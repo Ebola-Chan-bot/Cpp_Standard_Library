@@ -1951,7 +1951,7 @@ namespace std
     struct __common_type_fold<_CTp, _Rp, void>
     {
     };
-// 2439
+    // 2439
     //    2456
     /// @cond undocumented
     template <typename _Tp>
@@ -1973,6 +1973,7 @@ namespace std
         return __declval<_Tp>(0);
     }
 #endif
+#ifndef ARDUINO_ARCH_ESP32
     /// result_of
     template <typename _Signature>
     struct result_of;
@@ -2002,6 +2003,7 @@ namespace std
     {
         using __invoke_type = _Tag;
     };
+#endif
 #ifdef ARDUINO_ARCH_AVR
     // [func.require] paragraph 1 bullet 1:
     struct __result_of_memfun_ref_impl
@@ -2383,7 +2385,7 @@ namespace std
 #endif // __cplusplus >= 201402L
 
 #endif // __cpp_lib_is_swappable
-
+#ifndef ARDUINO_ARCH_ESP32
     /// @cond undocumented
 
     // __is_invocable (std::is_invocable for C++11)
@@ -2396,6 +2398,7 @@ namespace std
     {
         using __nothrow_conv = false_type; // For is_nothrow_invocable_r
     };
+#endif
 #ifdef ARDUINO_ARCH_AVR
     // Used for valid INVOKE and INVOKE<void> expressions.
     template <typename _Result, typename _Ret>
@@ -2510,9 +2513,10 @@ namespace std
                  __call_is_nothrow_<_Fn, _Args...>>::type
     {
     };
-    // 3128
-    #endif
+// 3128
+#endif
 // 3139
+#ifndef ARDUINO_ARCH_ESP32
 #ifdef __cpp_lib_is_invocable // C++ >= 17
     /// std::invoke_result
     template <typename _Functor, typename... _ArgTypes>
@@ -2820,6 +2824,7 @@ namespace std
     inline constexpr bool is_nothrow_invocable_r_v = is_nothrow_invocable_r<_Ret, _Fn, _Args...>::value;
 /// @}
 #endif // __cpp_lib_type_trait_variable_templates
+#endif
 // 3535
 //   3642
 #ifdef __cpp_lib_bounded_array_traits // C++ >= 20

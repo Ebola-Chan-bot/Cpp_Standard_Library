@@ -219,7 +219,7 @@ namespace __gnu_cxx
 #endif
 #ifdef ARDUINO_ARCH_ESP32
 #include <xtensa-esp32s3-elf/bits/c++config.h>
-#else
+#endif
 // 159
 #if __cplusplus
 
@@ -772,4 +772,3 @@ namespace std
 // 718
 #define __has_cpp_attribute(A) 0
 #define __constinit
-#endif

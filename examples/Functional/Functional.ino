@@ -18,6 +18,11 @@ void setup() {
     Translate(H);
   };
   std::dynarray<int> D(std::log2(1024));
+#ifdef __EXCEPTIONS
+  try {
+    throw 0;
+  } catch (int E) {}
+#endif
 }
 void loop() {
   FF();

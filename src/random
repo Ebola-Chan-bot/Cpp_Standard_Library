@@ -10,12 +10,6 @@ namespace std
 				  "note: char, signed char, unsigned char, char8_t, int8_t, and uint8_t are not allowed")
 	// 38
 	// 50
-#define _RNG_REQUIRE_UINTTYPE(_RandType, _CheckedType)                                                               \
-	static_assert(_Is_any_of<_CheckedType, unsigned short, unsigned int, unsigned long, unsigned long long>::value,  \
-				  "invalid template argument for " #_RandType ": N4659 29.6.1.1 [rand.req.genl]/1f requires one of " \
-				  "unsigned short, unsigned int, unsigned long, or unsigned long long");                             \
-	_RNG_PROHIBIT_CHAR(_CheckedType)
-
 	template <class _Seed_seq, class _Self, class _Engine = _Self>
 	using _Enable_if_seed_seq_t =
 		enable_if_t<!is_convertible<remove_cv_t<_Seed_seq>, typename _Self::result_type>::value && !is_same<remove_cv_t<_Seed_seq>, _Self>::value && !is_same<remove_cv_t<_Seed_seq>, _Engine>::value,
@@ -320,10 +314,6 @@ namespace std
 	{
 	public:
 		static constexpr unsigned long long _Max = (((1ULL << (_Wx - 1)) - 1) << 1) + 1;
-
-		_RNG_REQUIRE_UINTTYPE(mersenne_twister_engine, _Ty);
-		static_assert(0 < _Mx && _Mx <= _Nx && 2U < _Wx && _Rx <= _Wx && _Ux <= _Wx && _Sx <= _Wx && _Tx <= _Wx && _Lx <= _Wx && 16 <= numeric_limits<_Ty>::digits && _Px <= _Max && _Bx <= _Max && _Cx <= _Max && _Dx <= _Max && _Fx <= _Max,
-					  "invalid template argument for mersenne_twister_engine");
 
 		using _Mybase = mersenne_twister<_Ty, _Wx, _Nx, _Mx, _Rx, _Px, _Ux, _Sx, _Bx, _Tx, _Cx, _Lx>;
 		using result_type = _Ty;

@@ -889,11 +889,9 @@
 #undef __glibcxx_want_bit_cast
 
 #if !defined(__cpp_lib_bitops)
-#if (__cplusplus >= 202002L) || !defined ARDUINO_ARCH_ESP32
 #define __glibcxx_bitops 201907L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_bitops)
 #define __cpp_lib_bitops 201907L
-#endif
 #endif
 #endif /* !defined(__cpp_lib_bitops) && defined(__glibcxx_want_bitops) */
 #undef __glibcxx_want_bitops
@@ -967,11 +965,9 @@
 #undef __glibcxx_want_endian
 
 #if !defined(__cpp_lib_int_pow2)
-#if (__cplusplus >= 202002L) || !defined ARDUINO_ARCH_ESP32
 #define __glibcxx_int_pow2 202002L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_int_pow2)
 #define __cpp_lib_int_pow2 202002L
-#endif
 #endif
 #endif /* !defined(__cpp_lib_int_pow2) && defined(__glibcxx_want_int_pow2) */
 #undef __glibcxx_want_int_pow2

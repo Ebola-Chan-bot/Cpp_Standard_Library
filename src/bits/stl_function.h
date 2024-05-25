@@ -180,7 +180,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   struct plus : public binary_function<_Tp, _Tp, _Tp>
   {
     /// Returns the sum
-    _GLIBCXX14_CONSTEXPR
+    _GLIBCXX14_CONSTEXPR()
     _Tp
     operator()(const _Tp &__x, const _Tp &__y) const
     {
@@ -192,7 +192,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   template <typename _Tp>
   struct minus : public binary_function<_Tp, _Tp, _Tp>
   {
-    _GLIBCXX14_CONSTEXPR
+    _GLIBCXX14_CONSTEXPR()
     _Tp
     operator()(const _Tp &__x, const _Tp &__y) const
     {
@@ -204,7 +204,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   template <typename _Tp>
   struct multiplies : public binary_function<_Tp, _Tp, _Tp>
   {
-    _GLIBCXX14_CONSTEXPR
+    _GLIBCXX14_CONSTEXPR()
     _Tp
     operator()(const _Tp &__x, const _Tp &__y) const
     {
@@ -216,7 +216,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   template <typename _Tp>
   struct divides : public binary_function<_Tp, _Tp, _Tp>
   {
-    _GLIBCXX14_CONSTEXPR
+    _GLIBCXX14_CONSTEXPR()
     _Tp
     operator()(const _Tp &__x, const _Tp &__y) const
     {
@@ -230,7 +230,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   struct plus<void>
   {
     template <typename _Tp, typename _Up>
-    _GLIBCXX14_CONSTEXPR auto
+    _GLIBCXX14_CONSTEXPR() auto
     operator()(_Tp &&__t, _Up &&__u) const
         noexcept(noexcept(std::forward<_Tp>(__t) + std::forward<_Up>(__u)))
             -> decltype(std::forward<_Tp>(__t) + std::forward<_Up>(__u))
@@ -246,7 +246,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   struct minus<void>
   {
     template <typename _Tp, typename _Up>
-    _GLIBCXX14_CONSTEXPR auto
+    _GLIBCXX14_CONSTEXPR() auto
     operator()(_Tp &&__t, _Up &&__u) const
         noexcept(noexcept(std::forward<_Tp>(__t) - std::forward<_Up>(__u)))
             -> decltype(std::forward<_Tp>(__t) - std::forward<_Up>(__u))
@@ -262,7 +262,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   struct multiplies<void>
   {
     template <typename _Tp, typename _Up>
-    _GLIBCXX14_CONSTEXPR auto
+    _GLIBCXX14_CONSTEXPR() auto
     operator()(_Tp &&__t, _Up &&__u) const
         noexcept(noexcept(std::forward<_Tp>(__t) * std::forward<_Up>(__u)))
             -> decltype(std::forward<_Tp>(__t) * std::forward<_Up>(__u))
@@ -278,7 +278,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   struct divides<void>
   {
     template <typename _Tp, typename _Up>
-    _GLIBCXX14_CONSTEXPR auto
+    _GLIBCXX14_CONSTEXPR() auto
     operator()(_Tp &&__t, _Up &&__u) const
         noexcept(noexcept(std::forward<_Tp>(__t) / std::forward<_Up>(__u)))
             -> decltype(std::forward<_Tp>(__t) / std::forward<_Up>(__u))
@@ -294,7 +294,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   struct modulus<void>
   {
     template <typename _Tp, typename _Up>
-    _GLIBCXX14_CONSTEXPR auto
+    _GLIBCXX14_CONSTEXPR() auto
     operator()(_Tp &&__t, _Up &&__u) const
         noexcept(noexcept(std::forward<_Tp>(__t) % std::forward<_Up>(__u)))
             -> decltype(std::forward<_Tp>(__t) % std::forward<_Up>(__u))
@@ -310,7 +310,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   struct negate<void>
   {
     template <typename _Tp>
-    _GLIBCXX14_CONSTEXPR auto
+    _GLIBCXX14_CONSTEXPR() auto
     operator()(_Tp &&__t) const
         noexcept(noexcept(-std::forward<_Tp>(__t)))
             -> decltype(-std::forward<_Tp>(__t))
@@ -357,7 +357,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   template <typename _Tp>
   struct not_equal_to : public binary_function<_Tp, _Tp, bool>
   {
-    _GLIBCXX14_CONSTEXPR
+    _GLIBCXX14_CONSTEXPR()
     bool
     operator()(const _Tp &__x, const _Tp &__y) const
     {
@@ -369,7 +369,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   template <typename _Tp>
   struct greater : public binary_function<_Tp, _Tp, bool>
   {
-    _GLIBCXX14_CONSTEXPR
+    _GLIBCXX14_CONSTEXPR()
     bool
     operator()(const _Tp &__x, const _Tp &__y) const
     {
@@ -381,7 +381,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   template <typename _Tp>
   struct less : public binary_function<_Tp, _Tp, bool>
   {
-    _GLIBCXX14_CONSTEXPR
+    _GLIBCXX14_CONSTEXPR()
     bool
     operator()(const _Tp &__x, const _Tp &__y) const
     {
@@ -393,7 +393,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   template <typename _Tp>
   struct greater_equal : public binary_function<_Tp, _Tp, bool>
   {
-    _GLIBCXX14_CONSTEXPR
+    _GLIBCXX14_CONSTEXPR()
     bool
     operator()(const _Tp &__x, const _Tp &__y) const
     {
@@ -405,7 +405,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   template <typename _Tp>
   struct less_equal : public binary_function<_Tp, _Tp, bool>
   {
-    _GLIBCXX14_CONSTEXPR
+    _GLIBCXX14_CONSTEXPR()
     bool
     operator()(const _Tp &__x, const _Tp &__y) const
     {
@@ -417,7 +417,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   template <typename _Tp>
   struct greater<_Tp *> : public binary_function<_Tp *, _Tp *, bool>
   {
-    _GLIBCXX14_CONSTEXPR bool
+    _GLIBCXX14_CONSTEXPR() bool
     operator()(_Tp *__x, _Tp *__y) const _GLIBCXX_NOTHROW
     {
 #if __cplusplus >= 201402L
@@ -432,7 +432,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   template <typename _Tp>
   struct less<_Tp *> : public binary_function<_Tp *, _Tp *, bool>
   {
-    _GLIBCXX14_CONSTEXPR bool
+    _GLIBCXX14_CONSTEXPR() bool
     operator()(_Tp *__x, _Tp *__y) const _GLIBCXX_NOTHROW
     {
 #if __cplusplus >= 201402L
@@ -447,7 +447,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   template <typename _Tp>
   struct greater_equal<_Tp *> : public binary_function<_Tp *, _Tp *, bool>
   {
-    _GLIBCXX14_CONSTEXPR bool
+    _GLIBCXX14_CONSTEXPR() bool
     operator()(_Tp *__x, _Tp *__y) const _GLIBCXX_NOTHROW
     {
 #if __cplusplus >= 201402L
@@ -462,7 +462,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   template <typename _Tp>
   struct less_equal<_Tp *> : public binary_function<_Tp *, _Tp *, bool>
   {
-    _GLIBCXX14_CONSTEXPR bool
+    _GLIBCXX14_CONSTEXPR() bool
     operator()(_Tp *__x, _Tp *__y) const _GLIBCXX_NOTHROW
     {
 #if __cplusplus >= 201402L
@@ -824,7 +824,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   template <typename _Tp>
   struct logical_and : public binary_function<_Tp, _Tp, bool>
   {
-    _GLIBCXX14_CONSTEXPR
+    _GLIBCXX14_CONSTEXPR()
     bool
     operator()(const _Tp &__x, const _Tp &__y) const
     {
@@ -836,7 +836,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   template <typename _Tp>
   struct logical_or : public binary_function<_Tp, _Tp, bool>
   {
-    _GLIBCXX14_CONSTEXPR
+    _GLIBCXX14_CONSTEXPR()
     bool
     operator()(const _Tp &__x, const _Tp &__y) const
     {
@@ -848,7 +848,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   template <typename _Tp>
   struct logical_not : public unary_function<_Tp, bool>
   {
-    _GLIBCXX14_CONSTEXPR
+    _GLIBCXX14_CONSTEXPR()
     bool
     operator()(const _Tp &__x) const
     {
@@ -863,7 +863,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   struct logical_and<void>
   {
     template <typename _Tp, typename _Up>
-    _GLIBCXX14_CONSTEXPR auto
+    _GLIBCXX14_CONSTEXPR() auto
     operator()(_Tp &&__t, _Up &&__u) const
         noexcept(noexcept(std::forward<_Tp>(__t) && std::forward<_Up>(__u)))
             -> decltype(std::forward<_Tp>(__t) && std::forward<_Up>(__u))
@@ -879,7 +879,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   struct logical_or<void>
   {
     template <typename _Tp, typename _Up>
-    _GLIBCXX14_CONSTEXPR auto
+    _GLIBCXX14_CONSTEXPR() auto
     operator()(_Tp &&__t, _Up &&__u) const
         noexcept(noexcept(std::forward<_Tp>(__t) || std::forward<_Up>(__u)))
             -> decltype(std::forward<_Tp>(__t) || std::forward<_Up>(__u))
@@ -895,7 +895,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   struct logical_not<void>
   {
     template <typename _Tp>
-    _GLIBCXX14_CONSTEXPR auto
+    _GLIBCXX14_CONSTEXPR() auto
     operator()(_Tp &&__t) const
         noexcept(noexcept(!std::forward<_Tp>(__t)))
             -> decltype(!std::forward<_Tp>(__t))
@@ -930,7 +930,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   template <typename _Tp>
   struct bit_and : public binary_function<_Tp, _Tp, _Tp>
   {
-    _GLIBCXX14_CONSTEXPR
+    _GLIBCXX14_CONSTEXPR()
     _Tp
     operator()(const _Tp &__x, const _Tp &__y) const
     {
@@ -941,7 +941,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   template <typename _Tp>
   struct bit_or : public binary_function<_Tp, _Tp, _Tp>
   {
-    _GLIBCXX14_CONSTEXPR
+    _GLIBCXX14_CONSTEXPR()
     _Tp
     operator()(const _Tp &__x, const _Tp &__y) const
     {
@@ -952,7 +952,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   template <typename _Tp>
   struct bit_xor : public binary_function<_Tp, _Tp, _Tp>
   {
-    _GLIBCXX14_CONSTEXPR
+    _GLIBCXX14_CONSTEXPR()
     _Tp
     operator()(const _Tp &__x, const _Tp &__y) const
     {
@@ -963,7 +963,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   template <typename _Tp>
   struct bit_not : public unary_function<_Tp, _Tp>
   {
-    _GLIBCXX14_CONSTEXPR
+    _GLIBCXX14_CONSTEXPR()
     _Tp
     operator()(const _Tp &__x) const
     {
@@ -977,7 +977,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   struct bit_and<void>
   {
     template <typename _Tp, typename _Up>
-    _GLIBCXX14_CONSTEXPR auto
+    _GLIBCXX14_CONSTEXPR() auto
     operator()(_Tp &&__t, _Up &&__u) const
         noexcept(noexcept(std::forward<_Tp>(__t) & std::forward<_Up>(__u)))
             -> decltype(std::forward<_Tp>(__t) & std::forward<_Up>(__u))
@@ -992,7 +992,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   struct bit_or<void>
   {
     template <typename _Tp, typename _Up>
-    _GLIBCXX14_CONSTEXPR auto
+    _GLIBCXX14_CONSTEXPR() auto
     operator()(_Tp &&__t, _Up &&__u) const
         noexcept(noexcept(std::forward<_Tp>(__t) | std::forward<_Up>(__u)))
             -> decltype(std::forward<_Tp>(__t) | std::forward<_Up>(__u))
@@ -1007,7 +1007,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   struct bit_xor<void>
   {
     template <typename _Tp, typename _Up>
-    _GLIBCXX14_CONSTEXPR auto
+    _GLIBCXX14_CONSTEXPR() auto
     operator()(_Tp &&__t, _Up &&__u) const
         noexcept(noexcept(std::forward<_Tp>(__t) ^ std::forward<_Up>(__u)))
             -> decltype(std::forward<_Tp>(__t) ^ std::forward<_Up>(__u))
@@ -1022,7 +1022,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   struct bit_not<void>
   {
     template <typename _Tp>
-    _GLIBCXX14_CONSTEXPR auto
+    _GLIBCXX14_CONSTEXPR() auto
     operator()(_Tp &&__t) const
         noexcept(noexcept(~std::forward<_Tp>(__t)))
             -> decltype(~std::forward<_Tp>(__t))
@@ -1078,10 +1078,10 @@ namespace std _GLIBCXX_VISIBILITY(default)
     _Predicate _M_pred;
 
   public:
-    _GLIBCXX14_CONSTEXPR
+    _GLIBCXX14_CONSTEXPR()
     explicit unary_negate(const _Predicate &__x) : _M_pred(__x) {}
 
-    _GLIBCXX14_CONSTEXPR
+    _GLIBCXX14_CONSTEXPR()
     bool
     operator()(const typename _Predicate::argument_type &__x) const
     {
@@ -1092,7 +1092,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   /// One of the @link negators negation functors@endlink.
   template <typename _Predicate>
   _GLIBCXX17_DEPRECATED_SUGGEST("std::not_fn")
-  _GLIBCXX14_CONSTEXPR
+  _GLIBCXX14_CONSTEXPR()
       inline unary_negate<_Predicate> not1(const _Predicate &__pred)
   {
     return unary_negate<_Predicate>(__pred);
@@ -1108,10 +1108,10 @@ namespace std _GLIBCXX_VISIBILITY(default)
     _Predicate _M_pred;
 
   public:
-    _GLIBCXX14_CONSTEXPR
+    _GLIBCXX14_CONSTEXPR()
     explicit binary_negate(const _Predicate &__x) : _M_pred(__x) {}
 
-    _GLIBCXX14_CONSTEXPR
+    _GLIBCXX14_CONSTEXPR()
     bool
     operator()(const typename _Predicate::first_argument_type &__x,
                const typename _Predicate::second_argument_type &__y) const
@@ -1123,7 +1123,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   /// One of the @link negators negation functors@endlink.
   template <typename _Predicate>
   _GLIBCXX17_DEPRECATED_SUGGEST("std::not_fn")
-  _GLIBCXX14_CONSTEXPR
+  _GLIBCXX14_CONSTEXPR()
       inline binary_negate<_Predicate> not2(const _Predicate &__pred)
   {
     return binary_negate<_Predicate>(__pred);

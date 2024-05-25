@@ -36,7 +36,7 @@
 #include <climits>             // INT_MAX
 #include "unwind-cxx.h"
 #include <bits/stl_function.h> // std::less
-#include "bits/c++config.h"
+#include <bits/c++config.h>
 #if _GLIBCXX_HOSTED
 # include <cstring>            // std::strchr, std::memset
 # include <ext/concurrence.h>  // __gnu_cxx::__mutex, __gnu_cxx::__scoped_lock
@@ -128,7 +128,7 @@ namespace __gnu_cxx
 
 namespace
 {
-  static _GLIBCXX14_CONSTEXPR std::size_t
+  static _GLIBCXX14_CONSTEXPR() std::size_t
   buffer_size_in_bytes(std::size_t obj_count, std::size_t obj_size) noexcept
   {
     // N * (S * P + R + D)
