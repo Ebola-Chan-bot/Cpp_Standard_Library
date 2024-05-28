@@ -158,7 +158,6 @@ namespace std
 
 		virtual int_type underflow()
 		{
-			Serial.println("underflow");
 			// There is no EOF condition on a serial stream.
 			// underflow() and uflow() should block, reproducing the
 			// OS behavior when there are no charaters to read.
@@ -174,7 +173,6 @@ namespace std
 
 		virtual int_type uflow()
 		{
-			Serial.println("uflow");
 			// See underflow() above
 			while (!_serial.available())
 			{ /* wait */

@@ -736,6 +736,5 @@ namespace std
 
 #pragma GCC visibility pop
 #else
-#include "Cpp_Standard_Library.h"
-#include CSL_Official(istream)
+#include_next <istream>
 #endif
