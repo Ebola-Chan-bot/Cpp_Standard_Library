@@ -9,7 +9,7 @@
 #define CSL_Official(Header) <Arduino.h/../../arduino/Header>
 #define CSL_OfficialC(Header) <alloca.h/../../include/Header>
 #else
-#define CSL_Official(Header) <_ansi.h/../c++/__GNUC__.__GNUC_MINOR__.__GNUC_PATCHLEVEL__/Header>
+#define CSL_Official(Header) <c++/__GNUC__.__GNUC_MINOR__.__GNUC_PATCHLEVEL__/Header>
 #define CSL_OfficialC(Header) <_ansi.h/../../include/Header>
 #define CSL_OfficialB(Header) <bits/basic_file.h/../../Header>
 #endif

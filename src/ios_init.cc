@@ -1,7 +1,6 @@
 #include <istream>
 #include <ostream>
 #include <serstream>
-#include <Arduino.h>
 #ifndef ARDUINO_ARCH_AVR
 namespace __gnu_internal _GLIBCXX_VISIBILITY(hidden)
 {
