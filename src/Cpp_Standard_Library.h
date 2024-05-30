@@ -13,3 +13,5 @@
 #define CSL_OfficialC(Header) <_ansi.h/../../include/Header>
 #define CSL_OfficialB(Header) <bits/basic_file.h/../../Header>
 #endif
+#define __GLIBC__ 2
+#define __GLIBC_MINOR__ 39

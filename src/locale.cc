@@ -1,5 +1,5 @@
 #ifdef ARDUINO_ARCH_SAM
-#include "locale"
+#include <locale>
 #include <ext/concurrence.h>
 namespace
 {

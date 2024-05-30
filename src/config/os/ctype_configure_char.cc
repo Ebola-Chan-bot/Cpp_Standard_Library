@@ -32,6 +32,7 @@
 #include <locale>
 #include <cstdlib>
 #include <cstring>
+#include <Cpp_Standard_Library.h>
 
 namespace std _GLIBCXX_VISIBILITY(default)
 {
@@ -58,7 +59,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 	setlocale(LC_CTYPE, "C");
       }
 #if __GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ > 2)
-    __ret = *__ctype_b_loc();
+    __ret = (const ctype_base::mask*)*__ctype_b_loc();
 #else
     __ret = __ctype_b;
 #endif
@@ -100,9 +101,9 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 	setlocale(LC_CTYPE, "C");
       }
 #if __GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ > 2)
-    _M_toupper = *__ctype_toupper_loc();
-    _M_tolower = *__ctype_tolower_loc();
-    _M_table = __table ? __table : *__ctype_b_loc();
+    _M_toupper = (ctype_base::__to_type)*__ctype_toupper_loc();
+    _M_tolower = (ctype_base::__to_type)*__ctype_tolower_loc();
+    _M_table = __table ? __table : (const mask*)*__ctype_b_loc();
 #else
     _M_toupper = __ctype_toupper;
     _M_tolower = __ctype_tolower;
@@ -145,9 +146,9 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 	setlocale(LC_CTYPE, "C");
       }
 #if __GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ > 2)
-    _M_toupper = *__ctype_toupper_loc();
-    _M_tolower = *__ctype_tolower_loc();
-    _M_table = __table ? __table : *__ctype_b_loc();
+    _M_toupper = (ctype_base::__to_type)*__ctype_toupper_loc();
+    _M_tolower = (ctype_base::__to_type)*__ctype_tolower_loc();
+    _M_table = __table ? __table : (const mask*)*__ctype_b_loc();
 #else
     _M_toupper = __ctype_toupper;
     _M_tolower = __ctype_tolower;
