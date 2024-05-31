@@ -75,6 +75,8 @@ libc_hidden_proto (__towupper)
 #endif
 #endif
 #else
-#include "Cpp_Standard_Library.h"
-#include CSL_OfficialC(wctype.h)
+#ifdef ARDUINO_ARCH_SAM
+#include <sys/cdefs.h>
+#endif
+#include_next <wctype.h>
 #endif

@@ -32,7 +32,7 @@
 #include <locale>
 #include <cstdlib>
 #include <cstring>
-
+extern const std::ctype_base::mask* _ctype_plus_1;
 namespace std _GLIBCXX_VISIBILITY(default)
 {
 _GLIBCXX_BEGIN_NAMESPACE_VERSION
@@ -41,7 +41,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 
   const ctype_base::mask*
   ctype<char>::classic_table() throw()
-  { return 0; }
+  {  return _ctype_ + 1; }
 
   ctype<char>::ctype(__c_locale, const mask* __table, bool __del,
 		     size_t __refs)
@@ -68,14 +68,17 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 
   char
   ctype<char>::do_toupper(char __c) const
-  { return ::toupper((int) __c); }
+  {
+    int __x = __c;
+    return (this->is(ctype_base::lower, __c) ? (__x - 'a' + 'A') : __x);
+  }
 
   const char*
   ctype<char>::do_toupper(char* __low, const char* __high) const
   {
     while (__low < __high)
       {
-	*__low = ::toupper((int) *__low);
+	*__low = this->do_toupper(*__low);
 	++__low;
       }
     return __high;
@@ -83,14 +86,17 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 
   char
   ctype<char>::do_tolower(char __c) const
-  { return ::tolower((int) __c); }
+  {
+    int __x = __c;
+    return (this->is(ctype_base::upper, __c) ? (__x - 'A' + 'a') : __x);
+  }
 
   const char*
   ctype<char>::do_tolower(char* __low, const char* __high) const
   {
     while (__low < __high)
       {
-	*__low = ::tolower((int) *__low);
+	*__low = this->do_tolower(*__low);
 	++__low;
       }
     return __high;

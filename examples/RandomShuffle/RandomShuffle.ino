@@ -26,12 +26,16 @@ void loop() {
 #else
   //非标准行为：ArduinoUrng是Arduino平台专用的随机生成器。你也可以使用标准库提供的mt19937，但它占用了太多内存，不建议使用。
   constexpr std::ArduinoUrng Urng;
-  uint32_t RandomSeed;
-  std::cout << "输入随机种子：";
+  static uint32_t RandomSeed;
+  std::cout << "输入随机种子（非数字的输入将视为0）：";
+
   std::cin >> RandomSeed;
 
-  std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
-  //清理回车换行符等非法字符，如不清理将造成未定义行为
+  // 清除错误标志位。必须紧贴ignore之前，因为不先清除错误状态ignore就不会生效。
+  std::cin.clear();
+  
+  // 丢弃错误输入。必须在获取RandomSeed之后，否则第一次输入会被忽略
+  std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
   std::cout << RandomSeed << std::endl;
   std::ArduinoUrng::seed(RandomSeed);
