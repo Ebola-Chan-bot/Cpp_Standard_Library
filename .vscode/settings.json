@@ -93,6 +93,7 @@
 		"cdefs.h": "cpp",
 		"types.h": "cpp",
 		"string.h": "cpp",
-		"bit":"cpp"
+		"bit": "cpp",
+		"libc-symbols.h": "cpp"
 	}
 }

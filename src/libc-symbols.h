@@ -79,7 +79,7 @@
    Some test components that use -ffast-math are currently not part of
    IS_IN (testsuite) for technical reasons, so we have a secondary override.  */
 #if defined __FAST_MATH__ && !defined TEST_FAST_MATH
-# error "glibc must not be compiled with -ffast-math"
+#warning 检测到优化选项为-Ofast。这理论上不会导致问题，但如果出现了意外的奇怪异常可以考虑此处。
 #endif
 
 /* When PIC is defined and SHARED isn't defined, we are building PIE

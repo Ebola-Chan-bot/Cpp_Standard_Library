@@ -45,4 +45,11 @@ void loop() {
   for (size_t A : Array)
     std::cout << A;
   std::cout << std::endl;
+  try
+  {
+    throw 0;
+  }
+  catch(...)
+  {
+  }
 }
