@@ -33,7 +33,7 @@ void loop() {
 
   // 清除错误标志位。必须紧贴ignore之前，因为不先清除错误状态ignore就不会生效。
   std::cin.clear();
-  
+
   // 丢弃错误输入。必须在获取RandomSeed之后，否则第一次输入会被忽略
   std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
@@ -45,11 +45,12 @@ void loop() {
   for (size_t A : Array)
     std::cout << A;
   std::cout << std::endl;
-  try
-  {
-    throw 0;
+#ifdef __EXCEPTIONS
+  //此段仅用于展示异常处理，对本示例主线逻辑无意义。必须在编译选项中启用-fexceptions并禁用-fno-rtti才能使本段生效。
+  try {
+    throw RandomSeed;
+  } catch (uint32_t RS) {
+    std::cout << "【异常处理】随机种子：" << RS << std::endl;
   }
-  catch(...)
-  {
-  }
+#endif
 }
