@@ -2826,7 +2826,7 @@ namespace std
 #endif // __cpp_lib_type_trait_variable_templates
 #endif
 // 3535
-#ifndef CSL_ESP32_NOT_NANO
+#ifndef ARDUINO_ARCH_ESP32
 //   3642
 #ifdef __cpp_lib_bounded_array_traits // C++ >= 20
                                       /// True for a type that is an array of known bound.

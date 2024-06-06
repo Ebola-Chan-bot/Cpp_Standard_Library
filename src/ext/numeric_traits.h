@@ -36,7 +36,7 @@
 namespace __gnu_cxx _GLIBCXX_VISIBILITY(default)
 {
 	_GLIBCXX_BEGIN_NAMESPACE_VERSION
-#ifndef CSL_ESP32_NOT_NANO
+#ifndef ARDUINO_ARCH_ESP32
 	// Compile time constants for builtin types.
 	// In C++98 std::numeric_limits member functions are not constant expressions
 	// (that changed in C++11 with the addition of 'constexpr').

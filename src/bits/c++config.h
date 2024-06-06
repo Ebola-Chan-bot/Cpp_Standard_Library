@@ -1,9 +1,11 @@
 #pragma once
 #ifdef ARDUINO_ARCH_ESP32
 #include_next <bits/c++config.h>
+#else
+#ifdef ARDUINO_ARCH_SAM
+#include <arm-none-eabi/bits/c++config.h>
+#define _GLIBCXX_EXTERN_TEMPLATE 0
 #endif
-#include <Cpp_Standard_Library.h>
-#ifndef CSL_ESP32_NOT_NANO
 #include "../__config"
 // 一些GCC特定版本才支持的定义
 #define __unlikely__
@@ -219,12 +221,8 @@ namespace __gnu_cxx
 /* Define to 1 if a full hosted library is built, or 0 if freestanding. */
 #define _GLIBCXX_HOSTED 1
 #endif
-#ifdef ARDUINO_ARCH_SAM
-#include <arm-none-eabi/bits/c++config.h>
-#define _GLIBCXX_EXTERN_TEMPLATE 0
-#endif
 // 159
-#ifndef CSL_ESP32_NOT_NANO
+#ifndef ARDUINO_ARCH_ESP32
 #if __cplusplus
 
 // Macro for constexpr, to support in mixed 03/0x mode.

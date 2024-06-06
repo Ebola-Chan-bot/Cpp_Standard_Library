@@ -1,4 +1,4 @@
-#if defined ARDUINO_ARCH_SAM || defined ARDUINO_NANO_ESP32
+#ifdef ARDUINO_ARCH_SAM
 // Copyright (C) 1997-2023 Free Software Foundation, Inc.
 //
 // This file is part of the GNU ISO C++ Library.  This library is free

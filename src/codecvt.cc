@@ -1,4 +1,4 @@
-#if defined ARDUINO_ARCH_SAM || defined ARDUINO_NANO_ESP32
+#ifdef ARDUINO_ARCH_SAM
 #include "codecvt"
 #include <locale>
 namespace std _GLIBCXX_VISIBILITY(default)
