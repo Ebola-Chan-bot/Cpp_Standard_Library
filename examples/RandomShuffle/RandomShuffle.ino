@@ -46,9 +46,9 @@ void loop() {
     std::cout << A;
   std::cout << std::endl;
 #ifdef __EXCEPTIONS
-  //此段仅用于展示异常处理，对本示例主线逻辑无意义。必须在编译选项中启用-fexceptions并禁用-fno-rtti才能使本段生效。
+  //此段仅用于展示异常处理，对本示例主线逻辑无意义。必须在编译选项中启用-fexceptions并禁用-fno-rtti才能使本段生效。AVR不支持异常处理。
   try {
-    throw RandomSeed;
+    throw 0;
   } catch (uint32_t RS) {
     std::cout << "【异常处理】随机种子：" << RS << std::endl;
   }

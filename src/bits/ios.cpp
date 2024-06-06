@@ -20,7 +20,7 @@
 #include "ios_base.h"
 #include "../serstream"
 #include "iostream"
-#include <Arduino.h>
+
 namespace std
 {
 #ifdef __UCLIBCXX_SUPPORT_CDIR__

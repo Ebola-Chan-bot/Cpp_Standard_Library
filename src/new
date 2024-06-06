@@ -1,5 +1,6 @@
 #pragma once
-#include_next <new>
+#include <Cpp_Standard_Library.h>
+#include CSL_Official(new)//SAM不支持include_next，必须用宏
 #if __cplusplus < 201402L
 [[gnu::weak]] void operator delete(void *ptr, std::size_t size) noexcept;
 [[gnu::weak]] void operator delete[](void *ptr, std::size_t size) noexcept;
