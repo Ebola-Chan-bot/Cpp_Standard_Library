@@ -130,7 +130,7 @@ _GLIBCXX_END_NAMESPACE_VERSION
 #include "../Cpp_Standard_Library.h"
 #include CSL_Official(ext/atomicity.h)
 #endif
-#ifdef ARDUINO_ARCH_ESP32
+#ifdef ARDUINO_NANO_ESP32
 namespace __gnu_cxx _GLIBCXX_VISIBILITY(default)
 {
 	_GLIBCXX_BEGIN_NAMESPACE_VERSION

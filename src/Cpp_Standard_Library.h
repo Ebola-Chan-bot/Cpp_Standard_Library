@@ -15,3 +15,6 @@
 #endif
 #define __GLIBC__ 2
 #define __GLIBC_MINOR__ 39
+#if defined ARDUINO_ARCH_ESP32 && !defined ARDUINO_NANO_ESP32
+#define CSL_ESP32_NOT_NANO
+#endif

@@ -6,10 +6,10 @@
 
 如果你需要某些标准库中应有而本库中尚未提供的功能，也欢迎提交Issue，作者将会优先为你实现。
 
-支持以下架构，但需要额外配置编译选项：
-- AVR。要求C++17：需要更改`%LOCALAPPDATA%\Arduino15\packages\arduino\hardware\avr\*.*.*\platform.txt`中的`-std=gnu++11`为`-std=gnu++17`
-- SAM。要求C++11。
-- ESP32。要求C++17：需要更改`%LOCALAPPDATA%\Arduino15\packages\arduino\hardware\esp32\*.*.*\platform.txt`中的所有`-std=gnu++11`为`-std=gnu++17`
+支持以下架构：
+- AVR，但要求C++17：需要更改`%LOCALAPPDATA%\Arduino15\packages\arduino\hardware\avr\*.*.*\platform.txt`中的`-std=gnu++11`为`-std=gnu++17`
+- SAM
+- ESP32（by Espressif Systems, not Arduino）
 
 如欲使用C++标准异常处理和运行时类型识别（RTTI, typeid），还需要确保编译选项包含-fexceptions且不含-fno-rtti。
 
