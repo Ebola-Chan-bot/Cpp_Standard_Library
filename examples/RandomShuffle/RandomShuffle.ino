@@ -49,8 +49,8 @@ void loop() {
   //此段仅用于展示异常处理，对本示例主线逻辑无意义。必须在编译选项中启用-fexceptions并禁用-fno-rtti才能使本段生效。AVR不支持异常处理。
   try {
     throw 0;
-  } catch (uint32_t RS) {
-    std::cout << "【异常处理】随机种子：" << RS << std::endl;
+  } catch (...) {
+    std::cout << "成功捕获异常" << std::endl;
   }
 #endif
 }
