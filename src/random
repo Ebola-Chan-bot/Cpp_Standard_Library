@@ -405,8 +405,7 @@ namespace std
 	// 5042
 }
 #else
-#include "Cpp_Standard_Library.h"
-#include CSL_Official(random)
+#include_next <random>
 #include "type_traits"
 #include <Arduino.h>
 #endif

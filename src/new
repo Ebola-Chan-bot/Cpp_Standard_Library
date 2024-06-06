@@ -1,6 +1,6 @@
 #pragma once
-#include "Cpp_Standard_Library.h"
-#include CSL_Official(new)
+#include <Cpp_Standard_Library.h>
+#include CSL_Official(new)//SAM不支持include_next，必须用宏
 #if __cplusplus < 201402L
 [[gnu::weak]] void operator delete(void *ptr, std::size_t size) noexcept;
 [[gnu::weak]] void operator delete[](void *ptr, std::size_t size) noexcept;
@@ -42,6 +42,7 @@
 
 #pragma GCC system_header
 #ifdef ARDUINO_ARCH_AVR
+#include <bits/c++config.h>
 #include <bits/exception.h>
 #endif
 #pragma GCC visibility push(default)

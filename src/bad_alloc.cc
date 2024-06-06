@@ -1,5 +1,7 @@
-#ifndef ARDUINO_ARCH_SAM
-// Copyright (C) 1994-2024 Free Software Foundation, Inc.
+#ifdef ARDUINO_ARCH_AVR
+// Implementation file for the -*- C++ -*- dynamic memory management header.
+
+// Copyright (C) 2010-2024 Free Software Foundation, Inc.
 //
 // This file is part of GCC.
 //
@@ -7,12 +9,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3, or (at your option)
 // any later version.
-
+//
 // GCC is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-
+//
 // Under Section 7 of GPL version 3, you are granted additional
 // permissions described in the GCC Runtime Library Exception, version
 // 3.1, as published by the Free Software Foundation.
@@ -22,17 +24,13 @@
 // see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
 // <http://www.gnu.org/licenses/>.
 
-#include <typeinfo>
+#include "new"
 
-namespace std {
-
-bad_cast::~bad_cast() _GLIBCXX_USE_NOEXCEPT { }
+std::bad_alloc::~bad_alloc() _GLIBCXX_USE_NOEXCEPT { }
 
 const char* 
-bad_cast::what() const _GLIBCXX_USE_NOEXCEPT
+std::bad_alloc::what() const _GLIBCXX_USE_NOEXCEPT
 {
-  return "std::bad_cast";
+  return "std::bad_alloc";
 }
-
-} // namespace std
 #endif

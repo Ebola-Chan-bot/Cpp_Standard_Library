@@ -93,7 +93,6 @@ __cxxabiv1::__cxa_throw (void *obj, std::type_info *tinfo,
 #else
   _Unwind_RaiseException (&header->exc.unwindHeader);
 #endif
-
   // Some sort of unwinding error.  Note that terminate is a handler.
   __cxa_begin_catch (&header->exc.unwindHeader);
   std::terminate ();

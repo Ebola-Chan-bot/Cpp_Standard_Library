@@ -1,7 +1,7 @@
 #pragma once
 #ifndef ARDUINO_ARCH_AVR
 #include "../Cpp_Standard_Library.h"
-#include CSL_Official(bits/locale_facets.h)
+#include CSL_Official(bits/locale_facets.h) //SAM不支持include_next，必须用宏
 #define _GLIBCXX_USE_DUAL_ABI 0
 namespace std _GLIBCXX_VISIBILITY(default)
 {
