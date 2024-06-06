@@ -1,5 +1,5 @@
-#ifndef ARDUINO_ARCH_SAM
-// Copyright (C) 1994-2024 Free Software Foundation, Inc.
+#ifdef ARDUINO_ARCH_AVR
+// Copyright (C) 2013-2024 Free Software Foundation, Inc.
 //
 // This file is part of GCC.
 //
@@ -22,17 +22,16 @@
 // see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
 // <http://www.gnu.org/licenses/>.
 
-#include <typeinfo>
+#include "new"//必须用引号，尖括号会包含内置new
 
-namespace std {
-
-bad_cast::~bad_cast() _GLIBCXX_USE_NOEXCEPT { }
-
-const char* 
-bad_cast::what() const _GLIBCXX_USE_NOEXCEPT
+namespace std 
 {
-  return "std::bad_cast";
-}
+
+bad_array_new_length::~bad_array_new_length() _GLIBCXX_USE_NOEXCEPT { }
+
+const char*
+bad_array_new_length::what() const _GLIBCXX_USE_NOEXCEPT
+{ return "std::bad_array_new_length"; }
 
 } // namespace std
 #endif

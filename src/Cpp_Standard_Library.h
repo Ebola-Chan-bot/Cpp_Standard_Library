@@ -3,6 +3,7 @@
 #define _DEBUG 1
 #define __STDCPP_DEFAULT_NEW_ALIGNMENT__ (size_t)16
 #define __cpp_sized_deallocation 1
+#define _GLIBCXX_ATOMIC_BUILTINS
 
 //Arduino不支持#include_next，只能用这种魔法实现包含官方标准库
 #ifdef ARDUINO_ARCH_AVR

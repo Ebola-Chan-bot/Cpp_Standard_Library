@@ -33,7 +33,7 @@
 using namespace __cxxabiv1;
 
 #include "unwind-pe.h"
-
+#include <Arduino.h>
 struct lsda_header_info
 {
   _Unwind_Ptr Start;
@@ -60,7 +60,8 @@ parse_lsda_header (_Unwind_Context *context, const unsigned char *p,
     p = read_encoded_value (context, lpstart_encoding, p, &info->LPStart);
   else
     info->LPStart = info->Start;
-
+Serial.print("info->LPStart: ");
+Serial.println((size_t)info->LPStart);
   // Find @TType, the base of the handler and exception spec type data.
   info->ttype_encoding = *p++;
   if (info->ttype_encoding != DW_EH_PE_omit)
@@ -75,12 +76,16 @@ parse_lsda_header (_Unwind_Context *context, const unsigned char *p,
     }
   else
     info->TType = 0;
+Serial.print("info->TType: ");
+Serial.println((size_t)info->TType);
 
   // The encoding and length of the call-site table; the action table
   // immediately follows.
   info->call_site_encoding = *p++;
   p = read_uleb128 (p, &tmp);
   info->action_table = p + tmp;
+Serial.print("info->action_table: ");
+Serial.println((size_t)info->action_table);
 
   return p;
 }
@@ -449,7 +454,14 @@ PERSONALITY_FUNCTION (int version,
   // If no LSDA, then there are no handlers or cleanups.
   if (! language_specific_data)
     CONTINUE_UNWINDING;
-
+    Serial.print("language_specific_data: ");
+    Serial.println((size_t)language_specific_data);
+    for(uint8_t C=0;C<UINT8_MAX;++C)
+    {
+    Serial.print((uint16_t)language_specific_data[C]);
+    Serial.print(" ");
+    }
+    Serial.println();
   // Parse the LSDA header.
   p = parse_lsda_header (context, language_specific_data, &info);
   info.ttype_base = base_of_encoded_value (info.ttype_encoding, context);
@@ -458,6 +470,8 @@ PERSONALITY_FUNCTION (int version,
 #else
   ip = _Unwind_GetIP (context);
 #endif
+Serial.print("ip: ");
+Serial.println((size_t)ip);
   if (! ip_before_insn)
     --ip;
   landing_pad = 0;
@@ -490,6 +504,9 @@ PERSONALITY_FUNCTION (int version,
       landing_pad = cs_lp + 1;
       if (cs_action)
 	action_record = info.action_table + cs_action - 1;
+Serial.print("action_record: ");
+Serial.println((size_t)action_record);
+Serial.flush();
       goto found_something;
     }
 #else

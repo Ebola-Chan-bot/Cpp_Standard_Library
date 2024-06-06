@@ -200,9 +200,9 @@ namespace __gnu_cxx
 #define _GLIBCXX_END_INLINE_ABI_NAMESPACE(X) } // inline namespace X
 #endif
 // 399
-// 683
-//  If platform uses neither visibility nor psuedo-visibility,
-//  specify empty default for namespace annotation macros.
+//  683
+//   If platform uses neither visibility nor psuedo-visibility,
+//   specify empty default for namespace annotation macros.
 #ifndef _GLIBCXX_PSEUDO_VISIBILITY
 #define _GLIBCXX_PSEUDO_VISIBILITY(V)
 #endif
