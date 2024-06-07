@@ -7,7 +7,7 @@
 #include <dynarray>
 #include <cmath>
 void Translate(std::chrono::hours H) {
-  std::cout << std::chrono::duration_cast<std::chrono::seconds>(H).count() << std::endl;
+  std::cout << std::chrono::duration_cast<std::chrono::seconds>(H + H).count() << std::endl;
 }
 std::function<void()> FF;
 void setup() {
