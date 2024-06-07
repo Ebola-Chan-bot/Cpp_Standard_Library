@@ -21,7 +21,6 @@
 #include "iterator_base"
 #include "functional"
 #else
-#include "Cpp_Standard_Library.h"
 #include_next <memory>
 #endif
 #pragma GCC visibility push(default)
@@ -592,6 +591,7 @@ namespace std
     template <class _Ty, class... _Types, enable_if_t<extent<_Ty>::value != 0, int> = 0>
     void make_unique(_Types &&...) = delete;
 #endif
+#ifndef ARDUINO_ARCH_ESP32
     template <class _Ty, enable_if_t<!is_array<_Ty>::value, int> = 0>
     _NODISCARD _CONSTEXPR23 unique_ptr<_Ty> make_unique_for_overwrite()
     {
@@ -609,6 +609,7 @@ namespace std
 
     template <class _Ty, class... _Types, enable_if_t<is_bounded_array<_Ty>::value, int> = 0>
     void make_unique_for_overwrite(_Types &&...) = delete;
+#endif
 #ifdef ARDUINO_ARCH_AVR
     template <class _Ty1, class _Dx1, class _Ty2, class _Dx2>
     _NODISCARD _CONSTEXPR23 bool operator==(const unique_ptr<_Ty1, _Dx1> &_Left, const unique_ptr<_Ty2, _Dx2> &_Right)

@@ -1,4 +1,3 @@
-#ifndef ARDUINO_ARCH_SAM
 // Copyright (C) 1994-2024 Free Software Foundation, Inc.
 //
 // This file is part of GCC.
@@ -35,4 +34,3 @@ bad_cast::what() const _GLIBCXX_USE_NOEXCEPT
 }
 
 } // namespace std
-#endif

@@ -42,37 +42,13 @@
             "name": "esp32",
             "includePath": [
                 "${workspaceFolder}/src",
-                "${LOCALAPPDATA}/Arduino15/packages/arduino/hardware/esp32/2.0.13/cores/esp32",
-                "${LOCALAPPDATA}/Arduino15/packages/arduino/hardware/esp32/2.0.13/tools/sdk/esp32s3/include/**",
-                "${LOCALAPPDATA}/Arduino15/packages/arduino/hardware/esp32/2.0.13/tools/sdk/esp32s3/qio_opi/include",
-                "${LOCALAPPDATA}/Arduino15/packages/arduino/hardware/esp32/2.0.13/variants/arduino_nano_nora",
-                "${LOCALAPPDATA}/Arduino15/packages/esp32/tools/xtensa-esp32s3-elf-gcc/esp-2021r2-patch5-8.4.0/xtensa-esp32s3-elf/include/c++/8.4.0",
-                "${LOCALAPPDATA}/Arduino15/packages/esp32/tools/xtensa-esp32s3-elf-gcc/esp-2021r2-patch5-8.4.0/xtensa-esp32s3-elf/sys-include"
             ],
             "defines": [
-                "HAVE_CONFIG_H",
-                "MBEDTLS_CONFIG_FILE=\"mbedtls/esp_config.h\"",
-                "UNITY_INCLUDE_CONFIG_H",
-                "WITH_POSIX",
-                "_GNU_SOURCE",
-                "IDF_VER=\"v4.4.5\"",
-                "ESP_PLATFORM",
-                "_POSIX_READER_WRITER_LOCKS",
-                "ARDUINO_USB_CDC_ON_BOOT=1",
-                "ARDUINO_USB_MODE=0",
-                "ARDUINO_USB_MSC_ON_BOOT=0",
-                "ARDUINO_USB_DFU_ON_BOOT=1",
-                "F_CPU=240000000L",
-                "ARDUINO_NANO_ESP32=1",
-                "ARDUINO_ARCH_ESP32=1",
-                "ARDUINO_BOARD=\"NANO_ESP32\"",
-                "ARDUINO_VARIANT=\"arduino_nano_nora\"",
-                "ARDUINO_PARTITION_app3M_fat9M_fact512k_16MB",
-                "VSCODE"
+                "ARDUINO_ARCH_ESP32=1"
             ],
-            "compilerPath": "${LOCALAPPDATA}/Arduino15/packages/esp32/tools/xtensa-esp32s3-elf-gcc/esp-2021r2-patch5-8.4.0/bin/xtensa-esp32s3-elf-g++.exe",
+            "compilerPath": "${LOCALAPPDATA}/Arduino15/packages/esp32/tools/xtensa-esp32-elf-gcc/esp-12.2.0_20230208/bin/xtensa-esp32-elf-g++.exe",
             "cStandard": "c11",
-            "cppStandard": "c++17"
+            "cppStandard": "c++20"
         }
     ],
     "version": 4

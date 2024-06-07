@@ -36,7 +36,7 @@
 namespace __gnu_cxx _GLIBCXX_VISIBILITY(default)
 {
 	_GLIBCXX_BEGIN_NAMESPACE_VERSION
-
+#ifndef ARDUINO_ARCH_ESP32
 	// Compile time constants for builtin types.
 	// In C++98 std::numeric_limits member functions are not constant expressions
 	// (that changed in C++11 with the addition of 'constexpr').
@@ -58,6 +58,7 @@ namespace __gnu_cxx _GLIBCXX_VISIBILITY(default)
 			__width = __value ? sizeof(_Tp) * __CHAR_BIT__ : 0
 		};
 	};
+#endif
 #ifdef ARDUINO_ARCH_AVR
 	template <typename _Value>
 	struct __numeric_traits_integer

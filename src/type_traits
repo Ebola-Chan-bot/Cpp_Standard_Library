@@ -2826,6 +2826,7 @@ namespace std
 #endif // __cpp_lib_type_trait_variable_templates
 #endif
 // 3535
+#ifndef ARDUINO_ARCH_ESP32
 //   3642
 #ifdef __cpp_lib_bounded_array_traits // C++ >= 20
                                       /// True for a type that is an array of known bound.
@@ -2877,6 +2878,7 @@ namespace std
     inline constexpr bool is_unbounded_array_v = is_unbounded_array<_Tp>::value;
 #endif
 #endif // __cpp_lib_bounded_array_traits
-    // 3681
+// 3681
+#endif
 }
 #pragma GCC visibility pop

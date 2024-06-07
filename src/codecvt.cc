@@ -1,4 +1,4 @@
-#ifndef ARDUINO_ARCH_AVR
+#ifdef ARDUINO_ARCH_SAM
 #include "codecvt"
 #include <locale>
 namespace std _GLIBCXX_VISIBILITY(default)
@@ -334,9 +334,9 @@ namespace std _GLIBCXX_VISIBILITY(default)
 			if (mode & consume_header)
 			{
 				if (read_bom(from, utf16_bom))
-					(int&)mode &= ~little_endian;
+					(int &)mode &= ~little_endian;
 				else if (read_bom(from, utf16le_bom))
-					(int&)mode |= little_endian;
+					(int &)mode |= little_endian;
 			}
 		}
 
