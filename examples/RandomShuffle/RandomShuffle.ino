@@ -20,10 +20,7 @@ void setup() {
   std::cout << std::endl;
 }
 void loop() {
-#ifdef ARDUINO_ARCH_ESP32
-  //ESP32架构推荐使用硬件随机生成器，不需要设置种子即可得到真随机数
-  constexpr std::EspUrng Urng;
-#else
+#ifdef ARDUINO_ARCH_AVR
   //非标准行为：ArduinoUrng是Arduino平台专用的随机生成器。你也可以使用标准库提供的mt19937，但它占用了太多内存，不建议使用。
   constexpr std::ArduinoUrng Urng;
   static uint32_t RandomSeed;
@@ -39,6 +36,9 @@ void loop() {
 
   std::cout << RandomSeed << std::endl;
   std::ArduinoUrng::seed(RandomSeed);
+#else
+  //SAM和ESP32架构额外提供真随机生成器，不需要随机种子
+  constexpr std::TrueUrng Urng;
 #endif
   std::shuffle(std::begin(Array), std::end(Array), Urng);
   std::cout << "随机乱序：";
