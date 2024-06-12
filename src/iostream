@@ -89,5 +89,6 @@ namespace std
 
 #pragma GCC visibility pop
 #else
+#undef min
 #include_next <iostream>
 #endif
