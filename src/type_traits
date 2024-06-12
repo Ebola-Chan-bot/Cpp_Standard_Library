@@ -26,11 +26,9 @@
 #include <bits/version.h>
 #ifdef ARDUINO_ARCH_AVR
 #include "char_traits"
-#include "xstddef"
 #include "cstddef"
 #else
 #include_next <type_traits>
-#include <stddef.h>
 #endif
 #ifndef ARDUINO_ARCH_ESP32
 #include "xtr1common"
