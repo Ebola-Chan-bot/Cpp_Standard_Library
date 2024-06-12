@@ -22,6 +22,7 @@
 #define __glibcxx_want_is_null_pointer
 #define __glibcxx_want_is_swappable
 #define __glibcxx_want_logical_traits
+#define __glibcxx_want_transformation_trait_aliases
 #define __glibcxx_want_type_trait_variable_templates
 #include <bits/version.h>
 #ifdef ARDUINO_ARCH_AVR
@@ -1807,8 +1808,117 @@ namespace std
         : public integral_constant<std::size_t, alignof(_Tp)>
     {
     };
-#endif
     // 1434
+    // 1599
+    // Const-volatile modifications.
+
+    /// remove_const
+    template <typename _Tp>
+    struct remove_const
+    {
+        using type = _Tp;
+    };
+
+    template <typename _Tp>
+    struct remove_const<_Tp const>
+    {
+        using type = _Tp;
+    };
+
+    /// remove_volatile
+    template <typename _Tp>
+    struct remove_volatile
+    {
+        using type = _Tp;
+    };
+
+    template <typename _Tp>
+    struct remove_volatile<_Tp volatile>
+    {
+        using type = _Tp;
+    };
+
+    /// remove_cv
+#if _GLIBCXX_USE_BUILTIN_TRAIT(__remove_cv)
+    template <typename _Tp>
+    struct remove_cv
+    {
+        using type = __remove_cv(_Tp);
+    };
+#else
+    template <typename _Tp>
+    struct remove_cv
+    {
+        using type = _Tp;
+    };
+
+    template <typename _Tp>
+    struct remove_cv<const _Tp>
+    {
+        using type = _Tp;
+    };
+
+    template <typename _Tp>
+    struct remove_cv<volatile _Tp>
+    {
+        using type = _Tp;
+    };
+
+    template <typename _Tp>
+    struct remove_cv<const volatile _Tp>
+    {
+        using type = _Tp;
+    };
+#endif
+
+    /// add_const
+    template <typename _Tp>
+    struct add_const
+    {
+        using type = _Tp const;
+    };
+
+    /// add_volatile
+    template <typename _Tp>
+    struct add_volatile
+    {
+        using type = _Tp volatile;
+    };
+
+    /// add_cv
+    template <typename _Tp>
+    struct add_cv
+    {
+        using type = _Tp const volatile;
+    };
+
+#ifdef __cpp_lib_transformation_trait_aliases // C++ >= 14
+    /// Alias template for remove_const
+    template <typename _Tp>
+    using remove_const_t = typename remove_const<_Tp>::type;
+
+    /// Alias template for remove_volatile
+    template <typename _Tp>
+    using remove_volatile_t = typename remove_volatile<_Tp>::type;
+
+    /// Alias template for remove_cv
+    template <typename _Tp>
+    using remove_cv_t = typename remove_cv<_Tp>::type;
+
+    /// Alias template for add_const
+    template <typename _Tp>
+    using add_const_t = typename add_const<_Tp>::type;
+
+    /// Alias template for add_volatile
+    template <typename _Tp>
+    using add_volatile_t = typename add_volatile<_Tp>::type;
+
+    /// Alias template for add_cv
+    template <typename _Tp>
+    using add_cv_t = typename add_cv<_Tp>::type;
+#endif
+    // 1683
+#endif
     /// Alias template for enable_if
     template <bool _Cond, typename _Tp = void>
     using enable_if_t = typename enable_if<_Cond, _Tp>::type;
@@ -1816,9 +1926,12 @@ namespace std
     //  __decay_t (std::decay_t for C++11).
     template <typename _Tp>
     using __decay_t = typename decay<_Tp>::type;
-    // 2299
-    // 2303
-    /// @cond undocumented
+// 2299
+// 2303
+/// @cond undocumented
+#ifdef ARDUINO_ARCH_SAM
+
+#endif
 #ifdef ARDUINO_ARCH_AVR
     // Helper for SFINAE constraints
     template <typename... _Cond>
@@ -1951,8 +2064,26 @@ namespace std
     struct __common_type_fold<_CTp, _Rp, void>
     {
     };
-    // 2439
-    //    2456
+
+    template <typename _Tp, bool = __is_enum(_Tp)>
+    struct __underlying_type_impl
+    {
+        using type = __underlying_type(_Tp);
+    };
+
+    template <typename _Tp>
+    struct __underlying_type_impl<_Tp, false>
+    {
+    };
+    /// @endcond
+
+    /// The underlying type of an enum.
+    template <typename _Tp>
+    struct underlying_type
+        : public __underlying_type_impl<_Tp>
+    {
+    };
+
     /// @cond undocumented
     template <typename _Tp>
     struct __declval_protector
@@ -2171,6 +2302,58 @@ namespace std
     template <typename... _Tp>
     using common_type_t = typename common_type<_Tp...>::type;
     // 2705
+    // 2719
+    /// @cond undocumented
+
+    // Detection idiom.
+    // Detect whether _Op<_Args...> is a valid type, use default _Def if not.
+
+#if __cpp_concepts
+    // Implementation of the detection idiom (negative case).
+    template <typename _Def, template <typename...> class _Op, typename... _Args>
+    struct __detected_or
+    {
+        using type = _Def;
+        using __is_detected = false_type;
+    };
+
+    // Implementation of the detection idiom (positive case).
+    template <typename _Def, template <typename...> class _Op, typename... _Args>
+        requires requires { typename _Op<_Args...>; }
+    struct __detected_or<_Def, _Op, _Args...>
+    {
+        using type = _Op<_Args...>;
+        using __is_detected = true_type;
+    };
+#else
+    /// Implementation of the detection idiom (negative case).
+    template <typename _Default, typename _AlwaysVoid,
+              template <typename...> class _Op, typename... _Args>
+    struct __detector
+    {
+        using type = _Default;
+        using __is_detected = false_type;
+    };
+
+    /// Implementation of the detection idiom (positive case).
+    template <typename _Default, template <typename...> class _Op,
+              typename... _Args>
+    struct __detector<_Default, __void_t<_Op<_Args...>>, _Op, _Args...>
+    {
+        using type = _Op<_Args...>;
+        using __is_detected = true_type;
+    };
+
+    template <typename _Default, template <typename...> class _Op,
+              typename... _Args>
+    using __detected_or = __detector<_Default, void, _Op, _Args...>;
+#endif // __cpp_concepts
+
+    // _Op<_Args...> if that is a valid type, otherwise _Default.
+    template <typename _Default, template <typename...> class _Op,
+              typename... _Args>
+    using __detected_or_t = typename __detected_or<_Default, _Op, _Args...>::type;
+    // 2771
     // 2785
     template <typename _Tp>
     struct __is_swappable;

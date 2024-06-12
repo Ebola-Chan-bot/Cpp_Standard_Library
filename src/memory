@@ -18,8 +18,8 @@
 */
 #pragma once
 #ifdef ARDUINO_ARCH_AVR
-#include "iterator_base"
-#include "functional"
+#include <iterator_base>
+#include <functional>
 #else
 #include_next <memory>
 #endif
