@@ -1,6 +1,5 @@
 #pragma once
-#ifdef ARDUINO_ARCH_AVR
-// Types used in iterator implementation -*- C++ -*-
+#ifdef ARDUINO_ARCH_AVR// Types used in iterator implementation -*- C++ -*-
 
 // Copyright (C) 2001-2024 Free Software Foundation, Inc.
 //
@@ -64,6 +63,7 @@
 #pragma GCC system_header
 
 #include <bits/c++config.h>
+#include <iterator_base>
 
 #if __cplusplus >= 201103L
 # include <type_traits>  // For __void_t, is_convertible
@@ -76,6 +76,19 @@
 namespace std _GLIBCXX_VISIBILITY(default)
 {
 _GLIBCXX_BEGIN_NAMESPACE_VERSION
+
+  /**
+   *  This function is not a part of the C++ standard but is syntactic
+   *  sugar for internal library use only.
+  */
+  template<typename _Iter>
+    __attribute__((__always_inline__))
+    inline _GLIBCXX_CONSTEXPR
+    typename iterator_traits<_Iter>::iterator_category
+    __iterator_category(const _Iter&)
+    { return typename iterator_traits<_Iter>::iterator_category(); }
+
+  ///@}
 
 #if __cplusplus >= 201103L
   template<typename _Iter>

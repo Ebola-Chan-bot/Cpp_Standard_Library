@@ -32,6 +32,7 @@
 #ifndef _ALLOC_TRAITS_H
 #define _ALLOC_TRAITS_H 1
 
+#include <bits/stl_construct.h>
 #if __cplusplus >= 201103L
 # include <bits/ptr_traits.h>
 # include <ext/numeric_traits.h>
@@ -39,7 +40,7 @@
 #  include <bits/stl_iterator.h> // __make_move_if_noexcept_iterator
 # endif
 #endif
-
+#include<memory>
 namespace std _GLIBCXX_VISIBILITY(default)
 {
 _GLIBCXX_BEGIN_NAMESPACE_VERSION

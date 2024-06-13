@@ -59,86 +59,10 @@
 #if __cplusplus > 201103L
 #include <bits/move.h>
 #endif
-
+#include <functional>
 namespace std _GLIBCXX_VISIBILITY(default)
 {
   _GLIBCXX_BEGIN_NAMESPACE_VERSION
-
-  // 20.3.1 base classes
-  /** @defgroup functors Function Objects
-   *  @ingroup utilities
-   *
-   *  Function objects, or _functors_, are objects with an `operator()`
-   *  defined and accessible.  They can be passed as arguments to algorithm
-   *  templates and used in place of a function pointer.  Not only is the
-   *  resulting expressiveness of the library increased, but the generated
-   *  code can be more efficient than what you might write by hand.  When we
-   *  refer to _functors_, then, generally we include function pointers in
-   *  the description as well.
-   *
-   *  Often, functors are only created as temporaries passed to algorithm
-   *  calls, rather than being created as named variables.
-   *
-   *  Two examples taken from the standard itself follow.  To perform a
-   *  by-element addition of two vectors `a` and `b` containing `double`,
-   *  and put the result in `a`, use
-   *  \code
-   *  transform (a.begin(), a.end(), b.begin(), a.begin(), plus<double>());
-   *  \endcode
-   *  To negate every element in `a`, use
-   *  \code
-   *  transform(a.begin(), a.end(), a.begin(), negate<double>());
-   *  \endcode
-   *  The addition and negation functions will usually be inlined directly.
-   *
-   *  An _adaptable function object_ is one which provides nested typedefs
-   *  `result_type` and either `argument_type` (for a unary function) or
-   *  `first_argument_type` and `second_argument_type` (for a binary function).
-   *  Those typedefs are used by function object adaptors such as `bind2nd`.
-   *  The standard library provides two class templates, `unary_function` and
-   *  `binary_function`, which define those typedefs and so can be used as
-   *  base classes of adaptable function objects.
-   *
-   *  Since C++11 the use of function object adaptors has been superseded by
-   *  more powerful tools such as lambda expressions, `function<>`, and more
-   *  powerful type deduction (using `auto` and `decltype`). The helpers for
-   *  defining adaptable function objects are deprecated since C++11, and no
-   *  longer part of the standard library since C++17. However, they are still
-   *  defined and used by libstdc++ after C++17, as a conforming extension.
-   *
-   *  @{
-   */
-
-  /**
-   *  Helper for defining adaptable unary function objects.
-   *  @deprecated Deprecated in C++11, no longer in the standard since C++17.
-   */
-  template <typename _Arg, typename _Result>
-  struct unary_function
-  {
-    /// @c argument_type is the type of the argument
-    typedef _Arg argument_type;
-
-    /// @c result_type is the return type
-    typedef _Result result_type;
-  } _GLIBCXX11_DEPRECATED;
-
-  /**
-   *  Helper for defining adaptable binary function objects.
-   *  @deprecated Deprecated in C++11, no longer in the standard since C++17.
-   */
-  template <typename _Arg1, typename _Arg2, typename _Result>
-  struct binary_function
-  {
-    /// @c first_argument_type is the type of the first argument
-    typedef _Arg1 first_argument_type;
-
-    /// @c second_argument_type is the type of the second argument
-    typedef _Arg2 second_argument_type;
-
-    /// @c result_type is the return type
-    typedef _Result result_type;
-  } _GLIBCXX11_DEPRECATED;
   /** @}  */
 
   // 20.3.2 arithmetic
@@ -157,148 +81,21 @@ namespace std _GLIBCXX_VISIBILITY(default)
   struct __is_transparent;          // undefined
 
   template <typename _Tp = void>
-  struct plus;
-
-  template <typename _Tp = void>
-  struct minus;
-
-  template <typename _Tp = void>
-  struct multiplies;
-
-  template <typename _Tp = void>
-  struct divides;
-
-  template <typename _Tp = void>
   struct modulus;
 
   template <typename _Tp = void>
   struct negate;
 #endif
 
-// Ignore warnings about unary_function and binary_function.
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-
-  /// One of the @link arithmetic_functors math functors@endlink.
-  template <typename _Tp>
-  struct plus : public binary_function<_Tp, _Tp, _Tp>
-  {
-    /// Returns the sum
-    _GLIBCXX14_CONSTEXPR()
-    _Tp
-    operator()(const _Tp &__x, const _Tp &__y) const
-    {
-      return __x + __y;
-    }
-  };
-
-  /// One of the @link arithmetic_functors math functors@endlink.
-  template <typename _Tp>
-  struct minus : public binary_function<_Tp, _Tp, _Tp>
-  {
-    _GLIBCXX14_CONSTEXPR()
-    _Tp
-    operator()(const _Tp &__x, const _Tp &__y) const
-    {
-      return __x - __y;
-    }
-  };
-
-  /// One of the @link arithmetic_functors math functors@endlink.
-  template <typename _Tp>
-  struct multiplies : public binary_function<_Tp, _Tp, _Tp>
-  {
-    _GLIBCXX14_CONSTEXPR()
-    _Tp
-    operator()(const _Tp &__x, const _Tp &__y) const
-    {
-      return __x * __y;
-    }
-  };
-
-  /// One of the @link arithmetic_functors math functors@endlink.
-  template <typename _Tp>
-  struct divides : public binary_function<_Tp, _Tp, _Tp>
-  {
-    _GLIBCXX14_CONSTEXPR()
-    _Tp
-    operator()(const _Tp &__x, const _Tp &__y) const
-    {
-      return __x / __y;
-    }
-  };
-#pragma GCC diagnostic pop
-
 #ifdef __glibcxx_transparent_operators // C++ >= 14
-  template <>
-  struct plus<void>
-  {
-    template <typename _Tp, typename _Up>
-    _GLIBCXX14_CONSTEXPR() auto
-    operator()(_Tp &&__t, _Up &&__u) const
-        noexcept(noexcept(std::forward<_Tp>(__t) + std::forward<_Up>(__u)))
-            -> decltype(std::forward<_Tp>(__t) + std::forward<_Up>(__u))
-    {
-      return std::forward<_Tp>(__t) + std::forward<_Up>(__u);
-    }
-
-    typedef __is_transparent is_transparent;
-  };
-
-  /// One of the @link arithmetic_functors math functors@endlink.
-  template <>
-  struct minus<void>
-  {
-    template <typename _Tp, typename _Up>
-    _GLIBCXX14_CONSTEXPR() auto
-    operator()(_Tp &&__t, _Up &&__u) const
-        noexcept(noexcept(std::forward<_Tp>(__t) - std::forward<_Up>(__u)))
-            -> decltype(std::forward<_Tp>(__t) - std::forward<_Up>(__u))
-    {
-      return std::forward<_Tp>(__t) - std::forward<_Up>(__u);
-    }
-
-    typedef __is_transparent is_transparent;
-  };
-
-  /// One of the @link arithmetic_functors math functors@endlink.
-  template <>
-  struct multiplies<void>
-  {
-    template <typename _Tp, typename _Up>
-    _GLIBCXX14_CONSTEXPR() auto
-    operator()(_Tp &&__t, _Up &&__u) const
-        noexcept(noexcept(std::forward<_Tp>(__t) * std::forward<_Up>(__u)))
-            -> decltype(std::forward<_Tp>(__t) * std::forward<_Up>(__u))
-    {
-      return std::forward<_Tp>(__t) * std::forward<_Up>(__u);
-    }
-
-    typedef __is_transparent is_transparent;
-  };
-
-  /// One of the @link arithmetic_functors math functors@endlink.
-  template <>
-  struct divides<void>
-  {
-    template <typename _Tp, typename _Up>
-    _GLIBCXX14_CONSTEXPR() auto
-    operator()(_Tp &&__t, _Up &&__u) const
-        noexcept(noexcept(std::forward<_Tp>(__t) / std::forward<_Up>(__u)))
-            -> decltype(std::forward<_Tp>(__t) / std::forward<_Up>(__u))
-    {
-      return std::forward<_Tp>(__t) / std::forward<_Up>(__u);
-    }
-
-    typedef __is_transparent is_transparent;
-  };
 
   /// One of the @link arithmetic_functors math functors@endlink.
   template <>
   struct modulus<void>
   {
     template <typename _Tp, typename _Up>
-    _GLIBCXX14_CONSTEXPR() auto
+    _GLIBCXX14_CONSTEXPR
+    auto
     operator()(_Tp &&__t, _Up &&__u) const
         noexcept(noexcept(std::forward<_Tp>(__t) % std::forward<_Up>(__u)))
             -> decltype(std::forward<_Tp>(__t) % std::forward<_Up>(__u))
@@ -314,7 +111,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
   struct negate<void>
   {
     template <typename _Tp>
-    _GLIBCXX14_CONSTEXPR() auto
+    _GLIBCXX14_CONSTEXPR
+    auto
     operator()(_Tp &&__t) const
         noexcept(noexcept(-std::forward<_Tp>(__t)))
             -> decltype(-std::forward<_Tp>(__t))
@@ -339,15 +137,6 @@ namespace std _GLIBCXX_VISIBILITY(default)
 #if __glibcxx_transparent_operators // C++ >= 14
 
   template <typename _Tp = void>
-  struct not_equal_to;
-
-  template <typename _Tp = void>
-  struct greater;
-
-  template <typename _Tp = void>
-  struct less;
-
-  template <typename _Tp = void>
   struct greater_equal;
 
   template <typename _Tp = void>
@@ -357,77 +146,12 @@ namespace std _GLIBCXX_VISIBILITY(default)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
-  /// One of the @link comparison_functors comparison functors@endlink.
-  template <typename _Tp>
-  struct not_equal_to : public binary_function<_Tp, _Tp, bool>
-  {
-    _GLIBCXX14_CONSTEXPR()
-    bool
-    operator()(const _Tp &__x, const _Tp &__y) const
-    {
-      return __x != __y;
-    }
-  };
-
-  /// One of the @link comparison_functors comparison functors@endlink.
-  template <typename _Tp>
-  struct greater : public binary_function<_Tp, _Tp, bool>
-  {
-    _GLIBCXX14_CONSTEXPR()
-    bool
-    operator()(const _Tp &__x, const _Tp &__y) const
-    {
-      return __x > __y;
-    }
-  };
-
-  /// One of the @link comparison_functors comparison functors@endlink.
-  template <typename _Tp>
-  struct less : public binary_function<_Tp, _Tp, bool>
-  {
-    _GLIBCXX14_CONSTEXPR()
-    bool
-    operator()(const _Tp &__x, const _Tp &__y) const
-    {
-      return __x < __y;
-    }
-  };
-
-  // Partial specialization of std::greater for pointers.
-  template <typename _Tp>
-  struct greater<_Tp *> : public binary_function<_Tp *, _Tp *, bool>
-  {
-    _GLIBCXX14_CONSTEXPR() bool
-    operator()(_Tp *__x, _Tp *__y) const _GLIBCXX_NOTHROW
-    {
-#if __cplusplus >= 201402L
-      if (std::__is_constant_evaluated())
-        return __x > __y;
-#endif
-      return (__UINTPTR_TYPE__)__x > (__UINTPTR_TYPE__)__y;
-    }
-  };
-
-  // Partial specialization of std::less for pointers.
-  template <typename _Tp>
-  struct less<_Tp *> : public binary_function<_Tp *, _Tp *, bool>
-  {
-    _GLIBCXX14_CONSTEXPR() bool
-    operator()(_Tp *__x, _Tp *__y) const _GLIBCXX_NOTHROW
-    {
-#if __cplusplus >= 201402L
-      if (std::__is_constant_evaluated())
-        return __x < __y;
-#endif
-      return (__UINTPTR_TYPE__)__x < (__UINTPTR_TYPE__)__y;
-    }
-  };
-
   // Partial specialization of std::greater_equal for pointers.
   template <typename _Tp>
   struct greater_equal<_Tp *> : public binary_function<_Tp *, _Tp *, bool>
   {
-    _GLIBCXX14_CONSTEXPR() bool
+    _GLIBCXX14_CONSTEXPR
+    bool
     operator()(_Tp *__x, _Tp *__y) const _GLIBCXX_NOTHROW
     {
 #if __cplusplus >= 201402L
@@ -442,7 +166,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
   template <typename _Tp>
   struct less_equal<_Tp *> : public binary_function<_Tp *, _Tp *, bool>
   {
-    _GLIBCXX14_CONSTEXPR() bool
+    _GLIBCXX14_CONSTEXPR
+    bool
     operator()(_Tp *__x, _Tp *__y) const _GLIBCXX_NOTHROW
     {
 #if __cplusplus >= 201402L
@@ -455,181 +180,6 @@ namespace std _GLIBCXX_VISIBILITY(default)
 #pragma GCC diagnostic pop
 
 #ifdef __glibcxx_transparent_operators // C++ >= 14
-  /// One of the @link comparison_functors comparison functors@endlink.
-  template <>
-  struct equal_to<void>
-  {
-    template <typename _Tp, typename _Up>
-    constexpr auto
-    operator()(_Tp &&__t, _Up &&__u) const
-        noexcept(noexcept(std::forward<_Tp>(__t) == std::forward<_Up>(__u)))
-            -> decltype(std::forward<_Tp>(__t) == std::forward<_Up>(__u))
-    {
-      return std::forward<_Tp>(__t) == std::forward<_Up>(__u);
-    }
-
-    typedef __is_transparent is_transparent;
-  };
-
-  /// One of the @link comparison_functors comparison functors@endlink.
-  template <>
-  struct not_equal_to<void>
-  {
-    template <typename _Tp, typename _Up>
-    constexpr auto
-    operator()(_Tp &&__t, _Up &&__u) const
-        noexcept(noexcept(std::forward<_Tp>(__t) != std::forward<_Up>(__u)))
-            -> decltype(std::forward<_Tp>(__t) != std::forward<_Up>(__u))
-    {
-      return std::forward<_Tp>(__t) != std::forward<_Up>(__u);
-    }
-
-    typedef __is_transparent is_transparent;
-  };
-
-  /// One of the @link comparison_functors comparison functors@endlink.
-  template <>
-  struct greater<void>
-  {
-    template <typename _Tp, typename _Up>
-    constexpr auto
-    operator()(_Tp &&__t, _Up &&__u) const
-        noexcept(noexcept(std::forward<_Tp>(__t) > std::forward<_Up>(__u)))
-            -> decltype(std::forward<_Tp>(__t) > std::forward<_Up>(__u))
-    {
-      return _S_cmp(std::forward<_Tp>(__t), std::forward<_Up>(__u),
-                    __ptr_cmp<_Tp, _Up>{});
-    }
-
-    template <typename _Tp, typename _Up>
-    constexpr bool
-    operator()(_Tp *__t, _Up *__u) const noexcept
-    {
-      return greater<common_type_t<_Tp *, _Up *>>{}(__t, __u);
-    }
-
-    typedef __is_transparent is_transparent;
-
-  private:
-    template <typename _Tp, typename _Up>
-    static constexpr decltype(auto)
-    _S_cmp(_Tp &&__t, _Up &&__u, false_type)
-    {
-      return std::forward<_Tp>(__t) > std::forward<_Up>(__u);
-    }
-
-    template <typename _Tp, typename _Up>
-    static constexpr bool
-    _S_cmp(_Tp &&__t, _Up &&__u, true_type) noexcept
-    {
-      return greater<const volatile void *>{}(
-          static_cast<const volatile void *>(std::forward<_Tp>(__t)),
-          static_cast<const volatile void *>(std::forward<_Up>(__u)));
-    }
-
-    // True if there is no viable operator> member function.
-    template <typename _Tp, typename _Up, typename = void>
-    struct __not_overloaded2 : true_type
-    {
-    };
-
-    // False if we can call T.operator>(U)
-    template <typename _Tp, typename _Up>
-    struct __not_overloaded2<_Tp, _Up, __void_t<decltype(std::declval<_Tp>().operator>(std::declval<_Up>()))>>
-        : false_type
-    {
-    };
-
-    // True if there is no overloaded operator> for these operands.
-    template <typename _Tp, typename _Up, typename = void>
-    struct __not_overloaded : __not_overloaded2<_Tp, _Up>
-    {
-    };
-
-    // False if we can call operator>(T,U)
-    template <typename _Tp, typename _Up>
-    struct __not_overloaded<_Tp, _Up, __void_t<decltype(operator>(std::declval<_Tp>(), std::declval<_Up>()))>>
-        : false_type
-    {
-    };
-
-    template <typename _Tp, typename _Up>
-    using __ptr_cmp = __and_<__not_overloaded<_Tp, _Up>,
-                             is_convertible<_Tp, const volatile void *>,
-                             is_convertible<_Up, const volatile void *>>;
-  };
-
-  /// One of the @link comparison_functors comparison functors@endlink.
-  template <>
-  struct less<void>
-  {
-    template <typename _Tp, typename _Up>
-    constexpr auto
-    operator()(_Tp &&__t, _Up &&__u) const
-        noexcept(noexcept(std::forward<_Tp>(__t) < std::forward<_Up>(__u)))
-            -> decltype(std::forward<_Tp>(__t) < std::forward<_Up>(__u))
-    {
-      return _S_cmp(std::forward<_Tp>(__t), std::forward<_Up>(__u),
-                    __ptr_cmp<_Tp, _Up>{});
-    }
-
-    template <typename _Tp, typename _Up>
-    constexpr bool
-    operator()(_Tp *__t, _Up *__u) const noexcept
-    {
-      return less<common_type_t<_Tp *, _Up *>>{}(__t, __u);
-    }
-
-    typedef __is_transparent is_transparent;
-
-  private:
-    template <typename _Tp, typename _Up>
-    static constexpr decltype(auto)
-    _S_cmp(_Tp &&__t, _Up &&__u, false_type)
-    {
-      return std::forward<_Tp>(__t) < std::forward<_Up>(__u);
-    }
-
-    template <typename _Tp, typename _Up>
-    static constexpr bool
-    _S_cmp(_Tp &&__t, _Up &&__u, true_type) noexcept
-    {
-      return less<const volatile void *>{}(
-          static_cast<const volatile void *>(std::forward<_Tp>(__t)),
-          static_cast<const volatile void *>(std::forward<_Up>(__u)));
-    }
-
-    // True if there is no viable operator< member function.
-    template <typename _Tp, typename _Up, typename = void>
-    struct __not_overloaded2 : true_type
-    {
-    };
-
-    // False if we can call T.operator<(U)
-    template <typename _Tp, typename _Up>
-    struct __not_overloaded2<_Tp, _Up, __void_t<decltype(std::declval<_Tp>().operator<(std::declval<_Up>()))>>
-        : false_type
-    {
-    };
-
-    // True if there is no overloaded operator< for these operands.
-    template <typename _Tp, typename _Up, typename = void>
-    struct __not_overloaded : __not_overloaded2<_Tp, _Up>
-    {
-    };
-
-    // False if we can call operator<(T,U)
-    template <typename _Tp, typename _Up>
-    struct __not_overloaded<_Tp, _Up, __void_t<decltype(operator<(std::declval<_Tp>(), std::declval<_Up>()))>>
-        : false_type
-    {
-    };
-
-    template <typename _Tp, typename _Up>
-    using __ptr_cmp = __and_<__not_overloaded<_Tp, _Up>,
-                             is_convertible<_Tp, const volatile void *>,
-                             is_convertible<_Up, const volatile void *>>;
-  };
 
   /// One of the @link comparison_functors comparison functors@endlink.
   template <>
@@ -798,7 +348,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   template <typename _Tp>
   struct bit_and : public binary_function<_Tp, _Tp, _Tp>
   {
-    _GLIBCXX14_CONSTEXPR()
+    _GLIBCXX14_CONSTEXPR
     _Tp
     operator()(const _Tp &__x, const _Tp &__y) const
     {
@@ -809,7 +359,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   template <typename _Tp>
   struct bit_or : public binary_function<_Tp, _Tp, _Tp>
   {
-    _GLIBCXX14_CONSTEXPR()
+    _GLIBCXX14_CONSTEXPR
     _Tp
     operator()(const _Tp &__x, const _Tp &__y) const
     {
@@ -820,7 +370,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   template <typename _Tp>
   struct bit_xor : public binary_function<_Tp, _Tp, _Tp>
   {
-    _GLIBCXX14_CONSTEXPR()
+    _GLIBCXX14_CONSTEXPR
     _Tp
     operator()(const _Tp &__x, const _Tp &__y) const
     {
@@ -831,7 +381,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   template <typename _Tp>
   struct bit_not : public unary_function<_Tp, _Tp>
   {
-    _GLIBCXX14_CONSTEXPR()
+    _GLIBCXX14_CONSTEXPR
     _Tp
     operator()(const _Tp &__x) const
     {
@@ -845,7 +395,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
   struct bit_and<void>
   {
     template <typename _Tp, typename _Up>
-    _GLIBCXX14_CONSTEXPR() auto
+    _GLIBCXX14_CONSTEXPR
+    auto
     operator()(_Tp &&__t, _Up &&__u) const
         noexcept(noexcept(std::forward<_Tp>(__t) & std::forward<_Up>(__u)))
             -> decltype(std::forward<_Tp>(__t) & std::forward<_Up>(__u))
@@ -860,7 +411,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
   struct bit_or<void>
   {
     template <typename _Tp, typename _Up>
-    _GLIBCXX14_CONSTEXPR() auto
+    _GLIBCXX14_CONSTEXPR
+    auto
     operator()(_Tp &&__t, _Up &&__u) const
         noexcept(noexcept(std::forward<_Tp>(__t) | std::forward<_Up>(__u)))
             -> decltype(std::forward<_Tp>(__t) | std::forward<_Up>(__u))
@@ -875,7 +427,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
   struct bit_xor<void>
   {
     template <typename _Tp, typename _Up>
-    _GLIBCXX14_CONSTEXPR() auto
+    _GLIBCXX14_CONSTEXPR
+    auto
     operator()(_Tp &&__t, _Up &&__u) const
         noexcept(noexcept(std::forward<_Tp>(__t) ^ std::forward<_Up>(__u)))
             -> decltype(std::forward<_Tp>(__t) ^ std::forward<_Up>(__u))
@@ -890,7 +443,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
   struct bit_not<void>
   {
     template <typename _Tp>
-    _GLIBCXX14_CONSTEXPR() auto
+    _GLIBCXX14_CONSTEXPR
+    auto
     operator()(_Tp &&__t) const
         noexcept(noexcept(~std::forward<_Tp>(__t)))
             -> decltype(~std::forward<_Tp>(__t))

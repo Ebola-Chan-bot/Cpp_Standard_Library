@@ -33,6 +33,7 @@
 #ifndef _HASHTABLE_POLICY_H
 #define _HASHTABLE_POLICY_H 1
 
+#include <tuple>		// for std::tuple, std::forward_as_tuple
 #include <bits/functional_hash.h> // for __is_fast_hash
 #include <bits/stl_algobase.h>	// for std::min, std::is_permutation.
 #include <ext/aligned_buffer.h>	// for __gnu_cxx::__aligned_buffer
@@ -40,6 +41,7 @@
 #include <ext/numeric_traits.h>	// for __gnu_cxx::__int_traits
 #include <utility>
 #include <iterator_base>
+#include <exception_defines.h>
 
 namespace std _GLIBCXX_VISIBILITY(default)
 {

@@ -61,6 +61,7 @@
 #if __cplusplus >= 201103L
 # include <type_traits>    // for std::__decay_and_strip
 # include <bits/move.h>    // for std::move / std::forward, and std::swap
+# include <bits/utility.h> // for std::tuple_element, std::tuple_size
 #endif
 #if __cplusplus >= 202002L
 # include <compare>
@@ -311,42 +312,6 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 #endif
 #endif // __cplusplus >= 201103L
 
-  /// @} relates pair
-
-  /**
-   *  @brief A convenience wrapper for creating a pair from two objects.
-   *  @param  __x  The first object.
-   *  @param  __y  The second object.
-   *  @return   A newly-constructed pair<> object of the appropriate type.
-   *
-   *  The C++98 standard says the objects are passed by reference-to-const,
-   *  but C++03 says they are passed by value (this was LWG issue #181).
-   *
-   *  Since C++11 they have been passed by forwarding reference and then
-   *  forwarded to the new members of the pair. To create a pair with a
-   *  member of reference type, pass a `reference_wrapper` to this function.
-   */
-  // _GLIBCXX_RESOLVE_LIB_DEFECTS
-  // 181.  make_pair() unintended behavior
-#if __cplusplus >= 201103L
-  // NB: DR 706.
-  template<typename _T1, typename _T2>
-    constexpr pair<typename __decay_and_strip<_T1>::__type,
-                   typename __decay_and_strip<_T2>::__type>
-    make_pair(_T1&& __x, _T2&& __y)
-    {
-      typedef typename __decay_and_strip<_T1>::__type __ds_type1;
-      typedef typename __decay_and_strip<_T2>::__type __ds_type2;
-      typedef pair<__ds_type1, __ds_type2> 	      __pair_type;
-      return __pair_type(std::forward<_T1>(__x), std::forward<_T2>(__y));
-    }
-#else
-  template<typename _T1, typename _T2>
-    inline pair<_T1, _T2>
-    make_pair(_T1 __x, _T2 __y)
-    { return pair<_T1, _T2>(__x, __y); }
-#endif
-
   /// @}
 
 #if __cplusplus >= 201103L
@@ -357,11 +322,6 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     struct __is_tuple_like_impl<pair<_T1, _T2>> : true_type
     { };
   /// @endcond
-
-  /// Partial specialization for std::pair
-  template<class _Tp1, class _Tp2>
-    struct tuple_size<pair<_Tp1, _Tp2>>
-    : public integral_constant<size_t, 2> { };
 
   /// Partial specialization for std::pair
   template<class _Tp1, class _Tp2>
@@ -379,11 +339,6 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     struct tuple_element<__i, tuple<_Types...>>;
 
 #if __cplusplus >= 201703L
-  template<typename _Tp1, typename _Tp2>
-    inline constexpr size_t tuple_size_v<pair<_Tp1, _Tp2>> = 2;
-
-  template<typename _Tp1, typename _Tp2>
-    inline constexpr size_t tuple_size_v<const pair<_Tp1, _Tp2>> = 2;
 
   template<typename _Tp>
     inline constexpr bool __is_pair = false;

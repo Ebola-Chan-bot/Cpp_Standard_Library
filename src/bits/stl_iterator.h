@@ -65,10 +65,7 @@
 #include <bits/stl_iterator_base_types.h>
 #include <ext/type_traits.h>
 #include <bits/move.h>
-
-#if __cplusplus >= 201103L
-# include <type_traits>
-#endif
+#include <iterator_base>
 
 #if __cplusplus >= 202002L
 # include <compare>

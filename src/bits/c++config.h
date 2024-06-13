@@ -69,9 +69,17 @@
 #define _GLIBCXX20_DEPRECATED
 #define _GLIBCXX20_DEPRECATED_SUGGEST(ALT)
 #endif
-// 137
-//  150
-//   Macro to warn about unused results.
+
+#if defined(__DEPRECATED) && (__cplusplus >= 202100L)
+#define _GLIBCXX23_DEPRECATED [[__deprecated__]]
+#define _GLIBCXX23_DEPRECATED_SUGGEST(ALT) _GLIBCXX_DEPRECATED_SUGGEST(ALT)
+#else
+#define _GLIBCXX23_DEPRECATED
+#define _GLIBCXX23_DEPRECATED_SUGGEST(ALT)
+#endif
+// 145
+//   150
+//    Macro to warn about unused results.
 #if __cplusplus >= 201703L
 #define _GLIBCXX_NODISCARD [[__nodiscard__]]
 #else
@@ -260,9 +268,11 @@ namespace __gnu_cxx
 
 #ifndef _GLIBCXX14_CONSTEXPR
 #if __cplusplus >= 201402L
-#define _GLIBCXX14_CONSTEXPR(Alternative) constexpr
+#define _GLIBCXX14_CONSTEXPR constexpr
+#define CSL_GLIBCXX14_CONSTEXPR(Alternative) constexpr
 #else
-#define _GLIBCXX14_CONSTEXPR(Alternative) Alternative
+#define _GLIBCXX14_CONSTEXPR
+#define CSL_GLIBCXX14_CONSTEXPR(Alternative) Alternative
 #endif
 #endif
 

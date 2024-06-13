@@ -38,13 +38,13 @@
 #else
 
 #include <bits/stl_pair.h>		 // for std::pair
-#include <bits/uses_allocator.h> // for std::allocator_arg_t
-#include <bits/utility.h>		 // for std::tuple_size etc.
+#include <bits/uses_allocator.h>	// for std::allocator_arg_t
 #include <bits/invoke.h>		 // for std::__invoke
 #if __cplusplus > 201703L
 #include <compare>
 #include <bits/ranges_util.h> // for std::ranges::subrange
 #endif
+#include <utility>
 
 #define __glibcxx_want_constexpr_tuple
 #define __glibcxx_want_tuple_element_t
@@ -1817,27 +1817,6 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		}
 
 	public:
-		_GLIBCXX20_CONSTEXPR
-		tuple &
-		operator=(__conditional_t<__assignable<const _Elements &...>(),
-								  const tuple &,
-								  const __nonesuch &>
-					  __in) noexcept(__nothrow_assignable<const _Elements &...>())
-		{
-			this->_M_assign(__in);
-			return *this;
-		}
-
-		_GLIBCXX20_CONSTEXPR
-		tuple &
-		operator=(__conditional_t<__assignable<_Elements...>(),
-								  tuple &&,
-								  __nonesuch &&>
-					  __in) noexcept(__nothrow_assignable<_Elements...>())
-		{
-			this->_M_assign(std::move(__in));
-			return *this;
-		}
 
 		template <typename... _UElements>
 		_GLIBCXX20_CONSTEXPR
@@ -2245,30 +2224,6 @@ namespace std _GLIBCXX_VISIBILITY(default)
 			__glibcxx_no_dangling_refs(_U1 &&, _U2 &&);
 		}
 
-		// Tuple assignment.
-
-		_GLIBCXX20_CONSTEXPR
-		tuple &
-		operator=(__conditional_t<__assignable<const _T1 &, const _T2 &>(),
-								  const tuple &,
-								  const __nonesuch &>
-					  __in) noexcept(__nothrow_assignable<const _T1 &, const _T2 &>())
-		{
-			this->_M_assign(__in);
-			return *this;
-		}
-
-		_GLIBCXX20_CONSTEXPR
-		tuple &
-		operator=(__conditional_t<__assignable<_T1, _T2>(),
-								  tuple &&,
-								  __nonesuch &&>
-					  __in) noexcept(__nothrow_assignable<_T1, _T2>())
-		{
-			this->_M_assign(std::move(__in));
-			return *this;
-		}
-
 		template <typename _U1, typename _U2>
 		_GLIBCXX20_CONSTEXPR
 			__enable_if_t<__assignable<const _U1 &, const _U2 &>(), tuple &>
@@ -2585,17 +2540,6 @@ namespace std _GLIBCXX_VISIBILITY(default)
 	}
 #endif					 // three_way_comparison
 
-	// NB: DR 705.
-	/// Create a tuple containing copies of the arguments
-	template <typename... _Elements>
-	constexpr tuple<typename __decay_and_strip<_Elements>::__type...>
-	make_tuple(_Elements &&...__args)
-	{
-		typedef tuple<typename __decay_and_strip<_Elements>::__type...>
-			__result_type;
-		return __result_type(std::forward<_Elements>(__args)...);
-	}
-
 	// _GLIBCXX_RESOLVE_LIB_DEFECTS
 	// 2275. Why is forward_as_tuple not constexpr?
 	/// Create a tuple of lvalue or rvalue references to the arguments
@@ -2676,13 +2620,6 @@ namespace std _GLIBCXX_VISIBILITY(default)
 	struct __make_1st_indices<>
 	{
 		typedef _Index_tuple<> __type;
-	};
-
-	template <typename _Tp, typename... _Tpls>
-	struct __make_1st_indices<_Tp, _Tpls...>
-	{
-		typedef typename _Build_index_tuple<tuple_size<
-			typename remove_reference<_Tp>::type>::value>::__type __type;
 	};
 
 	// Performs the actual concatenation by step-wise expanding tuple-like
@@ -2819,37 +2756,6 @@ namespace std _GLIBCXX_VISIBILITY(default)
 	struct uses_allocator<tuple<_Types...>, _Alloc> : true_type
 	{
 	};
-
-	// See stl_pair.h...
-	/** "piecewise construction" using a tuple of arguments for each member.
-	 *
-	 * @param __first Arguments for the first member of the pair.
-	 * @param __second Arguments for the second member of the pair.
-	 *
-	 * The elements of each tuple will be used as the constructor arguments
-	 * for the data members of the pair.
-	 */
-	template <class _T1, class _T2>
-	template <typename... _Args1, typename... _Args2>
-	_GLIBCXX20_CONSTEXPR inline pair<_T1, _T2>::
-		pair(piecewise_construct_t,
-			 tuple<_Args1...> __first, tuple<_Args2...> __second)
-		: pair(__first, __second,
-			   typename _Build_index_tuple<sizeof...(_Args1)>::__type(),
-			   typename _Build_index_tuple<sizeof...(_Args2)>::__type())
-	{
-	}
-
-	template <class _T1, class _T2>
-	template <typename... _Args1, size_t... _Indexes1,
-			  typename... _Args2, size_t... _Indexes2>
-	_GLIBCXX20_CONSTEXPR inline pair<_T1, _T2>::
-		pair(tuple<_Args1...> &__tuple1, tuple<_Args2...> &__tuple2,
-			 _Index_tuple<_Indexes1...>, _Index_tuple<_Indexes2...>)
-		: first(std::forward<_Args1>(std::get<_Indexes1>(__tuple1))...),
-		  second(std::forward<_Args2>(std::get<_Indexes2>(__tuple2))...)
-	{
-	}
 
 #if defined(__cpp_lib_apply) || defined(__cpp_lib_make_from_tuple) // C++ >= 17
 	// Unpack a std::tuple into a type trait and use its value.

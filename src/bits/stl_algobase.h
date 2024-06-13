@@ -58,16 +58,12 @@
 #ifndef _STL_ALGOBASE_H
 #define _STL_ALGOBASE_H 1
 
-#include <bits/c++config.h>
 #include <bits/functexcept.h>
-#include <ext/type_traits.h>
-#include <ext/numeric_traits.h>
 #include <bits/stl_pair.h>
 #include <bits/stl_iterator.h>
-#include <bits/move.h> // For std::swap
-#if __cplusplus >= 201103L
-# include <type_traits>
-#endif
+#include <bits/concept_check.h>
+#include <bits/predefined_ops.h>
+#include <bits/boost_concept_check.h>
 #if __cplusplus >= 201402L
 # include <bit> // std::__bit_width
 #endif
@@ -473,49 +469,7 @@ _GLIBCXX_END_NAMESPACE_CONTAINER
 
   template<typename _CharT, typename _Traits>
     class ostreambuf_iterator;
-
-  template<bool _IsMove, typename _CharT>
-    typename __gnu_cxx::__enable_if<__is_char<_CharT>::__value,
-	     ostreambuf_iterator<_CharT, char_traits<_CharT> > >::__type
-    __copy_move_a2(_CharT*, _CharT*,
-		   ostreambuf_iterator<_CharT, char_traits<_CharT> >);
-
-  template<bool _IsMove, typename _CharT>
-    typename __gnu_cxx::__enable_if<__is_char<_CharT>::__value,
-	     ostreambuf_iterator<_CharT, char_traits<_CharT> > >::__type
-    __copy_move_a2(const _CharT*, const _CharT*,
-		   ostreambuf_iterator<_CharT, char_traits<_CharT> >);
-
-  template<bool _IsMove, typename _CharT>
-    typename __gnu_cxx::__enable_if<__is_char<_CharT>::__value,
-				    _CharT*>::__type
-    __copy_move_a2(istreambuf_iterator<_CharT, char_traits<_CharT> >,
-		   istreambuf_iterator<_CharT, char_traits<_CharT> >, _CharT*);
-
-  template<bool _IsMove, typename _CharT>
-    typename __gnu_cxx::__enable_if<
-      __is_char<_CharT>::__value,
-      _GLIBCXX_STD_C::_Deque_iterator<_CharT, _CharT&, _CharT*> >::__type
-    __copy_move_a2(
-	istreambuf_iterator<_CharT, char_traits<_CharT> >,
-	istreambuf_iterator<_CharT, char_traits<_CharT> >,
-	_GLIBCXX_STD_C::_Deque_iterator<_CharT, _CharT&, _CharT*>);
 #endif // HOSTED
-
-  template<bool _IsMove, typename _II, typename _OI>
-    _GLIBCXX20_CONSTEXPR
-    inline _OI
-    __copy_move_a2(_II __first, _II __last, _OI __result)
-    {
-      typedef typename iterator_traits<_II>::iterator_category _Category;
-#ifdef __cpp_lib_is_constant_evaluated
-      if (std::is_constant_evaluated())
-	return std::__copy_move<_IsMove, false, _Category>::
-	  __copy_m(__first, __last, __result);
-#endif
-      return std::__copy_move<_IsMove, __memcpyable<_OI, _II>::__value,
-			      _Category>::__copy_m(__first, __last, __result);
-    }
 
   template<bool _IsMove,
 	   typename _Tp, typename _Ref, typename _Ptr, typename _OI>
@@ -536,23 +490,6 @@ _GLIBCXX_END_NAMESPACE_CONTAINER
       __is_random_access_iter<_II>::__value,
       _GLIBCXX_STD_C::_Deque_iterator<_Tp, _Tp&, _Tp*> >::__type
     __copy_move_a1(_II, _II, _GLIBCXX_STD_C::_Deque_iterator<_Tp, _Tp&, _Tp*>);
-
-  template<bool _IsMove, typename _II, typename _OI>
-    _GLIBCXX20_CONSTEXPR
-    inline _OI
-    __copy_move_a1(_II __first, _II __last, _OI __result)
-    { return std::__copy_move_a2<_IsMove>(__first, __last, __result); }
-
-  template<bool _IsMove, typename _II, typename _OI>
-    _GLIBCXX20_CONSTEXPR
-    inline _OI
-    __copy_move_a(_II __first, _II __last, _OI __result)
-    {
-      return std::__niter_wrap(__result,
-		std::__copy_move_a1<_IsMove>(std::__niter_base(__first),
-					     std::__niter_base(__last),
-					     std::__niter_base(__result)));
-    }
 
   template<bool _IsMove,
 	   typename _Ite, typename _Seq, typename _Cat, typename _OI>
@@ -597,54 +534,6 @@ _GLIBCXX_END_NAMESPACE_CONTAINER
 	    }
 	}
       return __result;
-    }
-
-#if _GLIBCXX_HOSTED
-  template<typename _CharT, typename _Size>
-    typename __gnu_cxx::__enable_if<
-      __is_char<_CharT>::__value, _CharT*>::__type
-    __copy_n_a(istreambuf_iterator<_CharT, char_traits<_CharT> >,
-	       _Size, _CharT*, bool);
-
-  template<typename _CharT, typename _Size>
-    typename __gnu_cxx::__enable_if<
-      __is_char<_CharT>::__value,
-      _GLIBCXX_STD_C::_Deque_iterator<_CharT, _CharT&, _CharT*> >::__type
-    __copy_n_a(istreambuf_iterator<_CharT, char_traits<_CharT> >, _Size,
-	       _GLIBCXX_STD_C::_Deque_iterator<_CharT, _CharT&, _CharT*>,
-	       bool);
-#endif
-
-  /**
-   *  @brief Copies the range [first,last) into result.
-   *  @ingroup mutating_algorithms
-   *  @param  __first  An input iterator.
-   *  @param  __last   An input iterator.
-   *  @param  __result An output iterator.
-   *  @return   result + (last - first)
-   *
-   *  This inline function will boil down to a call to @c memmove whenever
-   *  possible.  Failing that, if random access iterators are passed, then the
-   *  loop count will be known (and therefore a candidate for compiler
-   *  optimizations such as unrolling).  Result may not be contained within
-   *  [first,last); the copy_backward function should be used instead.
-   *
-   *  Note that the end of the output range is permitted to be contained
-   *  within [first,last).
-  */
-  template<typename _II, typename _OI>
-    _GLIBCXX20_CONSTEXPR
-    inline _OI
-    copy(_II __first, _II __last, _OI __result)
-    {
-      // concept requirements
-      __glibcxx_function_requires(_InputIteratorConcept<_II>)
-      __glibcxx_function_requires(_OutputIteratorConcept<_OI,
-	    typename iterator_traits<_II>::reference>)
-      __glibcxx_requires_can_increment_range(__first, __last, __result);
-
-      return std::__copy_move_a<__is_move_iterator<_II>::__value>
-	     (std::__miter_base(__first), std::__miter_base(__last), __result);
     }
 
 #if __cplusplus >= 201103L
@@ -767,30 +656,6 @@ _GLIBCXX_END_NAMESPACE_CONTAINER
 	}
     };
 
-  template<bool _IsMove, typename _BI1, typename _BI2>
-    _GLIBCXX20_CONSTEXPR
-    inline _BI2
-    __copy_move_backward_a2(_BI1 __first, _BI1 __last, _BI2 __result)
-    {
-      typedef typename iterator_traits<_BI1>::iterator_category _Category;
-#ifdef __cpp_lib_is_constant_evaluated
-      if (std::is_constant_evaluated())
-	return std::__copy_move_backward<_IsMove, false, _Category>::
-	  __copy_move_b(__first, __last, __result);
-#endif
-      return std::__copy_move_backward<_IsMove,
-				       __memcpyable<_BI2, _BI1>::__value,
-				       _Category>::__copy_move_b(__first,
-								 __last,
-								 __result);
-    }
-
-  template<bool _IsMove, typename _BI1, typename _BI2>
-    _GLIBCXX20_CONSTEXPR
-    inline _BI2
-    __copy_move_backward_a1(_BI1 __first, _BI1 __last, _BI2 __result)
-    { return std::__copy_move_backward_a2<_IsMove>(__first, __last, __result); }
-
   template<bool _IsMove,
 	   typename _Tp, typename _Ref, typename _Ptr, typename _OI>
     _OI
@@ -812,17 +677,6 @@ _GLIBCXX_END_NAMESPACE_CONTAINER
       _GLIBCXX_STD_C::_Deque_iterator<_Tp, _Tp&, _Tp*> >::__type
     __copy_move_backward_a1(_II, _II,
 			    _GLIBCXX_STD_C::_Deque_iterator<_Tp, _Tp&, _Tp*>);
-
-  template<bool _IsMove, typename _II, typename _OI>
-    _GLIBCXX20_CONSTEXPR
-    inline _OI
-    __copy_move_backward_a(_II __first, _II __last, _OI __result)
-    {
-      return std::__niter_wrap(__result,
-		std::__copy_move_backward_a1<_IsMove>
-		  (std::__niter_base(__first), std::__niter_base(__last),
-		   std::__niter_base(__result)));
-    }
 
   template<bool _IsMove,
 	   typename _Ite, typename _Seq, typename _Cat, typename _OI>
@@ -849,124 +703,6 @@ _GLIBCXX_END_NAMESPACE_CONTAINER
 		const ::__gnu_debug::_Safe_iterator<_IIte, _ISeq, _ICat>&,
 		const ::__gnu_debug::_Safe_iterator<_IIte, _ISeq, _ICat>&,
 		const ::__gnu_debug::_Safe_iterator<_OIte, _OSeq, _OCat>&);
-
-  /**
-   *  @brief Copies the range [first,last) into result.
-   *  @ingroup mutating_algorithms
-   *  @param  __first  A bidirectional iterator.
-   *  @param  __last   A bidirectional iterator.
-   *  @param  __result A bidirectional iterator.
-   *  @return   result - (last - first)
-   *
-   *  The function has the same effect as copy, but starts at the end of the
-   *  range and works its way to the start, returning the start of the result.
-   *  This inline function will boil down to a call to @c memmove whenever
-   *  possible.  Failing that, if random access iterators are passed, then the
-   *  loop count will be known (and therefore a candidate for compiler
-   *  optimizations such as unrolling).
-   *
-   *  Result may not be in the range (first,last].  Use copy instead.  Note
-   *  that the start of the output range may overlap [first,last).
-  */
-  template<typename _BI1, typename _BI2>
-    _GLIBCXX20_CONSTEXPR
-    inline _BI2
-    copy_backward(_BI1 __first, _BI1 __last, _BI2 __result)
-    {
-      // concept requirements
-      __glibcxx_function_requires(_BidirectionalIteratorConcept<_BI1>)
-      __glibcxx_function_requires(_Mutable_BidirectionalIteratorConcept<_BI2>)
-      __glibcxx_function_requires(_OutputIteratorConcept<_BI2,
-	    typename iterator_traits<_BI1>::reference>)
-      __glibcxx_requires_can_decrement_range(__first, __last, __result);
-
-      return std::__copy_move_backward_a<__is_move_iterator<_BI1>::__value>
-	     (std::__miter_base(__first), std::__miter_base(__last), __result);
-    }
-
-#if __cplusplus >= 201103L
-  /**
-   *  @brief Moves the range [first,last) into result.
-   *  @ingroup mutating_algorithms
-   *  @param  __first  A bidirectional iterator.
-   *  @param  __last   A bidirectional iterator.
-   *  @param  __result A bidirectional iterator.
-   *  @return   result - (last - first)
-   *
-   *  The function has the same effect as move, but starts at the end of the
-   *  range and works its way to the start, returning the start of the result.
-   *  This inline function will boil down to a call to @c memmove whenever
-   *  possible.  Failing that, if random access iterators are passed, then the
-   *  loop count will be known (and therefore a candidate for compiler
-   *  optimizations such as unrolling).
-   *
-   *  Result may not be in the range (first,last].  Use move instead.  Note
-   *  that the start of the output range may overlap [first,last).
-  */
-  template<typename _BI1, typename _BI2>
-    _GLIBCXX20_CONSTEXPR
-    inline _BI2
-    move_backward(_BI1 __first, _BI1 __last, _BI2 __result)
-    {
-      // concept requirements
-      __glibcxx_function_requires(_BidirectionalIteratorConcept<_BI1>)
-      __glibcxx_function_requires(_Mutable_BidirectionalIteratorConcept<_BI2>)
-      __glibcxx_function_requires(_OutputIteratorConcept<_BI2,
-	    typename iterator_traits<_BI1>::value_type&&>)
-      __glibcxx_requires_can_decrement_range(__first, __last, __result);
-
-      return std::__copy_move_backward_a<true>(std::__miter_base(__first),
-					       std::__miter_base(__last),
-					       __result);
-    }
-
-#define _GLIBCXX_MOVE_BACKWARD3(_Tp, _Up, _Vp) std::move_backward(_Tp, _Up, _Vp)
-#else
-#define _GLIBCXX_MOVE_BACKWARD3(_Tp, _Up, _Vp) std::copy_backward(_Tp, _Up, _Vp)
-#endif
-
-  template<typename _ForwardIterator, typename _Tp>
-    _GLIBCXX20_CONSTEXPR
-    inline typename
-    __gnu_cxx::__enable_if<!__is_scalar<_Tp>::__value, void>::__type
-    __fill_a1(_ForwardIterator __first, _ForwardIterator __last,
-	      const _Tp& __value)
-    {
-      for (; __first != __last; ++__first)
-	*__first = __value;
-    }
-
-  template<typename _ForwardIterator, typename _Tp>
-    _GLIBCXX20_CONSTEXPR
-    inline typename
-    __gnu_cxx::__enable_if<__is_scalar<_Tp>::__value, void>::__type
-    __fill_a1(_ForwardIterator __first, _ForwardIterator __last,
-	      const _Tp& __value)
-    {
-      const _Tp __tmp = __value;
-      for (; __first != __last; ++__first)
-	*__first = __tmp;
-    }
-
-  // Specialization: for char types we can use memset.
-  template<typename _Tp>
-    _GLIBCXX20_CONSTEXPR
-    inline typename
-    __gnu_cxx::__enable_if<__is_byte<_Tp>::__value, void>::__type
-    __fill_a1(_Tp* __first, _Tp* __last, const _Tp& __c)
-    {
-      const _Tp __tmp = __c;
-#if __cpp_lib_is_constant_evaluated
-      if (std::is_constant_evaluated())
-	{
-	  for (; __first != __last; ++__first)
-	    *__first = __tmp;
-	  return;
-	}
-#endif
-      if (const size_t __len = __last - __first)
-	__builtin_memset(__first, static_cast<unsigned char>(__tmp), __len);
-    }
 
   template<typename _Ite, typename _Cont, typename _Tp>
     _GLIBCXX20_CONSTEXPR
@@ -1074,29 +810,6 @@ _GLIBCXX_END_NAMESPACE_CONTAINER
   __extension__ inline _GLIBCXX_CONSTEXPR long long
   __size_to_integer(__float128 __n) { return (long long)__n; }
 #endif
-
-  template<typename _OutputIterator, typename _Size, typename _Tp>
-    _GLIBCXX20_CONSTEXPR
-    inline typename
-    __gnu_cxx::__enable_if<!__is_scalar<_Tp>::__value, _OutputIterator>::__type
-    __fill_n_a1(_OutputIterator __first, _Size __n, const _Tp& __value)
-    {
-      for (; __n > 0; --__n, (void) ++__first)
-	*__first = __value;
-      return __first;
-    }
-
-  template<typename _OutputIterator, typename _Size, typename _Tp>
-    _GLIBCXX20_CONSTEXPR
-    inline typename
-    __gnu_cxx::__enable_if<__is_scalar<_Tp>::__value, _OutputIterator>::__type
-    __fill_n_a1(_OutputIterator __first, _Size __n, const _Tp& __value)
-    {
-      const _Tp __tmp = __value;
-      for (; __n > 0; --__n, (void) ++__first)
-	*__first = __tmp;
-      return __first;
-    }
 
   template<typename _Ite, typename _Seq, typename _Cat, typename _Size,
 	   typename _Tp>
@@ -1225,18 +938,6 @@ _GLIBCXX_END_NAMESPACE_CONTAINER
       __is_random_access_iter<_II>::__value, bool>::__type
     __equal_aux1(_II, _II,
 		_GLIBCXX_STD_C::_Deque_iterator<_Tp, _Ref, _Ptr>);
-
-  template<typename _II1, typename _II2>
-    _GLIBCXX20_CONSTEXPR
-    inline bool
-    __equal_aux1(_II1 __first1, _II1 __last1, _II2 __first2)
-    {
-      typedef typename iterator_traits<_II1>::value_type _ValueType1;
-      const bool __simple = ((__is_integer<_ValueType1>::__value
-			      || __is_pointer<_ValueType1>::__value)
-			     && __memcmpable<_II1, _II2>::__value);
-      return std::__equal<__simple>::equal(__first1, __last1, __first2);
-    }
 
   template<typename _II1, typename _II2>
     _GLIBCXX20_CONSTEXPR
@@ -1388,31 +1089,6 @@ _GLIBCXX_END_NAMESPACE_CONTAINER
 	  return ptrdiff_t(__len1 - __len2);
 	}
     };
-
-  template<typename _II1, typename _II2>
-    _GLIBCXX20_CONSTEXPR
-    inline bool
-    __lexicographical_compare_aux1(_II1 __first1, _II1 __last1,
-				   _II2 __first2, _II2 __last2)
-    {
-      typedef typename iterator_traits<_II1>::value_type _ValueType1;
-      typedef typename iterator_traits<_II2>::value_type _ValueType2;
-      const bool __simple =
-	(__is_memcmp_ordered_with<_ValueType1, _ValueType2>::__value
-	 && __is_pointer<_II1>::__value
-	 && __is_pointer<_II2>::__value
-#if __cplusplus > 201703L && __glibcxx_concepts
-	 // For C++20 iterator_traits<volatile T*>::value_type is non-volatile
-	 // so __is_byte<T> could be true, but we can't use memcmp with
-	 // volatile data.
-	 && !is_volatile_v<remove_reference_t<iter_reference_t<_II1>>>
-	 && !is_volatile_v<remove_reference_t<iter_reference_t<_II2>>>
-#endif
-	 );
-
-      return std::__lexicographical_compare<__simple>::__lc(__first1, __last1,
-							    __first2, __last2);
-    }
 
   template<typename _Tp1, typename _Ref1, typename _Ptr1,
 	   typename _Tp2>
@@ -1802,15 +1478,6 @@ _GLIBCXX_BEGIN_NAMESPACE_ALGO
     }
 
 #if __cpp_lib_three_way_comparison
-  // Both iterators refer to contiguous ranges of unsigned narrow characters,
-  // or std::byte, or big-endian unsigned integers, suitable for comparison
-  // using memcmp.
-  template<typename _Iter1, typename _Iter2>
-    concept __memcmp_ordered_with
-      = (__is_memcmp_ordered_with<iter_value_t<_Iter1>,
-				  iter_value_t<_Iter2>>::__value)
-	  && contiguous_iterator<_Iter1> && contiguous_iterator<_Iter2>;
-
   // Return a struct with two members, initialized to the smaller of x and y
   // (or x if they compare equal) and the result of the comparison x <=> y.
   template<typename _Tp>
