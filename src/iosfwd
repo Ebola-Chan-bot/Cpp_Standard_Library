@@ -17,12 +17,13 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 #pragma once
-//iosfwd只负责声明。在设计上应该避免包含其它头文件（除非你确信不会造成循环包含）。包含iosfwd的文件应该负责包含iosfwd依赖的定义（如果需要）。如果依赖iosfwd中的默认参数，则必须包含iosfwd，定义文件中则不应该包含这些默认参数。
+// iosfwd只负责声明。在设计上应该避免包含其它头文件（除非你确信不会造成循环包含）。包含iosfwd的文件应该负责包含iosfwd依赖的定义（如果需要）。如果依赖iosfwd中的默认参数，则必须包含iosfwd，定义文件中则不应该包含这些默认参数。
 #ifndef ARDUINO_ARCH_AVR
 #include_next <iosfwd>
 #include "system_configuration.h"
 #endif
 #include <Stream.h>
+#include <bits/allocator.h>
 
 #pragma GCC visibility push(default)
 

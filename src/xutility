@@ -549,37 +549,10 @@ concept indirectly_swappable = indirectly_readable<_It1> && indirectly_readable<
 	}
 
 	template <class _Iter, class = void>
-	_INLINE_VAR constexpr bool _Unwrappable_v = false;
-
-	template <class _Iter>
-	_INLINE_VAR constexpr bool _Unwrappable_v<_Iter,
-											  void_t<decltype(_STD declval<_Remove_cvref_t<_Iter> &>()._Seek_to(_STD declval<_Iter>()._Unwrapped()))>> =
-		_Allow_inheriting_unwrap_v<_Remove_cvref_t<_Iter>>;
-
-	template <class _Iter, class = void>
 	_INLINE_VAR constexpr bool _Has_nothrow_unwrapped = false;
 	template <class _Iter>
 	_INLINE_VAR constexpr bool _Has_nothrow_unwrapped<_Iter, void_t<decltype(_STD declval<_Iter>()._Unwrapped())>> =
 		noexcept(_STD declval<_Iter>()._Unwrapped());
-
-	template <class _Iter>
-	_NODISCARD constexpr decltype(auto) _Get_unwrapped(_Iter &&_It) noexcept(
-		!_Unwrappable_v<_Iter> || _Has_nothrow_unwrapped<_Iter>)
-	{
-		// unwrap an iterator previously subjected to _Adl_verify_range or otherwise validated
-		if constexpr (is_pointer_v<decay_t<_Iter>>)
-		{ // special-case pointers and arrays
-			return _It + 0;
-		}
-		else if constexpr (_Unwrappable_v<_Iter>)
-		{
-			return static_cast<_Iter &&>(_It)._Unwrapped();
-		}
-		else
-		{
-			return static_cast<_Iter &&>(_It);
-		}
-	}
 #else
 #if _ITERATOR_DEBUG_LEVEL != 0
 	template <class _Ty>
@@ -624,18 +597,6 @@ concept indirectly_swappable = indirectly_readable<_It1> && indirectly_readable<
 	}
 
 	template <class _Iter, class = void>
-	struct _Unwrappable
-	{
-		static constexpr bool value = false;
-	};
-
-	template <class _Iter>
-	struct _Unwrappable<_Iter, void_t<decltype(_STD declval<_Remove_cvref_t<_Iter> &>()._Seek_to(_STD declval<_Iter>()._Unwrapped()))>>
-	{
-		static constexpr bool value = _Allow_inheriting_unwrap<_Remove_cvref_t<_Iter>>::value;
-	};
-
-	template <class _Iter, class = void>
 	struct _Has_nothrow_unwrapped
 	{
 		static constexpr bool value = false;
@@ -645,21 +606,6 @@ concept indirectly_swappable = indirectly_readable<_It1> && indirectly_readable<
 	{
 		static constexpr bool value = noexcept(_STD declval<_Iter>()._Unwrapped());
 	};
-	template <class _Iter, enable_if_t<!(is_pointer<decay_t<_Iter>>::value || _Unwrappable<_Iter>::value), int> = 0>
-	constexpr auto _Get_unwrapped(_Iter &&_It) noexcept
-	{
-		return static_cast<_Iter &&>(_It);
-	}
-	template <class _Iter, enable_if_t<is_pointer<decay_t<_Iter>>::value, int> = 0>
-	constexpr auto _Get_unwrapped(_Iter &&_It) noexcept
-	{
-		return _It + 0;
-	}
-	template <class _Iter, enable_if_t<_Unwrappable<_Iter>::value, int> = 0>
-	constexpr auto _Get_unwrapped(_Iter &&_It) noexcept
-	{
-		return static_cast<_Iter &&>(_It)._Unwrapped();
-	}
 #endif
 	// 1185
 	//  1822

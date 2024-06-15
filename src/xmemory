@@ -6,16 +6,6 @@
 namespace std
 {
 // 76
-#if _HAS_CXX14
-	template <class _Ty>
-	_INLINE_VAR constexpr size_t _New_alignof = (_STD max)(alignof(_Ty), __STDCPP_DEFAULT_NEW_ALIGNMENT__);
-#else
-	template <class _Ty>
-	struct _New_alignof
-	{
-		static constexpr size_t value = (_STD max)(alignof(_Ty), __STDCPP_DEFAULT_NEW_ALIGNMENT__);
-	};
-#endif
 	struct _Default_allocate_traits
 	{
 		/*Arduino不支持：__declspec(allocator)*/ static
@@ -158,26 +148,6 @@ namespace std
 		}
 	}
 #undef _HAS_ALIGNED_NEW
-
-	template <class _Ty, class... _Types>
-	_Ty *_Global_new(_Types &&..._Args)
-	{ // acts as "new" while disallowing user overload selection
-		struct _NODISCARD _Guard_type
-		{
-			void *_Result;
-			~_Guard_type()
-			{
-				if (_Result)
-				{
-					_Deallocate<_New_alignof<_Ty>>(_Result, sizeof(_Ty));
-				}
-			}
-		};
-
-		_Guard_type _Guard{_Allocate<_New_alignof<_Ty>>(sizeof(_Ty))};
-		::new (_Guard._Result) _Ty(_STD forward<_Types>(_Args)...);
-		return static_cast<_Ty *>(_STD exchange(_Guard._Result, nullptr));
-	}
 	// 285
 	//  1356
 	struct _Zero_then_variadic_args_t

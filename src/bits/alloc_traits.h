@@ -36,11 +36,14 @@
 #if __cplusplus >= 201103L
 # include <bits/ptr_traits.h>
 # include <ext/numeric_traits.h>
+# if _GLIBCXX_HOSTED
+#  include <bits/allocator.h>
+# endif
 # if __cpp_exceptions
 #  include <bits/stl_iterator.h> // __make_move_if_noexcept_iterator
 # endif
 #endif
-#include<memory>
+
 namespace std _GLIBCXX_VISIBILITY(default)
 {
 _GLIBCXX_BEGIN_NAMESPACE_VERSION
