@@ -128,7 +128,7 @@ namespace __gnu_cxx
 
 namespace
 {
-  static _GLIBCXX14_CONSTEXPR() std::size_t
+  static _GLIBCXX14_CONSTEXPR std::size_t
   buffer_size_in_bytes(std::size_t obj_count, std::size_t obj_size) noexcept
   {
     // N * (S * P + R + D)

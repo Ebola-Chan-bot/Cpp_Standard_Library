@@ -317,5 +317,5 @@ _GLIBCXX_END_NAMESPACE_VERSION
 
 #endif // _ENABLE_SPECIAL_MEMBERS_H
 #else
-#include<bits/enable_special_members.h>
+#include_next <bits/enable_special_members.h>
 #endif

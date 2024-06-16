@@ -1900,7 +1900,8 @@ namespace std
     {
         using type = _Tp const volatile;
     };
-
+#endif // ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
 #ifdef __cpp_lib_transformation_trait_aliases // C++ >= 14
     /// Alias template for remove_const
     template <typename _Tp>
@@ -1926,6 +1927,8 @@ namespace std
     template <typename _Tp>
     using add_cv_t = typename add_cv<_Tp>::type;
 #endif
+#endif //! defined ARDUINO_ARCH_ESP32
+#ifdef ARDUINO_ARCH_AVR
     // 1683
     // 1728
     // Sign modifications.
@@ -2303,8 +2306,8 @@ namespace std
     struct make_signed<bool volatile>;
     template <>
     struct make_signed<bool const volatile>;
-
-#if __cplusplus > 201103L
+#endif // ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
     /// Alias template for make_signed
     template <typename _Tp>
     using make_signed_t = typename make_signed<_Tp>::type;
@@ -2312,8 +2315,8 @@ namespace std
     /// Alias template for make_unsigned
     template <typename _Tp>
     using make_unsigned_t = typename make_unsigned<_Tp>::type;
-#endif
-
+#endif //! defined ARDUINO_ARCH_ESP32
+#ifdef ARDUINO_ARCH_AVR
     // Array modifications.
 
     /// remove_extent
@@ -2353,8 +2356,8 @@ namespace std
     {
         using type = typename remove_all_extents<_Tp>::type;
     };
-
-#if __cplusplus > 201103L
+#endif // ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
     /// Alias template for remove_extent
     template <typename _Tp>
     using remove_extent_t = typename remove_extent<_Tp>::type;
@@ -2362,8 +2365,9 @@ namespace std
     /// Alias template for remove_all_extents
     template <typename _Tp>
     using remove_all_extents_t = typename remove_all_extents<_Tp>::type;
-#endif
-    // 2101
+// 2101
+#endif //! defined ARDUINO_ARCH_ESP32
+#ifdef ARDUINO_ARCH_AVR
     //   2155
     template <std::size_t _Len>
     struct __aligned_storage_msa
@@ -2403,7 +2407,8 @@ namespace std
             } __align;
         };
     };
-
+#endif // ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
     template <typename... _Types>
     struct __strictest_alignment
     {
@@ -2455,7 +2460,9 @@ namespace std
         /// The storage.
         using type = typename aligned_storage<_S_len, alignment_value>::type;
     };
-    // 2242
+// 2242
+#endif //! defined ARDUINO_ARCH_ESP32
+#ifdef ARDUINO_ARCH_AVR
     //  2246
     /// @cond undocumented
 
@@ -2893,9 +2900,10 @@ namespace std
               _Functor, _ArgTypes...>::type
     {
     };
-    // 2667
+// 2667
+#endif // ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
 // 2677
-#if __cplusplus >= 201402L
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     /// Alias template for aligned_storage
@@ -2930,8 +2938,8 @@ namespace std
     /// Alias template for result_of
     template <typename _Tp>
     using result_of_t = typename result_of<_Tp>::type;
-#endif // C++14
-
+#endif // !defined ARDUINO_ARCH_ESP32
+#ifdef ARDUINO_ARCH_AVR
 #ifdef __cpp_lib_void_t // C++ >= 17 || GNU++ >= 11
     /// A metafunction that always yields void, used for detecting valid types.
     template <typename...>

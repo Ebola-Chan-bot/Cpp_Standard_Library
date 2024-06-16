@@ -224,7 +224,7 @@
 #undef __glibcxx_want_null_iterators
 
 #if !defined(__cpp_lib_transformation_trait_aliases)
-#if (__cplusplus >= 201402L)
+#if (__cplusplus >= 201402L)||defined ARDUINO_ARCH_SAM
 #define __glibcxx_transformation_trait_aliases 201304L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_transformation_trait_aliases)
 #define __cpp_lib_transformation_trait_aliases 201304L

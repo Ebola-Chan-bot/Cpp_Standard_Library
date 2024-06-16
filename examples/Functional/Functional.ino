@@ -6,6 +6,7 @@
 #include <memory>
 #include <dynarray>
 #include <cmath>
+#include <unordered_map>
 void Translate(std::chrono::hours H) {
   std::cout << std::chrono::duration_cast<std::chrono::seconds>(H + H).count() << std::endl;
 }
@@ -18,6 +19,8 @@ void setup() {
     Translate(H);
   };
   std::dynarray<int> D(std::log2(1024));
+  std::unordered_map<int,std::function<void()>>UIF;
+  UIF[1]=[](){};
 #ifdef __EXCEPTIONS
   try {
     throw 0;

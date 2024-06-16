@@ -16,8 +16,7 @@
 */
 #pragma once
 #ifndef ARDUINO_ARCH_AVR
-#include "Cpp_Standard_Library.h"
-#include CSL_Official(algorithm)
+#include_next <algorithm>
 #else
 #include "iterator"
 #include "functional"

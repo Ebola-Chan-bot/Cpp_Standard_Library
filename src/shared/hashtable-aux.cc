@@ -1,4 +1,4 @@
-#ifdef ARDUINO_ARCH_SAM
+#ifndef ARDUINO_ARCH_ESP32
 // std::__detail and std::tr1::__detail definitions -*- C++ -*-
 
 // Copyright (C) 2007-2024 Free Software Foundation, Inc.
