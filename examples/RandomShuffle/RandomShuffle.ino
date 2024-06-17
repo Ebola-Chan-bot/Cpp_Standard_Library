@@ -3,10 +3,11 @@
 #include <iostream>
 #include <random>
 #include <algorithm>
+#include <utility>
 template<typename T>
 struct MakeArray {};
 template<size_t... V>
-struct MakeArray< std::integer_sequence<size_t, V...>> {
+struct MakeArray<std::integer_sequence<size_t, V...>> {
   static size_t value[sizeof...(V)];
 };
 template<size_t... V>

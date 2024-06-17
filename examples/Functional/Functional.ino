@@ -21,7 +21,7 @@ void setup() {
   std::dynarray<int> D(std::log2(1024));
   std::unordered_map<int,std::function<void()>>UIF;
   UIF[1]=[](){};
-#ifdef __EXCEPTIONS
+#if __cpp_exceptions
   try {
     throw 0;
   } catch (int E) {}

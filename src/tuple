@@ -38,7 +38,7 @@
 #else
 
 #include <bits/stl_pair.h>		 // for std::pair
-#include <bits/uses_allocator.h>	// for std::allocator_arg_t
+#include <bits/uses_allocator.h> // for std::allocator_arg_t
 #include <bits/invoke.h>		 // for std::__invoke
 #if __cplusplus > 201703L
 #include <compare>
@@ -1817,7 +1817,6 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		}
 
 	public:
-
 		template <typename... _UElements>
 		_GLIBCXX20_CONSTEXPR
 			__enable_if_t<__assignable<const _UElements &...>(), tuple &>
@@ -2756,6 +2755,37 @@ namespace std _GLIBCXX_VISIBILITY(default)
 	struct uses_allocator<tuple<_Types...>, _Alloc> : true_type
 	{
 	};
+
+	// See stl_pair.h...
+	/** "piecewise construction" using a tuple of arguments for each member.
+	 *
+	 * @param __first Arguments for the first member of the pair.
+	 * @param __second Arguments for the second member of the pair.
+	 *
+	 * The elements of each tuple will be used as the constructor arguments
+	 * for the data members of the pair.
+	 */
+	template <class _T1, class _T2>
+	template <typename... _Args1, typename... _Args2>
+	_GLIBCXX20_CONSTEXPR inline pair<_T1, _T2>::
+		pair(piecewise_construct_t,
+			 tuple<_Args1...> __first, tuple<_Args2...> __second)
+		: pair(__first, __second,
+			   typename _Build_index_tuple<sizeof...(_Args1)>::__type(),
+			   typename _Build_index_tuple<sizeof...(_Args2)>::__type())
+	{
+	}
+
+	template <class _T1, class _T2>
+	template <typename... _Args1, size_t... _Indexes1,
+			  typename... _Args2, size_t... _Indexes2>
+	_GLIBCXX20_CONSTEXPR inline pair<_T1, _T2>::
+		pair(tuple<_Args1...> &__tuple1, tuple<_Args2...> &__tuple2,
+			 _Index_tuple<_Indexes1...>, _Index_tuple<_Indexes2...>)
+		: first(std::forward<_Args1>(std::get<_Indexes1>(__tuple1))...),
+		  second(std::forward<_Args2>(std::get<_Indexes2>(__tuple2))...)
+	{
+	}
 
 #if defined(__cpp_lib_apply) || defined(__cpp_lib_make_from_tuple) // C++ >= 17
 	// Unpack a std::tuple into a type trait and use its value.

@@ -65,6 +65,7 @@
 #include <bits/predefined_ops.h>
 #include <bits/boost_concept_check.h>
 #include <debug/debug.h>
+#include <algorithm>
 #if __cplusplus >= 201402L
 # include <bit> // std::__bit_width
 #endif
@@ -854,65 +855,6 @@ _GLIBCXX_END_NAMESPACE_CONTAINER
 	}
       return __first1 == __last1 && __first2 != __last2;
     }
-
-  template<bool _BoolType>
-    struct __lexicographical_compare
-    {
-      template<typename _II1, typename _II2>
-	_GLIBCXX20_CONSTEXPR
-	static bool
-	__lc(_II1 __first1, _II1 __last1, _II2 __first2, _II2 __last2)
-	{
-	  using __gnu_cxx::__ops::__iter_less_iter;
-	  return std::__lexicographical_compare_impl(__first1, __last1,
-						     __first2, __last2,
-						     __iter_less_iter());
-	}
-
-      template<typename _II1, typename _II2>
-	_GLIBCXX20_CONSTEXPR
-	static int
-	__3way(_II1 __first1, _II1 __last1, _II2 __first2, _II2 __last2)
-	{
-	  while (__first1 != __last1)
-	    {
-	      if (__first2 == __last2)
-		return +1;
-	      if (*__first1 < *__first2)
-		return -1;
-	      if (*__first2 < *__first1)
-		return +1;
-	      ++__first1;
-	      ++__first2;
-	    }
-	  return int(__first2 == __last2) - 1;
-	}
-    };
-
-  template<>
-    struct __lexicographical_compare<true>
-    {
-      template<typename _Tp, typename _Up>
-	_GLIBCXX20_CONSTEXPR
-	static bool
-	__lc(const _Tp* __first1, const _Tp* __last1,
-	     const _Up* __first2, const _Up* __last2)
-	{ return __3way(__first1, __last1, __first2, __last2) < 0; }
-
-      template<typename _Tp, typename _Up>
-	_GLIBCXX20_CONSTEXPR
-	static ptrdiff_t
-	__3way(const _Tp* __first1, const _Tp* __last1,
-	       const _Up* __first2, const _Up* __last2)
-	{
-	  const size_t __len1 = __last1 - __first1;
-	  const size_t __len2 = __last2 - __first2;
-	  if (const size_t __len = std::min(__len1, __len2))
-	    if (int __result = std::__memcmp(__first1, __first2, __len))
-	      return __result;
-	  return ptrdiff_t(__len1 - __len2);
-	}
-    };
 
   template<typename _Tp1, typename _Ref1, typename _Ptr1,
 	   typename _Tp2>

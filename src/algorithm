@@ -1,3 +1,5 @@
+#pragma once
+#ifdef ARDUINO_ARCH_AVR
 /*	Copyright (C) 2004 Garrett A. Kajmowicz
 	This file is part of the uClibc++ Library.
 	This library is free software; you can redistribute it and/or
@@ -14,13 +16,10 @@
 	License along with this library; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-#pragma once
-#ifndef ARDUINO_ARCH_AVR
-#include_next <algorithm>
-#else
-#include "iterator"
-#include "functional"
-#include "xutility"
+#include <iterator>
+#include <functional>
+#include <xutility>
+#include <bits/stl_pair.h>
 // Elliminate any previously defined macro
 #undef min
 #undef max
@@ -1959,43 +1958,9 @@ namespace std
 			}
 		}
 	}
-	// 4949
-	template <class _RanIt, class _RngFn>
-	void _Random_shuffle1(_RanIt _First, _RanIt _Last, _RngFn &_RngFunc)
-	{
-		// shuffle [_First, _Last) using random function _RngFunc
-		_Adl_verify_range(_First, _Last);
-		auto _UFirst = _Get_unwrapped(_First);
-		const auto _ULast = _Get_unwrapped(_Last);
-		if (_UFirst == _ULast)
-		{
-			return;
-		}
-
-		using _Diff = _Iter_diff_t<_RanIt>;
-		auto _UTarget = _UFirst;
-		_Diff _Target_index = 1;
-		for (; ++_UTarget != _ULast; ++_Target_index)
-		{ // randomly place an element from [_First, _Target] at _Target
-			_Diff _Off = _RngFunc(static_cast<_Diff>(_Target_index + 1));
-			_STL_ASSERT(0 <= _Off && _Off <= _Target_index, "random value out of range");
-			if (_Off != _Target_index)
-			{ // avoid self-move-assignment
-				_STD iter_swap(_UTarget, _UFirst + _Off);
-			}
-		}
-	}
-
-	template <class _RanIt, class _Urng>
-	void shuffle(_RanIt _First, _RanIt _Last, _Urng &&_Func)
-	{ // shuffle [_First, _Last) using URNG _Func
-		using _Urng0 = remove_reference_t<_Urng>;
-		_Rng_from_urng<_Iter_diff_t<_RanIt>, _Urng0> _RngFunc(_Func);
-		_Random_shuffle1(_First, _Last, _RngFunc);
-	}
-	// 4978
 }
 
 #pragma GCC visibility pop
-
+#else
+#include_next <algorithm>
 #endif

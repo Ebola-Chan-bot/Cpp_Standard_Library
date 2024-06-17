@@ -51,3 +51,4 @@ template <class U>
 struct is_assignable<void const volatile, U> : public integral_constant<bool, false>
 {
 };
+#define __is_assignable(...) is_assignable<__VA_ARGS__>::value

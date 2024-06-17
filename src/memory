@@ -20,6 +20,7 @@
 #ifdef ARDUINO_ARCH_AVR
 #include <iterator_base>
 #include <functional>
+#include <bits/stl_pair.h>
 #else
 #include_next <memory>
 #endif

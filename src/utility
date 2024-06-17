@@ -1,3 +1,5 @@
+#pragma once
+#ifdef ARDUINO_ARCH_AVR
 /*	Copyright (C) 2004 Garrett A. Kajmowicz
 	This file is part of the uClibc++ Library.
 
@@ -16,17 +18,10 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 */
-#pragma once
-#ifdef ARDUINO_ARCH_AVR
-#include "initializer_list"
-#include "type_traits"
+#include <initializer_list>
+#include <type_traits>
 #include <bits/utility.h>
-#include "sal.h"
-#else
-#include "Cpp_Standard_Library.h"
-#include CSL_Official(utility)
-#include "yvals_core.h"
-#endif
+
 #pragma GCC visibility push(default)
 
 namespace std
@@ -59,59 +54,6 @@ namespace std
 		}
 	}
 
-	template <class T1, class T2>
-	struct _UCXXEXPORT pair
-	{
-		typedef T1 first_type;
-		typedef T2 second_type;
-
-		T1 first;
-		T2 second;
-		pair() : first(), second() {}
-		pair(const T1 &x, const T2 &y) : first(x), second(y) {}
-		template <class U, class V>
-		pair(const pair<U, V> &p) : first(p.first), second(p.second) {}
-	};
-
-	template <class T1, class T2>
-	bool operator==(const pair<T1, T2> &x, const pair<T1, T2> &y)
-	{
-		using namespace rel_ops;
-		return (x.first == y.first && x.second == y.second);
-	}
-	template <class T1, class T2>
-	bool operator<(const pair<T1, T2> &x, const pair<T1, T2> &y)
-	{
-		return x.first < y.first || (!(y.first < x.first) && x.second < y.second);
-	}
-	template <class T1, class T2>
-	bool operator!=(const pair<T1, T2> &x, const pair<T1, T2> &y)
-	{
-		return !(x == y);
-	}
-	template <class T1, class T2>
-	bool operator>(const pair<T1, T2> &x, const pair<T1, T2> &y)
-	{
-		return y < x;
-	}
-	template <class T1, class T2>
-	bool operator>=(const pair<T1, T2> &x, const pair<T1, T2> &y)
-	{
-		return !(x < y);
-	}
-	template <class T1, class T2>
-	bool operator<=(const pair<T1, T2> &x, const pair<T1, T2> &y)
-	{
-		return !(y < x);
-	}
-	template <class T1, class T2>
-	pair<T1, T2> make_pair(const T1 &x, const T2 &y)
-	{
-		return pair<T1, T2>(x, y);
-	}
-#endif
-#ifdef ARDUINO_ARCH_AVR
-
 	_EXPORT_STD template <class _Ty, class _Pr>
 	_NODISCARD constexpr _Ty(max)(initializer_list<_Ty>, _Pr); // implemented in <algorithm>
 
@@ -132,3 +74,9 @@ namespace std
 #endif
 }
 #pragma GCC visibility pop
+#else
+#include_next <utility>
+#endif
+#ifdef ARDUINO_ARCH_SAM
+#include <bits/utility.h>
+#endif

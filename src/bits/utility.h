@@ -1,5 +1,4 @@
 #pragma once
-#ifdef ARDUINO_ARCH_AVR
 // Utilities used throughout the library -*- C++ -*-
 
 // Copyright (C) 2004-2024 Free Software Foundation, Inc.
@@ -32,20 +31,20 @@
  *  so they don't need to include the whole of `<utility>`.
  */
 
-#ifndef _GLIBCXX_UTILITY_H
-#define _GLIBCXX_UTILITY_H 1
-
 #pragma GCC system_header
 
 #if __cplusplus >= 201103L
 
+#ifdef ARDUINO_ARCH_ESP32
+#include_next <bits/utility.h>
+#else
 #include <type_traits>
 #include <bits/move.h>
-
+#endif
 namespace std _GLIBCXX_VISIBILITY(default)
 {
 	_GLIBCXX_BEGIN_NAMESPACE_VERSION
-
+#ifdef ARDUINO_ARCH_AVR
 	/// Finds the size of a given tuple type.
 	template <typename _Tp>
 	struct tuple_size;
@@ -142,10 +141,10 @@ namespace std _GLIBCXX_VISIBILITY(default)
 	template <size_t __i, typename _Tp>
 	using tuple_element_t = typename tuple_element<__i, _Tp>::type;
 #endif
-
+#endif // ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
 #ifdef __glibcxx_integer_sequence // C++ >= 14
 
-#ifndef ARDUINO_ARCH_ESP32
 	_EXPORT_STD template <class _Ty, _Ty... _Vals>
 	struct integer_sequence
 	{ // sequence of integer parameters
@@ -166,13 +165,35 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 	_EXPORT_STD template <size_t _Size>
 	using make_index_sequence = make_integer_sequence<size_t, _Size>;
-#endif
 
 	/// Alias template index_sequence_for
 	template <typename... _Types>
 	using index_sequence_for = make_index_sequence<sizeof...(_Types)>;
-#endif // __glibcxx_integer_sequence
+#ifdef ARDUINO_ARCH_AVR
+	// Stores a tuple of indices.  Also used by bind() to extract the elements
+	// in a tuple.
+	template <std::size_t... _Indexes>
+	struct _Index_tuple
+	{
+		typedef _Index_tuple<_Indexes..., sizeof...(_Indexes)> __next;
+	};
 
+	// Builds an _Index_tuple<0, 1, 2, ..., _Num-1>.
+	template <std::size_t _Num>
+	struct _Build_index_tuple
+	{
+		typedef typename _Build_index_tuple<_Num - 1>::__type::__next __type;
+	};
+
+	template <>
+	struct _Build_index_tuple<0>
+	{
+		typedef _Index_tuple<> __type;
+	};
+#endif // ARDUINO_ARCH_AVR
+#endif // __glibcxx_integer_sequence
+#endif //! defined ARDUINO_ARCH_ESP32
+#ifdef ARDUINO_ARCH_AVR
 #if __cplusplus >= 201703L
 
 	struct in_place_t
@@ -279,12 +300,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		inline constexpr bool __is_subrange = false;
 	} // namespace __detail
 #endif
-
+#endif // ARDUINO_ARCH_AVR
 	_GLIBCXX_END_NAMESPACE_VERSION
 } // namespace
 
 #endif // C++11
-#endif /* _GLIBCXX_UTILITY_H */
-#else
-#include_next <bits/utility.h>
-#endif

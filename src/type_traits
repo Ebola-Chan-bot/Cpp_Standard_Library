@@ -1259,9 +1259,6 @@ namespace std
     template <class _Ty>
     _INLINE_VAR constexpr bool is_nothrow_default_constructible_v = is_nothrow_constructible_v<_Ty>;
 #endif
-// VC not well implemented, switch to LLVM implementation
-#include "__type_traits/is_nothrow_move_constructible.h"
-
     // Can't be implemented without compiler builtins. Fallback to is_assginable as an approximate.
     template <class _To, class _From>
     struct is_nothrow_assignable : is_assignable<_To, _From>
@@ -1480,7 +1477,32 @@ namespace std
         static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
                       "template argument must be a complete class or an unbounded array");
     };
-// 1207
+    // 1207
+    // 1245
+    /// is_nothrow_move_constructible
+    template <typename _Tp>
+    struct is_nothrow_move_constructible
+        : public __is_nothrow_constructible_impl<_Tp, __add_rval_ref_t<_Tp>>
+    {
+        static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
+                      "template argument must be a complete class or an unbounded array");
+    };
+
+    /// @cond undocumented
+    template <typename _Tp, typename _Up>
+    using __is_assignable_impl = __bool_constant<__is_assignable(_Tp, _Up)>;
+    /// @endcond
+
+    /// is_copy_assignable
+    template <typename _Tp>
+    struct is_copy_assignable
+        : public __is_assignable_impl<__add_lval_ref_t<_Tp>,
+                                      __add_lval_ref_t<const _Tp>>
+    {
+        static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
+                      "template argument must be a complete class or an unbounded array");
+    };
+    // 1278
 // 1308
 #if __cpp_variable_templates && __cpp_concepts
     template <typename _Tp>
@@ -3339,9 +3361,22 @@ namespace std
                  __call_is_nothrow_<_Fn, _Args...>>::type
     {
     };
-// 3128
-#endif
-// 3139
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wctor-dtor-privacy"
+    struct __nonesuchbase
+    {
+    };
+    struct __nonesuch : private __nonesuchbase
+    {
+        ~__nonesuch() = delete;
+        __nonesuch(__nonesuch const &) = delete;
+        void operator=(__nonesuch const &) = delete;
+    };
+#pragma GCC diagnostic pop
+    /// @endcond
+
+#endif // ARDUINO_ARCH_AVR
 #ifndef ARDUINO_ARCH_ESP32
 #ifdef __cpp_lib_is_invocable // C++ >= 17
     /// std::invoke_result
