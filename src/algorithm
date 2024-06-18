@@ -19,7 +19,7 @@
 #include <iterator>
 #include <functional>
 #include <xutility>
-#include <bits/stl_pair.h>
+#include <bits/stl_algo.h>
 // Elliminate any previously defined macro
 #undef min
 #undef max
@@ -596,18 +596,6 @@ namespace std
 		while (first != last)
 		{
 			*first = value;
-			++first;
-		}
-	}
-
-	template <class OutputIterator, class Size, class T>
-	_UCXXEXPORT void
-	fill_n(OutputIterator first, Size n, const T &value)
-	{
-		while (n != 0)
-		{
-			*first = value;
-			--n;
 			++first;
 		}
 	}
@@ -1748,27 +1736,6 @@ namespace std
 	_UCXXEXPORT void sort_heap(RandomAccessIterator first, RandomAccessIterator last, Compare comp)
 	{
 		sort(first, last, comp);
-	}
-
-	// _lib.alg.min.max_, minimum and maximum:
-	template <class T>
-	_UCXXEXPORT const T &min(const T &a, const T &b)
-	{
-		if (b < a)
-		{
-			return b;
-		}
-		return a;
-	}
-
-	template <class T, class Compare>
-	_UCXXEXPORT const T &min(const T &a, const T &b, Compare comp)
-	{
-		if (comp(b, a) == true)
-		{
-			return b;
-		}
-		return a;
 	}
 
 	template <class ForwardIterator>
