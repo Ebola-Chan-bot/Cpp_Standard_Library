@@ -60,13 +60,12 @@
 
 #include <bits/functexcept.h>
 #include <bits/cpp_type_traits.h>
-#include <bits/stl_pair.h>
 #include <bits/stl_iterator.h>
-#include <bits/concept_check.h>
 #include <bits/predefined_ops.h>
 #include <bits/boost_concept_check.h>
 #include <debug/debug.h>
 #include <bits/algorithmfwd.h>
+#include <bits/stl_deque.h>
 #if __cplusplus >= 201402L
 #include <bit> // std::__bit_width
 #endif

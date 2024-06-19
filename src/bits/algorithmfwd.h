@@ -1,5 +1,7 @@
 #pragma once
 #ifdef ARDUINO_ARCH_AVR
+#undef min
+#undef max
 // <algorithm> Forward declarations  -*- C++ -*-
 
 // Copyright (C) 2007-2024 Free Software Foundation, Inc.

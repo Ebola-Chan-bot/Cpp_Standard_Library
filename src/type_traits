@@ -1165,7 +1165,17 @@ namespace std
     {
     };
     // 872
-    // 937
+    // 882
+    /// is_trivial
+    template <typename _Tp>
+    struct is_trivial
+        : public __bool_constant<__is_trivial(_Tp)>
+    {
+        static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
+                      "template argument must be a complete class or an unbounded array");
+    };
+    // 891
+    //  937
     /// @cond undocumented
     template <typename _Tp,
               bool = is_arithmetic<_Tp>::value>
@@ -1503,7 +1513,22 @@ namespace std
                       "template argument must be a complete class or an unbounded array");
     };
     // 1278
-// 1308
+    // 1322
+    /// @cond undocumented
+    template <typename _Tp, typename... _Args>
+    using __is_trivially_constructible_impl = __bool_constant<__is_trivially_constructible(_Tp, _Args...)>;
+    /// @endcond
+    // 1328
+    //  1337
+    /// is_trivially_default_constructible
+    template <typename _Tp>
+    struct is_trivially_default_constructible
+        : public __is_trivially_constructible_impl<_Tp>
+    {
+        static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
+                      "template argument must be a complete class or an unbounded array");
+    };
+
 #if __cpp_variable_templates && __cpp_concepts
     template <typename _Tp>
     constexpr bool __is_implicitly_default_constructible_v = requires(void (&__f)(_Tp)) { __f({}); };
@@ -1546,7 +1571,7 @@ namespace std
     {
     };
 #endif
-    // 1349
+    // 1387
     //   1402
     /// is_trivially_destructible
     template <typename _Tp>
