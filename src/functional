@@ -540,6 +540,9 @@ namespace std
 #if _GLIBCXX_HOSTED
 #include <bits/std_function.h> // std::function
 #endif
+#if _GLIBCXX_HOSTED
+# include <bits/move_only_function.h>
+#endif
 // These are SGI extensions which are checked for by some conformance checks.  They
 //  are *NOT* part of the C++ standard, however
 
