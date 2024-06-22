@@ -1,3 +1,5 @@
+#pragma once
+#ifdef ARDUINO_ARCH_AVR
 /*	Copyright (C) 2004 Garrett A. Kajmowicz
 
 	This file is part of the uClibc++ Library.
@@ -16,12 +18,10 @@
 	License along with this library; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-#pragma once
-#ifdef ARDUINO_ARCH_AVR
 #pragma GCC visibility push(default)
-#include "char_traits"
-#include "vector"
-#include "func_exception"
+#include <char_traits>
+#include <vector>
+#include <func_exception>
 namespace std
 {
 
@@ -1239,6 +1239,5 @@ namespace std
 
 #pragma GCC visibility pop
 #else
-#include "Cpp_Standard_Library.h"
-#include CSL_Official(string)
+#include_next <string>
 #endif

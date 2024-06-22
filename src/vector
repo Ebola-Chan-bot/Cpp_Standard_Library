@@ -1,3 +1,5 @@
+#pragma once
+#ifdef ARDUINO_ARCH_AVR
 /*	Copyright (C) 2004 Garrett A. Kajmowicz
 
 	This file is part of the uClibc++ Library.
@@ -17,11 +19,9 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 */
-#pragma once
-#ifdef ARDUINO_ARCH_AVR
-#include "memory"
-#include "algorithm"
-#include "bits/functexcept.h"
+#include <bits/allocator.h>
+#include <algorithm>
+#include <bits/functexcept.h>
 
 #pragma GCC visibility push(default)
 
@@ -658,6 +658,5 @@ namespace std
 }
 #pragma GCC visibility pop
 #else
-#include "Cpp_Standard_Library.h"
-#include CSL_Official(vector)
+#include_next <vector>
 #endif

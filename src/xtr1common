@@ -39,46 +39,6 @@ struct is_same<_Ty, _Ty>
 };
 #endif // __clang__
 // 81
-// 122
-_EXPORT_STD template <class _Ty>
-struct remove_cv
-{ // remove top-level const and volatile qualifiers
-    using type = _Ty;
-
-    template <template <class> class _Fn>
-    using _Apply = _Fn<_Ty>; // apply cv-qualifiers from the class template argument to _Fn<_Ty>
-};
-
-template <class _Ty>
-struct remove_cv<const _Ty>
-{
-    using type = _Ty;
-
-    template <template <class> class _Fn>
-    using _Apply = const _Fn<_Ty>;
-};
-
-template <class _Ty>
-struct remove_cv<volatile _Ty>
-{
-    using type = _Ty;
-
-    template <template <class> class _Fn>
-    using _Apply = volatile _Fn<_Ty>;
-};
-
-template <class _Ty>
-struct remove_cv<const volatile _Ty>
-{
-    using type = _Ty;
-
-    template <template <class> class _Fn>
-    using _Apply = const volatile _Fn<_Ty>;
-};
-#endif
-#ifndef ARDUINO_ARCH_ESP32
-_EXPORT_STD template <class _Ty>
-using remove_cv_t = typename remove_cv<_Ty>::type;
 #endif
 #ifdef ARDUINO_ARCH_AVR
 _EXPORT_STD template <class _Ty>
@@ -107,19 +67,5 @@ using remove_reference_t = typename remove_reference<_Ty>::type;
 
 template <class _Ty>
 using _Const_thru_ref = typename remove_reference<_Ty>::_Const_thru_ref_type;
-
-template <class _Ty>
-using _Remove_cvref_t _MSVC_KNOWN_SEMANTICS = remove_cv_t<remove_reference_t<_Ty>>;
-
-#if _HAS_CXX20
-_EXPORT_STD template <class _Ty>
-using remove_cvref_t = _Remove_cvref_t<_Ty>;
-
-_EXPORT_STD template <class _Ty>
-struct remove_cvref
-{
-    using type = remove_cvref_t<_Ty>;
-};
-#endif // _HAS_CXX20
 #endif
 _STD_END

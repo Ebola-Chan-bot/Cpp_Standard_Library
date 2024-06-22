@@ -45,7 +45,7 @@
 		: __libcpp_is_nothrow_constructible<is_constructible<_Tp>::value, is_reference<_Tp>::value, _Tp>
 	{
 	};
-
+#define __is_nothrow_constructible(...) is_nothrow_constructible<__VA_ARGS__>::value
 #endif // __has_builtin(__is_nothrow_constructible)
 
 #if _LIBCPP_STD_VER > 14

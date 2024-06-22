@@ -1,4 +1,4 @@
-#ifdef ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
 // Implementation file for the -*- C++ -*- dynamic memory management header.
 
 // Copyright (C) 2010-2024 Free Software Foundation, Inc.

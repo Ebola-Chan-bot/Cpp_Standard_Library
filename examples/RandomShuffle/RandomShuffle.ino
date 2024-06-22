@@ -3,10 +3,11 @@
 #include <iostream>
 #include <random>
 #include <algorithm>
+#include <utility>
 template<typename T>
 struct MakeArray {};
 template<size_t... V>
-struct MakeArray< std::integer_sequence<size_t, V...>> {
+struct MakeArray<std::integer_sequence<size_t, V...>> {
   static size_t value[sizeof...(V)];
 };
 template<size_t... V>
@@ -20,14 +21,20 @@ void setup() {
   std::cout << std::endl;
 }
 void loop() {
+  static uint32_t RandomSeed;
 #ifdef ARDUINO_ARCH_AVR
   //非标准行为：ArduinoUrng是Arduino平台专用的随机生成器。你也可以使用标准库提供的mt19937，但它占用了太多内存，不建议使用。
   constexpr std::ArduinoUrng Urng;
-  static uint32_t RandomSeed;
   std::cout << "输入随机种子（非数字的输入将视为0）：";
-
   std::cin >> RandomSeed;
-
+  std::ArduinoUrng::seed(RandomSeed);
+#else
+  //SAM和ESP32架构额外提供真随机生成器，不需要随机种子
+  constexpr std::TrueUrng Urng;
+  std::cout << "输入任意字符以生成下一个乱序：";
+  std::cin >> RandomSeed;
+#endif
+  
   // 清除错误标志位。必须紧贴ignore之前，因为不先清除错误状态ignore就不会生效。
   std::cin.clear();
 
@@ -35,17 +42,12 @@ void loop() {
   std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
   std::cout << RandomSeed << std::endl;
-  std::ArduinoUrng::seed(RandomSeed);
-#else
-  //SAM和ESP32架构额外提供真随机生成器，不需要随机种子
-  constexpr std::TrueUrng Urng;
-#endif
   std::shuffle(std::begin(Array), std::end(Array), Urng);
   std::cout << "随机乱序：";
   for (size_t A : Array)
     std::cout << A;
   std::cout << std::endl;
-#ifdef __EXCEPTIONS
+#ifdef __cpp_exceptions
   //此段仅用于展示异常处理，对本示例主线逻辑无意义。必须在编译选项中启用-fexceptions并禁用-fno-rtti才能使本段生效。AVR不支持异常处理。
   try {
     throw 0;

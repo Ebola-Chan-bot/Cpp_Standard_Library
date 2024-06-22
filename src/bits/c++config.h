@@ -69,9 +69,17 @@
 #define _GLIBCXX20_DEPRECATED
 #define _GLIBCXX20_DEPRECATED_SUGGEST(ALT)
 #endif
-// 137
-//  150
-//   Macro to warn about unused results.
+
+#if defined(__DEPRECATED) && (__cplusplus >= 202100L)
+#define _GLIBCXX23_DEPRECATED [[__deprecated__]]
+#define _GLIBCXX23_DEPRECATED_SUGGEST(ALT) _GLIBCXX_DEPRECATED_SUGGEST(ALT)
+#else
+#define _GLIBCXX23_DEPRECATED
+#define _GLIBCXX23_DEPRECATED_SUGGEST(ALT)
+#endif
+// 145
+//   150
+//    Macro to warn about unused results.
 #if __cplusplus >= 201703L
 #define _GLIBCXX_NODISCARD [[__nodiscard__]]
 #else
@@ -101,8 +109,19 @@
 #endif
 // 861
 #ifdef ARDUINO_ARCH_AVR
-// 56
-//  See below for C++
+// 40
+//  Macros for various attributes.
+//    _GLIBCXX_PURE
+//    _GLIBCXX_CONST
+//    _GLIBCXX_NORETURN
+//    _GLIBCXX_NOTHROW
+//    _GLIBCXX_VISIBILITY
+#ifndef _GLIBCXX_PURE
+#define _GLIBCXX_PURE __attribute__((__pure__))
+#endif
+// 50
+//  56
+//   See below for C++
 #ifndef _GLIBCXX_NOTHROW
 #ifndef __cplusplus
 #define _GLIBCXX_NOTHROW __attribute__((__nothrow__))
@@ -220,7 +239,18 @@ namespace __gnu_cxx
 
 /* Define to 1 if a full hosted library is built, or 0 if freestanding. */
 #define _GLIBCXX_HOSTED 1
-#endif
+// 748
+//  This marks string literals in header files to be extracted for eventual
+//  translation.  It is primarily used for messages in thrown exceptions; see
+//  src/functexcept.cc.  We use __N because the more traditional _N is used
+//  for something else under certain OSes (see BADNAMES).
+#define __N(msgid) (msgid)
+
+// For example, <windows.h> is known to #define min and max as macros...
+#undef min
+#undef max
+// 758
+#endif // ARDUINO_ARCH_AVR
 // 159
 #ifndef ARDUINO_ARCH_ESP32
 #if __cplusplus
@@ -238,9 +268,11 @@ namespace __gnu_cxx
 
 #ifndef _GLIBCXX14_CONSTEXPR
 #if __cplusplus >= 201402L
-#define _GLIBCXX14_CONSTEXPR(Alternative) constexpr
+#define _GLIBCXX14_CONSTEXPR constexpr
+#define CSL_GLIBCXX14_CONSTEXPR(Alternative) constexpr
 #else
-#define _GLIBCXX14_CONSTEXPR(Alternative) Alternative
+#define _GLIBCXX14_CONSTEXPR
+#define CSL_GLIBCXX14_CONSTEXPR(Alternative) Alternative
 #endif
 #endif
 
