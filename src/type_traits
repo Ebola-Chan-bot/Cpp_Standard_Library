@@ -3654,6 +3654,16 @@ namespace std
         is_trivially_destructible<_Tp>::value;
 #endif
 
+    template <typename _Tp, typename... _Args>
+    inline constexpr bool is_nothrow_constructible_v = __is_nothrow_constructible(_Tp, _Args...);
+    template <typename _Tp>
+    inline constexpr bool is_nothrow_default_constructible_v = __is_nothrow_constructible(_Tp);
+    template <typename _Tp>
+    inline constexpr bool is_nothrow_copy_constructible_v = __is_nothrow_constructible(_Tp, __add_lval_ref_t<const _Tp>);
+    template <typename _Tp>
+    inline constexpr bool is_nothrow_move_constructible_v = __is_nothrow_constructible(_Tp, __add_rval_ref_t<_Tp>);
+    // 3563
+    // 3574
     template <typename _Tp>
     inline constexpr bool is_nothrow_destructible_v =
         is_nothrow_destructible<_Tp>::value;

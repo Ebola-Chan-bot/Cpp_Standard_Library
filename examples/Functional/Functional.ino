@@ -19,8 +19,10 @@ void setup() {
     Translate(H);
   };
   std::dynarray<int> D(std::log2(1024));
-  std::unordered_map<int,std::function<void()>>UIF;
-  UIF[1]=[](){};
+  std::unordered_map<int, std::function<void()>> UIF;
+  UIF[1] = []() {};/*
+  std::unordered_map<int, std::move_only_function<void()>> UIFMove;
+  UIF[2] = []() {};*/
 #if __cpp_exceptions
   try {
     throw 0;
