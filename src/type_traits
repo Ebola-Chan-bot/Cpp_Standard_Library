@@ -248,10 +248,13 @@ namespace std
     {
         using type = _Tp;
     };
-
+#endif // ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
     // __enable_if_t (std::enable_if_t for C++11)
     template <bool _Cond, typename _Tp = void>
     using __enable_if_t = typename enable_if<_Cond, _Tp>::type;
+#endif //! ARDUINO_ARCH_ESP32
+#ifdef ARDUINO_ARCH_AVR
     // 105
     template <class _Ty, class = void>
     struct _Add_reference
@@ -2587,10 +2590,13 @@ namespace std
     // Helper for SFINAE constraints
     template <typename... _Cond>
     using _Require = __enable_if_t<__and_<_Cond...>::value>;
-
+#endif // ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
     //   __remove_cvref_t (std::remove_cvref_t for C++11).
     template <typename _Tp>
     using __remove_cvref_t = typename remove_cv<typename remove_reference<_Tp>::type>::type;
+#endif
+#ifdef ARDUINO_ARCH_AVR
     /// @endcond
     // 2315
     // 2326
@@ -2935,7 +2941,8 @@ namespace std
     {
         using type = decltype(_S_test<_Functor, _ArgTypes...>(0));
     };
-
+#endif // ARDUINO_ARCH_AVR
+#ifdef ARDUINO_ARCH_SAM
     // __invoke_result (std::invoke_result for C++11)
     template <typename _Functor, typename... _ArgTypes>
     struct __invoke_result
@@ -2947,10 +2954,27 @@ namespace std
               _Functor, _ArgTypes...>::type
     {
     };
-// 2667
-#endif // ARDUINO_ARCH_AVR
+
+    // _GLIBCXX_RESOLVE_LIB_DEFECTS
+    // 2219.  INVOKE-ing a pointer to member with a reference_wrapper
+    //        as the object expression
+
+    // Used by result_of, invoke etc. to unwrap a reference_wrapper.
+    template <typename _Tp, typename _Up = __remove_cvref_t<_Tp>>
+    struct __inv_unwrap
+    {
+        using type = _Tp;
+    };
+
+    template <typename _Tp, typename _Up>
+    struct __inv_unwrap<_Tp, reference_wrapper<_Up>>
+    {
+        using type = _Up &;
+    };
+#endif // ARDUINO_ARCH_SAM
+// 2684
+// 2745
 #ifndef ARDUINO_ARCH_ESP32
-// 2677
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     /// Alias template for aligned_storage
@@ -3328,7 +3352,8 @@ namespace std
         using __nothrow_conv = decltype(_S_test<_Ret>(1));
     };
 #pragma GCC diagnostic pop
-
+#endif // ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
     template <typename _Fn, typename... _ArgTypes>
     struct __is_invocable
         : __is_invocable_impl<__invoke_result<_Fn, _ArgTypes...>, void>::type
@@ -3386,7 +3411,8 @@ namespace std
                  __call_is_nothrow_<_Fn, _Args...>>::type
     {
     };
-
+#endif //! ARDUINO_ARCH_ESP32
+#ifdef ARDUINO_ARCH_AVR
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wctor-dtor-privacy"
     struct __nonesuchbase

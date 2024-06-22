@@ -270,9 +270,13 @@ namespace __gnu_cxx
 #if __cplusplus >= 201402L
 #define _GLIBCXX14_CONSTEXPR constexpr
 #define CSL_GLIBCXX14_CONSTEXPR(Alternative) constexpr
+#define _STRUCT14VALUE(StructValue, Arguments...) StructValue<Arguments>
+#define _STRUCT14VALUE_V(StructValue, Arguments...) StructValue##_v<Arguments>
 #else
 #define _GLIBCXX14_CONSTEXPR
 #define CSL_GLIBCXX14_CONSTEXPR(Alternative) Alternative
+#define _STRUCT14VALUE(StructValue, Arguments...) StructValue<Arguments>::value
+#define _STRUCT14VALUE_V(StructValue, Arguments...) StructValue<Arguments>::value
 #endif
 #endif
 
