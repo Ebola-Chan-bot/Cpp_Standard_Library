@@ -469,7 +469,7 @@
 #undef __glibcxx_want_is_aggregate
 
 #if !defined(__cpp_lib_is_invocable)
-#if (__cplusplus >= 201703L)
+#if (__cplusplus >= 201703L) || defined ARDUINO_ARCH_SAM
 #define __glibcxx_is_invocable 201703L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_is_invocable)
 #define __cpp_lib_is_invocable 201703L

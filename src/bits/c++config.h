@@ -283,8 +283,12 @@ namespace __gnu_cxx
 #ifndef _GLIBCXX17_CONSTEXPR
 #if __cplusplus >= 201703L
 #define _GLIBCXX17_CONSTEXPR constexpr
+#define _GLIBCXX17_INLINE inline
+#define _GLIBCXX17_STATIC_ASSERT(Bool_constexpr) static_assert(Bool_constexpr);
 #else
 #define _GLIBCXX17_CONSTEXPR
+#define _GLIBCXX17_INLINE
+#define _GLIBCXX17_STATIC_ASSERT(Bool_constexpr) static_assert(Bool_constexpr, #Bool_constexpr);
 #endif
 #endif
 

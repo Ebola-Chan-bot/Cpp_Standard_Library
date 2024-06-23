@@ -192,32 +192,55 @@ namespace std _GLIBCXX_VISIBILITY(default)
 	};
 #endif // ARDUINO_ARCH_AVR
 #endif // __glibcxx_integer_sequence
-#endif //! defined ARDUINO_ARCH_ESP32
-#ifdef ARDUINO_ARCH_AVR
-#if __cplusplus >= 201703L
 
 	struct in_place_t
 	{
 		explicit in_place_t() = default;
 	};
 
-	inline constexpr in_place_t in_place{};
+	_GLIBCXX17_INLINE constexpr in_place_t in_place{};
 
 	template <typename _Tp>
 	struct in_place_type_t
 	{
 		explicit in_place_type_t() = default;
+#if __cplusplus < 201402L
+		static constexpr in_place_type_t value{};
+#endif
 	};
-
+#if __cplusplus >= 201402L
 	template <typename _Tp>
 	inline constexpr in_place_type_t<_Tp> in_place_type{};
-
+#endif
 	template <size_t _Idx>
 	struct in_place_index_t
 	{
 		explicit in_place_index_t() = default;
+#if __cplusplus < 201402L
+		static constexpr in_place_index_t value{};
+#endif
+	};
+#if __cplusplus < 201402L
+	template <typename>
+	struct __is_in_place_type : bool_constant<false>
+	{
 	};
 
+	template <typename _Tp>
+	struct __is_in_place_type<in_place_type_t<_Tp>> : bool_constant<true>
+	{
+	};
+
+	template <typename>
+	struct __is_in_place_index : bool_constant<false>
+	{
+	};
+
+	template <size_t _Nm>
+	struct __is_in_place_index<in_place_index_t<_Nm>> : bool_constant<true>
+	{
+	};
+#else
 	template <size_t _Idx>
 	inline constexpr in_place_index_t<_Idx> in_place_index{};
 
@@ -235,9 +258,9 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 	template <size_t _Nm>
 	inline constexpr bool __is_in_place_index_v<in_place_index_t<_Nm>> = true;
-
-#endif // C++17
-
+#endif
+#endif //! defined ARDUINO_ARCH_ESP32
+#ifdef ARDUINO_ARCH_AVR
 #if _GLIBCXX_USE_BUILTIN_TRAIT(__type_pack_element)
 	template <size_t _Np, typename... _Types>
 	struct _Nth_type

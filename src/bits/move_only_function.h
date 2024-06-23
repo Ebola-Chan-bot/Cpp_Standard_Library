@@ -42,6 +42,7 @@
 
 #include <bits/invoke.h>
 #include <bits/utility.h>
+#include <initializer_list>
 
 namespace std _GLIBCXX_VISIBILITY(default)
 {
@@ -49,8 +50,6 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 	template <typename... _Signature>
 	class move_only_function; // not defined
-	template <typename _Res, typename... _ArgTypes, bool _Noex>
-	class move_only_function<_Res(_ArgTypes...) const noexcept(_Noex)>;
 
 	/// @cond undocumented
 	class _Mofunc_base
@@ -71,9 +70,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		static constexpr bool
 		_S_nothrow_init() noexcept
 		{
-			if _GLIBCXX14_CONSTEXPR (_STRUCT14VALUE(__stored_locally, _Tp))
-				return _STRUCT14VALUE(is_nothrow_constructible, _Tp, _Args...);
-			return false;
+			return _STRUCT14VALUE(__stored_locally, _Tp) && _STRUCT14VALUE(is_nothrow_constructible, _Tp, _Args...);
 		}
 
 		template <typename _Tp, typename... _Args>
@@ -230,7 +227,6 @@ namespace std _GLIBCXX_VISIBILITY(default)
 	} // namespace __detail::__variant
 	_GLIBCXX_END_NAMESPACE_VERSION
 } // namespace std
-
 #include "mofunc_impl.h"
 #define _GLIBCXX_MOF_CV const
 #include "mofunc_impl.h"
@@ -244,7 +240,6 @@ namespace std _GLIBCXX_VISIBILITY(default)
 #define _GLIBCXX_MOF_CV const
 #define _GLIBCXX_MOF_REF &&
 #include "mofunc_impl.h"
-
 #endif // __glibcxx_move_only_function
 #endif // _GLIBCXX_MOVE_ONLY_FUNCTION_H
 #endif

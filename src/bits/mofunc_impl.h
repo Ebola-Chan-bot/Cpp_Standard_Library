@@ -43,33 +43,38 @@
 namespace std _GLIBCXX_VISIBILITY(default)
 {
 	_GLIBCXX_BEGIN_NAMESPACE_VERSION
-/**
- *  @brief Polymorphic function wrapper.
- *  @ingroup functors
- *  @since C++23
- *  @headerfile functional
- *
- *  The `std::move_only_function` class template is a call wrapper similar
- *  to `std::function`, but does not require the stored target function
- *  to be copyable.
- *
- *  It also supports const-qualification, ref-qualification, and
- *  no-throw guarantees. The qualifications and exception-specification
- *  of the `move_only_function::operator()` member function are respected
- *  when invoking the target function.
- */
-#if __cplusplus < 201402L
-	template <typename _Res, bool _Noex, typename... _ArgTypes>
-	class move_only_function<_Res(_ArgTypes...) _GLIBCXX_MOF_CV
-								 _GLIBCXX_MOF_REF noexcept(_Noex)>
-		: _Mofunc_base
-#else
-	template <typename _Res, bool _Noex, typename... _ArgTypes>
-	class move_only_function<_Res(_ArgTypes...) _GLIBCXX_MOF_CV
-								 _GLIBCXX_MOF_REF noexcept(_Noex)>
-		: _Mofunc_base
+	/**
+	 *  @brief Polymorphic function wrapper.
+	 *  @ingroup functors
+	 *  @since C++23
+	 *  @headerfile functional
+	 *
+	 *  The `std::move_only_function` class template is a call wrapper similar
+	 *  to `std::function`, but does not require the stored target function
+	 *  to be copyable.
+	 *
+	 *  It also supports const-qualification, ref-qualification, and
+	 *  no-throw guarantees. The qualifications and exception-specification
+	 *  of the `move_only_function::operator()` member function are respected
+	 *  when invoking the target function.
+	 */
+	template <typename _Res, typename... _ArgTypes
+#if __cplusplus >= 201703L
+			  ,
+			  bool _Noex
 #endif
+			  >
+	class move_only_function<_Res(_ArgTypes...) _GLIBCXX_MOF_CV
+								 _GLIBCXX_MOF_REF
+#if __cplusplus >= 201703L
+							 noexcept(_Noex)
+#endif
+							 >
+		: _Mofunc_base
 	{
+#if __cplusplus < 201703L
+		static constexpr bool _Noex = false;
+#endif
 		template <typename _Tp>
 		using __callable = __conditional_t<_Noex,
 										   is_nothrow_invocable_r<_Res, _Tp, _ArgTypes...>,
@@ -77,9 +82,15 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 		// [func.wrap.mov.con]/1 is-callable-from<VT>
 		template <typename _Vt>
-		static constexpr bool __is_callable_from = __and_v<__callable<_Vt _GLIBCXX_MOF_CV_REF>,
-														   __callable<_Vt _GLIBCXX_MOF_INV_QUALS>>;
-
+#if __cplusplus < 201402L
+		struct __is_callable_from : bool_constant<_STRUCT14VALUE_V(__and_, __callable<_Vt _GLIBCXX_MOF_CV_REF>,
+																   __callable<_Vt _GLIBCXX_MOF_INV_QUALS>)>
+		{
+		};
+#else
+		static constexpr bool __is_callable_from = _STRUCT14VALUE_V(__and_, __callable<_Vt _GLIBCXX_MOF_CV_REF>,
+																	__callable<_Vt _GLIBCXX_MOF_INV_QUALS>);
+#endif
 	public:
 		using result_type = _Res;
 
@@ -90,17 +101,17 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		move_only_function(nullptr_t) noexcept {}
 
 		/// Moves the target object, leaving the source empty.
-		move_only_function(move_only_function && __x) noexcept
+		move_only_function(move_only_function &&__x) noexcept
 			: _Mofunc_base(static_cast<_Mofunc_base &&>(__x)),
 			  _M_invoke(std::__exchange(__x._M_invoke, nullptr))
 		{
 		}
 
 		/// Stores a target object initialized from the argument.
-		template <typename _Fn, typename _Vt = decay_t<_Fn>, typename = enable_if_t<(!is_same_v<_Vt, move_only_function>) && (!__is_in_place_type_v<_Vt>) && __is_callable_from<_Vt>>>
-		move_only_function(_Fn && __f) noexcept(_S_nothrow_init<_Vt, _Fn>())
+		template <typename _Fn, typename _Vt = decay_t<_Fn>, typename = enable_if_t<(!_STRUCT14VALUE_V(is_same, _Vt, move_only_function)) && (!_STRUCT14VALUE_V(__is_in_place_type, _Vt)) && _STRUCT14VALUE(__is_callable_from, _Vt)>>
+		move_only_function(_Fn &&__f) noexcept(_S_nothrow_init<_Vt, _Fn>())
 		{
-			if constexpr (is_function_v<remove_pointer_t<_Vt>> || is_member_pointer_v<_Vt> || __is_move_only_function_v<_Vt>)
+			if _GLIBCXX14_CONSTEXPR (_STRUCT14VALUE_V(is_function, remove_pointer_t<_Vt>) || _STRUCT14VALUE_V(is_member_pointer, _Vt) || _STRUCT14VALUE_V(__is_move_only_function, _Vt))
 			{
 				if (__f == nullptr)
 					return;
@@ -111,20 +122,20 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 		/// Stores a target object initialized from the arguments.
 		template <typename _Tp, typename... _Args>
-		explicit move_only_function(in_place_type_t<_Tp>, _Args && ...__args, enable_if_t<is_constructible_v<_Tp, _Args...> && __is_callable_from<_Tp>, int> = 0) noexcept(_S_nothrow_init<_Tp, _Args...>())
+		explicit move_only_function(in_place_type_t<_Tp>, _Args &&...__args, enable_if_t<_STRUCT14VALUE_V(is_constructible, _Tp, _Args...) && _STRUCT14VALUE(__is_callable_from, _Tp), int> = 0) noexcept(_S_nothrow_init<_Tp, _Args...>())
 			: _M_invoke(&_S_invoke<_Tp>)
 		{
-			static_assert(is_same_v<decay_t<_Tp>, _Tp>);
+			_GLIBCXX17_STATIC_ASSERT(_STRUCT14VALUE_V(is_same, decay_t<_Tp>, _Tp));
 			_M_init<_Tp>(std::forward<_Args>(__args)...);
 		}
 
 		/// Stores a target object initialized from the arguments.
 		template <typename _Tp, typename _Up, typename... _Args>
 		explicit move_only_function(in_place_type_t<_Tp>, initializer_list<_Up> __il,
-									_Args && ...__args, enable_if_t<is_constructible_v<_Tp, initializer_list<_Up> &, _Args...> && __is_callable_from<_Tp>, int> = 0) noexcept(_S_nothrow_init<_Tp, initializer_list<_Up> &, _Args...>())
+									_Args &&...__args, enable_if_t<_STRUCT14VALUE_V(is_constructible, _Tp, initializer_list<_Up> &, _Args...) && _STRUCT14VALUE(__is_callable_from, _Tp), int> = 0) noexcept(_S_nothrow_init<_Tp, initializer_list<_Up> &, _Args...>())
 			: _M_invoke(&_S_invoke<_Tp>)
 		{
-			static_assert(is_same_v<decay_t<_Tp>, _Tp>);
+			_GLIBCXX17_STATIC_ASSERT(_STRUCT14VALUE_V(is_same, decay_t<_Tp>, _Tp));
 			_M_init<_Tp>(__il, std::forward<_Args>(__args)...);
 		}
 
@@ -148,8 +159,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 		/// Stores a new target object, initialized from the argument.
 		template <typename _Fn>
-		enable_if_t<is_constructible_v<move_only_function, _Fn>, move_only_function &>
-		operator=(_Fn &&__f) noexcept(is_nothrow_constructible_v<move_only_function, _Fn>)
+		enable_if_t<_STRUCT14VALUE_V(is_constructible, move_only_function, _Fn), move_only_function &>
+		operator=(_Fn &&__f) noexcept(_STRUCT14VALUE_V(is_nothrow_constructible, move_only_function, _Fn))
 		{
 			move_only_function(std::forward<_Fn>(__f)).swap(*this);
 			return *this;
@@ -177,7 +188,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 		/// Exchange the target objects (if any).
 		void
-		swap(move_only_function & __x) noexcept
+		swap(move_only_function &__x) noexcept
 		{
 			_Mofunc_base::swap(__x);
 			std::swap(_M_invoke, __x._M_invoke);
@@ -185,7 +196,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 		/// Exchange the target objects (if any).
 		friend void
-		swap(move_only_function & __x, move_only_function & __y) noexcept
+		swap(move_only_function &__x, move_only_function &__y) noexcept
 		{
 			__x.swap(__y);
 		}
@@ -199,14 +210,14 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 	private:
 		template <typename _Tp>
-		using __param_t = __conditional_t<is_scalar_v<_Tp>, _Tp, _Tp &&>;
+		using __param_t = __conditional_t<_STRUCT14VALUE_V(is_scalar, _Tp), _Tp, _Tp &&>;
 
 		using _Invoker = _Res (*)(_Mofunc_base _GLIBCXX_MOF_CV *,
 								  __param_t<_ArgTypes>...) noexcept(_Noex);
 
 		template <typename _Tp>
 		static _Res
-		_S_invoke(_Mofunc_base _GLIBCXX_MOF_CV * __self,
+		_S_invoke(_Mofunc_base _GLIBCXX_MOF_CV *__self,
 				  __param_t<_ArgTypes>... __args) noexcept(_Noex)
 		{
 			using _TpCv = _Tp _GLIBCXX_MOF_CV;
