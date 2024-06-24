@@ -84,19 +84,20 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		template <typename _Vt>
 #if __cplusplus < 201402L
 		struct __is_callable_from : bool_constant<__and_<__callable<_Vt _GLIBCXX_MOF_CV_REF>,
-																   __callable<_Vt _GLIBCXX_MOF_INV_QUALS>>::value>
+														 __callable<_Vt _GLIBCXX_MOF_INV_QUALS>>::value>
 		{
 		};
 #else
 		static constexpr bool __is_callable_from = __and_v<__callable<_Vt _GLIBCXX_MOF_CV_REF>,
-																	__callable<_Vt _GLIBCXX_MOF_INV_QUALS>>;
+														   __callable<_Vt _GLIBCXX_MOF_INV_QUALS>>;
 #endif
-		static bool _ValidAndNull(...)
+		template <typename... T>
+		static bool _ValidAndNull(const T &...)
 		{
 			return false;
 		}
 		template <typename T>
-		static auto _ValidAndNull(T __f) -> decltype(__f == nullptr, bool())
+		static auto _ValidAndNull(const T &__f) -> decltype(__f == nullptr, bool())
 		{
 			return __f == nullptr;
 		}
