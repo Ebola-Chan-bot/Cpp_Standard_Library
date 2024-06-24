@@ -25,7 +25,7 @@ void loop() {
 #ifdef ARDUINO_ARCH_AVR
   //非标准行为：ArduinoUrng是Arduino平台专用的随机生成器。你也可以使用标准库提供的mt19937，但它占用了太多内存，不建议使用。
   constexpr std::ArduinoUrng Urng;
-  std::cout << "输入随机种子（非数字的输入将视为0）：";
+  std::cout << "输入随机种子（非数字的输入将被忽略）：";
   std::cin >> RandomSeed;
   std::ArduinoUrng::seed(RandomSeed);
 #else

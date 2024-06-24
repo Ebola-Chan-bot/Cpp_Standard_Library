@@ -1,5 +1,7 @@
 #pragma once
-#ifdef ARDUINO_ARCH_AVR
+#ifdef ARDUINO_ARCH_ESP32
+#include_next <bits/invoke.h>
+#else
 // Implementation of INVOKE -*- C++ -*-
 
 // Copyright (C) 2016-2024 Free Software Foundation, Inc.
@@ -168,6 +170,4 @@ namespace std _GLIBCXX_VISIBILITY(default)
 #endif // C++11
 
 #endif // _GLIBCXX_INVOKE_H
-#else
-#include_next <bits/invoke.h>
 #endif

@@ -102,12 +102,8 @@
 // Functions that became constexpr in C++14
 #if _HAS_CXX14
 #define _CONSTEXPR14(Alternatve) constexpr
-#define _STRUCT14VALUE(StructValue, Arguments...) StructValue<Arguments>
-#define _STRUCT14VALUE_V(StructValue, Arguments...) StructValue##_v<Arguments>
 #else // ^^^ constexpr in C++14 and later / inline (not constexpr) in C++11 vvv
 #define _CONSTEXPR14(Alternative) Alternative
-#define _STRUCT14VALUE(StructValue, Arguments...) StructValue<Arguments>::value
-#define _STRUCT14VALUE_V(StructValue, Arguments...) StructValue<Arguments>::value
 #endif // ^^^ inline (not constexpr) in C++11 ^^^
 // 915
 // 1076

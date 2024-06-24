@@ -29,7 +29,35 @@
 #include "char_traits"
 #include "cstddef"
 #else
+#ifdef ARDUINO_ARCH_SAM
+#define __result_of_memfun_ref_impl __result_of_memfun_ref_impl_deprecated
+#define __result_of_memfun_deref_impl __result_of_memfun_deref_impl_deprecated
+#define __result_of_memobj_ref_impl __result_of_memobj_ref_impl_deprecated
+#define __result_of_memobj_deref_impl __result_of_memobj_deref_impl_deprecated
+#define __result_of_other_impl __result_of_other_impl_deprecated
+#define __result_of_memobj_deref __result_of_memobj_deref_deprecated
+#define __result_of_memobj __result_of_memobj_deprecated
+#define __result_of_memfun __result_of_memfun_deprecated
+#define __result_of_impl __result_of_impl_deprecated
+#define __result_of_memfun_ref __result_of_memfun_ref_deprecated
+#define __result_of_memfun_deref __result_of_memfun_deref_deprecated
+#define __result_of_memobj_ref __result_of_memobj_ref_deprecated
+#endif
 #include_next <type_traits>
+#ifdef ARDUINO_ARCH_SAM
+#undef __result_of_memfun_ref_impl
+#undef __result_of_memfun_deref_impl
+#undef __result_of_memobj_ref_impl
+#undef __result_of_memobj_deref_impl
+#undef __result_of_other_impl
+#undef __result_of_memobj_deref
+#undef __result_of_memobj
+#undef __result_of_memfun
+#undef __result_of_memfun_ref
+#undef __result_of_memfun_deref
+#undef __result_of_impl
+#undef __result_of_memobj_ref
+#endif
 #endif
 #ifndef ARDUINO_ARCH_ESP32
 #include "xtr1common"
@@ -248,10 +276,13 @@ namespace std
     {
         using type = _Tp;
     };
-
+#endif // ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
     // __enable_if_t (std::enable_if_t for C++11)
     template <bool _Cond, typename _Tp = void>
     using __enable_if_t = typename enable_if<_Cond, _Tp>::type;
+#endif //! ARDUINO_ARCH_ESP32
+#ifdef ARDUINO_ARCH_AVR
     // 105
     template <class _Ty, class = void>
     struct _Add_reference
@@ -284,7 +315,9 @@ namespace std
 
     template <class _Ty>
     using add_rvalue_reference_t = typename _Add_reference<_Ty>::_Rvalue;
-    // 156
+// 156
+#endif // ARUDINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
     // 139
     template <bool>
     struct __conditional
@@ -303,8 +336,8 @@ namespace std
     // More efficient version of std::conditional_t for internal use (and C++11)
     template <bool _Cond, typename _If, typename _Else>
     using __conditional_t = typename __conditional<_Cond>::template type<_If, _Else>;
-
     /// @cond undocumented
+
     template <typename _Type>
     struct __type_identity
     {
@@ -313,7 +346,8 @@ namespace std
 
     template <typename _Tp>
     using __type_identity_t = typename __type_identity<_Tp>::type;
-
+#endif
+#ifdef ARDUINO_ARCH_AVR
     namespace __detail
     {
         // A variadic alias template that resolves to its first argument.
@@ -469,10 +503,12 @@ namespace std
     {
         using type = _Ty;
     };
-
+#endif // ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
     template <class _Ty>
     using remove_pointer_t = typename remove_pointer<_Ty>::type;
-
+#endif
+#ifdef ARDUINO_ARCH_AVR
     template <class _Ty, class = void>
     struct _Add_pointer
     { // add pointer (pointer type cannot be formed)
@@ -1137,11 +1173,14 @@ namespace std
     template <class _Ty>
     _INLINE_VAR constexpr bool is_default_constructible_v = is_default_constructible<_Ty>::value;
 #endif
+#endif // ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
     // __void_t (std::void_t for C++11)
     template <typename...>
     using __void_t = void;
     /// @endcond
-
+#endif
+#ifdef ARDUINO_ARCH_AVR
     // 842
     // 845
     /// is_volatile
@@ -2555,12 +2594,15 @@ namespace std
     {
         using type = typename __decay_selector<_Tp>::type;
     };
-    // 2280
+// 2280
+#endif // ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
     // 2295
     //  __decay_t (std::decay_t for C++11).
     template <typename _Tp>
     using __decay_t = typename decay<_Tp>::type;
-
+#endif
+#ifdef ARDUINO_ARCH_AVR
     /// @cond undocumented
 
     // Helper which adds a reference to a type when given a reference_wrapper
@@ -2587,10 +2629,13 @@ namespace std
     // Helper for SFINAE constraints
     template <typename... _Cond>
     using _Require = __enable_if_t<__and_<_Cond...>::value>;
-
+#endif // ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
     //   __remove_cvref_t (std::remove_cvref_t for C++11).
     template <typename _Tp>
     using __remove_cvref_t = typename remove_cv<typename remove_reference<_Tp>::type>::type;
+#endif
+#ifdef ARDUINO_ARCH_AVR
     /// @endcond
     // 2315
     // 2326
@@ -2785,8 +2830,7 @@ namespace std
     {
         using __invoke_type = _Tag;
     };
-#endif
-#ifdef ARDUINO_ARCH_AVR
+
     // [func.require] paragraph 1 bullet 1:
     struct __result_of_memfun_ref_impl
     {
@@ -2947,10 +2991,8 @@ namespace std
               _Functor, _ArgTypes...>::type
     {
     };
-// 2667
-#endif // ARDUINO_ARCH_AVR
-#ifndef ARDUINO_ARCH_ESP32
-// 2677
+// 2684
+// 2745
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     /// Alias template for aligned_storage
@@ -3271,8 +3313,7 @@ namespace std
     {
         using __nothrow_conv = false_type; // For is_nothrow_invocable_r
     };
-#endif
-#ifdef ARDUINO_ARCH_AVR
+
     // Used for valid INVOKE and INVOKE<void> expressions.
     template <typename _Result, typename _Ret>
     struct __is_invocable_impl<_Result, _Ret,
@@ -3327,6 +3368,7 @@ namespace std
         // For is_nothrow_invocable_r
         using __nothrow_conv = decltype(_S_test<_Ret>(1));
     };
+
 #pragma GCC diagnostic pop
 
     template <typename _Fn, typename... _ArgTypes>
@@ -3386,7 +3428,8 @@ namespace std
                  __call_is_nothrow_<_Fn, _Args...>>::type
     {
     };
-
+#endif //! ARDUINO_ARCH_ESP32
+#ifdef ARDUINO_ARCH_AVR
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wctor-dtor-privacy"
     struct __nonesuchbase
@@ -3654,6 +3697,16 @@ namespace std
         is_trivially_destructible<_Tp>::value;
 #endif
 
+    template <typename _Tp, typename... _Args>
+    inline constexpr bool is_nothrow_constructible_v = __is_nothrow_constructible(_Tp, _Args...);
+    template <typename _Tp>
+    inline constexpr bool is_nothrow_default_constructible_v = __is_nothrow_constructible(_Tp);
+    template <typename _Tp>
+    inline constexpr bool is_nothrow_copy_constructible_v = __is_nothrow_constructible(_Tp, __add_lval_ref_t<const _Tp>);
+    template <typename _Tp>
+    inline constexpr bool is_nothrow_move_constructible_v = __is_nothrow_constructible(_Tp, __add_rval_ref_t<_Tp>);
+    // 3563
+    // 3574
     template <typename _Tp>
     inline constexpr bool is_nothrow_destructible_v =
         is_nothrow_destructible<_Tp>::value;

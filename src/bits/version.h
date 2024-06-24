@@ -469,7 +469,7 @@
 #undef __glibcxx_want_is_aggregate
 
 #if !defined(__cpp_lib_is_invocable)
-#if (__cplusplus >= 201703L)
+#if (__cplusplus >= 201703L) || defined ARDUINO_ARCH_SAM
 #define __glibcxx_is_invocable 201703L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_is_invocable)
 #define __cpp_lib_is_invocable 201703L
@@ -1848,7 +1848,7 @@
 #undef __glibcxx_want_ios_noreplace
 
 #if !defined(__cpp_lib_move_only_function)
-#if (__cplusplus >= 202100L) && _GLIBCXX_HOSTED
+#if (__cplusplus >= 202100L) && _GLIBCXX_HOSTED || !defined ARDUINO_ARCH_ESP32
 #define __glibcxx_move_only_function 202110L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_move_only_function)
 #define __cpp_lib_move_only_function 202110L

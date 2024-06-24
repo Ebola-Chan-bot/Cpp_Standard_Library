@@ -540,6 +540,9 @@ namespace std
 #if _GLIBCXX_HOSTED
 #include <bits/std_function.h> // std::function
 #endif
+#if _GLIBCXX_HOSTED
+# include <bits/move_only_function.h>
+#endif
 // These are SGI extensions which are checked for by some conformance checks.  They
 //  are *NOT* part of the C++ standard, however
 
@@ -593,4 +596,7 @@ compose2(const Op1 &fn1, const Op2 &fn2, const Op3 &fn3)
 #pragma GCC visibility pop
 #else
 #include_next <functional>
+#endif
+#ifndef ARDUINO_ARCH_ESP32
+#include <bits/move_only_function.h>
 #endif
