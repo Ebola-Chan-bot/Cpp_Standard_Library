@@ -10,7 +10,7 @@
 void Translate(std::chrono::hours H) {
   std::cout << std::chrono::duration_cast<std::chrono::seconds>(H + H).count() << std::endl;
 }
-std::function<void()> FF;
+std::move_only_function<void()> FF;
 void setup() {
   std::unique_ptr<std::chrono::hours[]> US = std::make_unique_for_overwrite<std::chrono::hours[]>(10);
   std::fill_n(US.get(), 10, std::chrono::hours(1));
@@ -19,10 +19,8 @@ void setup() {
     Translate(H);
   };
   std::dynarray<int> D(std::log2(1024));
-  std::unordered_map<int, std::function<void()>> UIF;
-  UIF[1] = []() {};/*
-  std::unordered_map<int, std::move_only_function<void()>> UIFMove;
-  UIF[2] = []() {};*/
+  std::unordered_map<int, std::move_only_function<void()>> UIF;
+  UIF[1] = []() {};
 #if __cpp_exceptions
   try {
     throw 0;

@@ -107,6 +107,18 @@
 #else
 #define _GLIBCXX_USE_BUILTIN_TRAIT(BT) 0
 #endif
+
+#if __cplusplus >= 201402L
+#define CSL_GLIBCXX14_CONSTEXPR(Alternative) constexpr
+#define _STRUCT14VALUE(StructValue, Arguments...) StructValue<Arguments>
+#define _STRUCT14VALUE_V(StructValue, Arguments...) StructValue##_v<Arguments>
+#else
+#define _GLIBCXX14_CONSTEXPR
+#define CSL_GLIBCXX14_CONSTEXPR(Alternative) Alternative
+#define _STRUCT14VALUE(StructValue, Arguments...) StructValue<Arguments>::value
+#define _STRUCT14VALUE_V(StructValue, Arguments...) StructValue<Arguments>::value
+#endif
+
 // 861
 #ifdef ARDUINO_ARCH_AVR
 // 40
@@ -269,14 +281,8 @@ namespace __gnu_cxx
 #ifndef _GLIBCXX14_CONSTEXPR
 #if __cplusplus >= 201402L
 #define _GLIBCXX14_CONSTEXPR constexpr
-#define CSL_GLIBCXX14_CONSTEXPR(Alternative) constexpr
-#define _STRUCT14VALUE(StructValue, Arguments...) StructValue<Arguments>
-#define _STRUCT14VALUE_V(StructValue, Arguments...) StructValue##_v<Arguments>
 #else
 #define _GLIBCXX14_CONSTEXPR
-#define CSL_GLIBCXX14_CONSTEXPR(Alternative) Alternative
-#define _STRUCT14VALUE(StructValue, Arguments...) StructValue<Arguments>::value
-#define _STRUCT14VALUE_V(StructValue, Arguments...) StructValue<Arguments>::value
 #endif
 #endif
 

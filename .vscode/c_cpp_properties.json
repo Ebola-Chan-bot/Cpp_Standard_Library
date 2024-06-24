@@ -46,7 +46,7 @@
             "defines": [
                 "ARDUINO_ARCH_ESP32=1"
             ],
-            "compilerPath": "${LOCALAPPDATA}/Arduino15/packages/esp32/tools/xtensa-esp32-elf-gcc/esp-12.2.0_20230208/bin/xtensa-esp32-elf-g++.exe",
+            "compilerPath": "${LOCALAPPDATA}/Arduino15/packages/esp32/tools/esp-xs3/2302/bin/xtensa-esp32s3-elf-gcc.exe",
             "cStandard": "c11",
             "cppStandard": "c++20"
         }

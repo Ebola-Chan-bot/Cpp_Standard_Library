@@ -83,14 +83,24 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		// [func.wrap.mov.con]/1 is-callable-from<VT>
 		template <typename _Vt>
 #if __cplusplus < 201402L
-		struct __is_callable_from : bool_constant<_STRUCT14VALUE_V(__and_, __callable<_Vt _GLIBCXX_MOF_CV_REF>,
-																   __callable<_Vt _GLIBCXX_MOF_INV_QUALS>)>
+		struct __is_callable_from : bool_constant<__and_<__callable<_Vt _GLIBCXX_MOF_CV_REF>,
+																   __callable<_Vt _GLIBCXX_MOF_INV_QUALS>>::value>
 		{
 		};
 #else
-		static constexpr bool __is_callable_from = _STRUCT14VALUE_V(__and_, __callable<_Vt _GLIBCXX_MOF_CV_REF>,
-																	__callable<_Vt _GLIBCXX_MOF_INV_QUALS>);
+		static constexpr bool __is_callable_from = __and_v<__callable<_Vt _GLIBCXX_MOF_CV_REF>,
+																	__callable<_Vt _GLIBCXX_MOF_INV_QUALS>>;
 #endif
+		static bool _ValidAndNull(...)
+		{
+			return false;
+		}
+		template <typename T>
+		static auto _ValidAndNull(T __f) -> decltype(__f == nullptr, bool())
+		{
+			return __f == nullptr;
+		}
+
 	public:
 		using result_type = _Res;
 
@@ -113,7 +123,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		{
 			if _GLIBCXX14_CONSTEXPR (_STRUCT14VALUE_V(is_function, remove_pointer_t<_Vt>) || _STRUCT14VALUE_V(is_member_pointer, _Vt) || _STRUCT14VALUE_V(__is_move_only_function, _Vt))
 			{
-				if (__f == nullptr)
+				if (_ValidAndNull(__f))
 					return;
 			}
 			_M_init<_Vt>(std::forward<_Fn>(__f));

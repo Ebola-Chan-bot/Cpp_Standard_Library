@@ -29,7 +29,35 @@
 #include "char_traits"
 #include "cstddef"
 #else
+#ifdef ARDUINO_ARCH_SAM
+#define __result_of_memfun_ref_impl __result_of_memfun_ref_impl_deprecated
+#define __result_of_memfun_deref_impl __result_of_memfun_deref_impl_deprecated
+#define __result_of_memobj_ref_impl __result_of_memobj_ref_impl_deprecated
+#define __result_of_memobj_deref_impl __result_of_memobj_deref_impl_deprecated
+#define __result_of_other_impl __result_of_other_impl_deprecated
+#define __result_of_memobj_deref __result_of_memobj_deref_deprecated
+#define __result_of_memobj __result_of_memobj_deprecated
+#define __result_of_memfun __result_of_memfun_deprecated
+#define __result_of_impl __result_of_impl_deprecated
+#define __result_of_memfun_ref __result_of_memfun_ref_deprecated
+#define __result_of_memfun_deref __result_of_memfun_deref_deprecated
+#define __result_of_memobj_ref __result_of_memobj_ref_deprecated
+#endif
 #include_next <type_traits>
+#ifdef ARDUINO_ARCH_SAM
+#undef __result_of_memfun_ref_impl
+#undef __result_of_memfun_deref_impl
+#undef __result_of_memobj_ref_impl
+#undef __result_of_memobj_deref_impl
+#undef __result_of_other_impl
+#undef __result_of_memobj_deref
+#undef __result_of_memobj
+#undef __result_of_memfun
+#undef __result_of_memfun_ref
+#undef __result_of_memfun_deref
+#undef __result_of_impl
+#undef __result_of_memobj_ref
+#endif
 #endif
 #ifndef ARDUINO_ARCH_ESP32
 #include "xtr1common"
@@ -2566,12 +2594,15 @@ namespace std
     {
         using type = typename __decay_selector<_Tp>::type;
     };
-    // 2280
+// 2280
+#endif // ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
     // 2295
     //  __decay_t (std::decay_t for C++11).
     template <typename _Tp>
     using __decay_t = typename decay<_Tp>::type;
-
+#endif
+#ifdef ARDUINO_ARCH_AVR
     /// @cond undocumented
 
     // Helper which adds a reference to a type when given a reference_wrapper
@@ -2799,8 +2830,7 @@ namespace std
     {
         using __invoke_type = _Tag;
     };
-#endif
-#ifdef ARDUINO_ARCH_AVR
+
     // [func.require] paragraph 1 bullet 1:
     struct __result_of_memfun_ref_impl
     {
@@ -2949,8 +2979,7 @@ namespace std
     {
         using type = decltype(_S_test<_Functor, _ArgTypes...>(0));
     };
-#endif // ARDUINO_ARCH_AVR
-#ifdef ARDUINO_ARCH_SAM
+
     // __invoke_result (std::invoke_result for C++11)
     template <typename _Functor, typename... _ArgTypes>
     struct __invoke_result
@@ -2962,27 +2991,8 @@ namespace std
               _Functor, _ArgTypes...>::type
     {
     };
-
-    // _GLIBCXX_RESOLVE_LIB_DEFECTS
-    // 2219.  INVOKE-ing a pointer to member with a reference_wrapper
-    //        as the object expression
-
-    // Used by result_of, invoke etc. to unwrap a reference_wrapper.
-    template <typename _Tp, typename _Up = __remove_cvref_t<_Tp>>
-    struct __inv_unwrap
-    {
-        using type = _Tp;
-    };
-
-    template <typename _Tp, typename _Up>
-    struct __inv_unwrap<_Tp, reference_wrapper<_Up>>
-    {
-        using type = _Up &;
-    };
-#endif // ARDUINO_ARCH_SAM
 // 2684
 // 2745
-#ifndef ARDUINO_ARCH_ESP32
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     /// Alias template for aligned_storage

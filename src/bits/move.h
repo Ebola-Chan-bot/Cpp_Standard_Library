@@ -56,7 +56,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   }
 #endif
 #if __cplusplus >= 201103L
-#ifdef ARDUNO_ARCH_AVR
+#ifdef ARDUINO_ARCH_AVR
   /**
    *  @addtogroup utilities
    *  @{

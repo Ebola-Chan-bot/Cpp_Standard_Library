@@ -70,7 +70,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		static constexpr bool
 		_S_nothrow_init() noexcept
 		{
-			return _STRUCT14VALUE(__stored_locally, _Tp) && _STRUCT14VALUE(is_nothrow_constructible, _Tp, _Args...);
+			return _STRUCT14VALUE(__stored_locally, _Tp) && _STRUCT14VALUE_V(is_nothrow_constructible, _Tp, _Args...);
 		}
 
 		template <typename _Tp, typename... _Args>
