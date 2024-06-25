@@ -1,5 +1,5 @@
-/* Macros for the multibyte (char) implementation of struct __printf_buffer.
-   Copyright (C) 2022-2024 Free Software Foundation, Inc.
+/* Definition of locale_t.
+   Copyright (C) 2017-2024 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -16,9 +16,11 @@
    License along with the GNU C Library; if not, see
    <https://www.gnu.org/licenses/>.  */
 
-#define Xprintf(n) __printf_##n
+#ifndef _BITS_TYPES_LOCALE_T_H
+#define _BITS_TYPES_LOCALE_T_H 1
 
-#define CHAR_T char
-#define MEMCPY memcpy
-#define MEMSET memset
-#define STRNLEN __strnlen
+#include <bits/types/__locale_t.h>
+
+typedef __locale_t locale_t;
+
+#endif /* bits/types/locale_t.h */

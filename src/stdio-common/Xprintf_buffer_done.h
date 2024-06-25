@@ -1,4 +1,4 @@
-/* Macros for the multibyte (char) implementation of struct __printf_buffer.
+/* Final status reporting for struct __*printf_buffer.  Generic version.
    Copyright (C) 2022-2024 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
@@ -16,9 +16,25 @@
    License along with the GNU C Library; if not, see
    <https://www.gnu.org/licenses/>.  */
 
-#define Xprintf(n) __printf_##n
+#include <errno.h>
+#include <intprops.h>
+#include <stdint.h>
 
-#define CHAR_T char
-#define MEMCPY memcpy
-#define MEMSET memset
-#define STRNLEN __strnlen
+int
+Xprintf_buffer_done (struct Xprintf_buffer *buf)
+{
+  if (Xprintf_buffer_has_failed (buf))
+    return -1;
+
+  /* Use uintptr_t here because for sprintf, the buffer range may
+     cover more than half of the address space.  */
+  uintptr_t written_current = buf->write_ptr - buf->write_base;
+  int written_total;
+  if (INT_ADD_WRAPV (buf->written, written_current, &written_total))
+    {
+      __set_errno (EOVERFLOW);
+      return -1;
+    }
+  else
+    return written_total;
+}

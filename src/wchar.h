@@ -48,6 +48,8 @@ typedef __gnuc_va_list va_list;
 # endif
 #endif
 
+#include <bits/types/mbstate_t.h>
+
 /* Tell the caller that we provide correct C++ prototypes.  */
 #if defined __cplusplus && __GNUC_PREREQ (4, 4)
 # define __CORRECT_ISO_CPP_WCHAR_H_PROTO

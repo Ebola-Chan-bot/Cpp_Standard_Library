@@ -16,13 +16,15 @@
    License along with the GNU C Library; if not, see
    <https://www.gnu.org/licenses/>.  */
 
+#include <printf.h>
 #include <stdint.h>
-#include <stddef.h>
 #include <wchar.h>
 
 
 struct printf_spec
   {
+    /* Information parsed from the format spec.  */
+    struct printf_info info;
 
     /* Pointers into the format string for the end of this format
        spec and the next (or to the end of the string if no more).  */

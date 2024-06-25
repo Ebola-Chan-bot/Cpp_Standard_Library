@@ -1,4 +1,5 @@
-/* Macros for the multibyte (char) implementation of struct __printf_buffer.
+#ifdef ARDUINO_ARCH_AVR
+/* Final status reporting for struct __printf_buffer.  Multibyte version.
    Copyright (C) 2022-2024 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
@@ -16,9 +17,7 @@
    License along with the GNU C Library; if not, see
    <https://www.gnu.org/licenses/>.  */
 
-#define Xprintf(n) __printf_##n
-
-#define CHAR_T char
-#define MEMCPY memcpy
-#define MEMSET memset
-#define STRNLEN __strnlen
+#include <printf_buffer.h>
+#include "printf_buffer-char.h"
+#include "Xprintf_buffer_done.h"
+#endif

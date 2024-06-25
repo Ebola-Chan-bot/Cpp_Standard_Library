@@ -23,12 +23,10 @@
 
 __BEGIN_DECLS
 
-#include <bits/types/FILE.h>
-
 #define	__need_size_t
 #define __need_wchar_t
 #include <stddef.h>
-
+#include <stdio.h>
 #include <stdarg.h>
 
 
