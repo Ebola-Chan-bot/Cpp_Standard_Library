@@ -27,6 +27,7 @@
 
 #include "libioP.h"
 
+#include <array_length.h>
 #include <printf.h>
 #include <printf_buffer.h>
 
@@ -103,5 +104,5 @@ ___vsnprintf (char *string, size_t maxlen, const char *format, va_list args)
   return __vsnprintf_internal (string, maxlen, format, args, 0);
 }
 ldbl_weak_alias (___vsnprintf, __vsnprintf)
-ldbl_weak_alias (___vsnprintf, vsnprintf)
+ldbl_weak_alias (___vsnprintf, __glibc_vsnprintf)
 #endif

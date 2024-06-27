@@ -108,6 +108,15 @@
 		"stdarg.h": "c",
 		"limits.h": "c",
 		"*.def": "c",
-		"libc-header-start.h": "c"
+		"libc-header-start.h": "c",
+		"argp-namefrob.h": "c",
+		"unistd.h": "c",
+		"fcntl.h": "c",
+		"ldsodefs.h": "c",
+		"mman.h": "c",
+		"param.h": "c",
+		"string-optype.h": "c",
+		"string-fza.h": "c",
+		"string-misc.h": "c"
 	}
 }

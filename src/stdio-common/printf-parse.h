@@ -19,7 +19,9 @@
 #include <printf.h>
 #include <stdint.h>
 #include <wchar.h>
-
+#ifndef __strchrnul
+#define __strchrnul strchrnul
+#endif
 
 struct printf_spec
   {
