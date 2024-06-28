@@ -22,9 +22,6 @@
 #include <features.h>
 
 #include <stdbool.h>
-#define __need_size_t
-#define __need_NULL
-#define __BEOS__
 #include <stddef.h>
 #include <string.h>
 #include <stdint.h>

@@ -102,7 +102,7 @@
 		"wchar.h": "c",
 		"_itoa.h": "c",
 		"localeinfo.h": "c",
-		"stdlib.h": "c",
+		"stdlib.h": "cpp",
 		"stddef.h": "c",
 		"stdint-gcc.h": "c",
 		"stdarg.h": "c",
@@ -117,6 +117,13 @@
 		"param.h": "c",
 		"string-optype.h": "c",
 		"string-fza.h": "c",
-		"string-misc.h": "c"
+		"string-misc.h": "c",
+		"signal.h": "c",
+		"endian.h": "c",
+		"endianness.h": "c",
+		"internal-signals.h": "c",
+		"signum-generic.h": "c",
+		"siginfo_t.h": "c",
+		"sigaction.h": "c"
 	}
 }

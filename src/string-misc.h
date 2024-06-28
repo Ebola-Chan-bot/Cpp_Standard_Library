@@ -20,7 +20,9 @@
 #define _STRING_MISC_H 1
 
 #include <limits.h>
+#include <endian.h>
 #include <string-optype.h>
+#include <sys/cdefs.h>
 
 /* Extract the byte at index IDX from word X, with index 0 being the
    least significant byte.  */

@@ -28,10 +28,6 @@
 #define __GLIBC_INTERNAL_STARTING_HEADER_IMPLEMENTATION
 #include <bits/libc-header-start.h>
 #include <sys/cdefs.h>
-
-#define __need_size_t
-#define __need_wchar_t
-#define __need_NULL
 #include <stddef.h>
 
 #define __need___va_list

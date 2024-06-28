@@ -20,7 +20,6 @@
 #define	_SYS_MMAN_H	1
 
 #include <features.h>
-#define __need_size_t
 #include <stddef.h>
 
 #include <bits/mman.h>
