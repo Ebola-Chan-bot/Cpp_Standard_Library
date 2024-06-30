@@ -554,12 +554,10 @@ void Xprintf_buffer(struct Xprintf_buffer *buf, const CHAR_T *format,
 	/* If we only have to print a simple string, return now.  */
 	if (*f == L_('\0'))
 		return;
-#ifndef ARDUINO_ARCH_AVR
 
 	/* Use the slow path in case any printf handler is registered.  */
 	if (__glibc_unlikely(__printf_function_table != NULL || __printf_modifier_table != NULL || __printf_va_arg_table != NULL))
 		goto do_positional;
-
 	/* Process whole format string.  */
 	do
 	{
@@ -623,7 +621,7 @@ void Xprintf_buffer(struct Xprintf_buffer *buf, const CHAR_T *format,
 
 		/* The '\'' flag.  */
 		LABEL(flag_quote) : group = 1;
-
+#ifndef ARDUINO_ARCH_AVR
 		if (grouping == (const char *)-1)
 		{
 #ifdef COMPILE_WPRINTF
@@ -644,12 +642,13 @@ void Xprintf_buffer(struct Xprintf_buffer *buf, const CHAR_T *format,
 				grouping = NULL;
 		}
 		JUMP(*++f, step0_jumps);
-
+#endif
 		LABEL(flag_i18n) : use_outdigits = 1;
 		JUMP(*++f, step0_jumps);
 
 		/* Get width from argument.  */
 		LABEL(width_asterics) :
+#ifndef ARDUINO_ARCH_AVR
 		{
 			const UCHAR_T *tmp; /* Temporary value.  */
 
@@ -680,10 +679,10 @@ void Xprintf_buffer(struct Xprintf_buffer *buf, const CHAR_T *format,
 			}
 		}
 		JUMP(*f, step1_jumps);
-
+#endif
 		/* Given width in format string.  */
 		LABEL(width) : width = read_int(&f);
-
+#ifndef ARDUINO_ARCH_AVR
 		if (__glibc_unlikely(width == -1))
 		{
 			__set_errno(EOVERFLOW);
@@ -695,8 +694,9 @@ void Xprintf_buffer(struct Xprintf_buffer *buf, const CHAR_T *format,
 			/* Oh, oh.  The argument comes from a positional parameter.  */
 			goto do_positional;
 		JUMP(*f, step1_jumps);
-
+#endif
 		LABEL(precision) : ++f;
+#ifndef ARDUINO_ARCH_AVR
 		if (*f == L_('*'))
 		{
 			const UCHAR_T *tmp; /* Temporary value.  */
@@ -739,7 +739,7 @@ void Xprintf_buffer(struct Xprintf_buffer *buf, const CHAR_T *format,
 		else
 			prec = 0;
 		JUMP(*f, step2_jumps);
-
+#endif
 		/* Process 'h' modifier.  There might another 'h' following.  */
 		LABEL(mod_half) : is_short = 1;
 		JUMP(*++f, step3a_jumps);
@@ -773,6 +773,7 @@ void Xprintf_buffer(struct Xprintf_buffer *buf, const CHAR_T *format,
 
 		/* Process 'wN' or 'wfN' modifier.  */
 		LABEL(mod_bitwidth) : ++f;
+#ifndef ARDUINO_ARCH_AVR
 		bool is_fast = false;
 		if (*f == L_('f'))
 		{
@@ -819,7 +820,7 @@ void Xprintf_buffer(struct Xprintf_buffer *buf, const CHAR_T *format,
 			goto all_done;
 		}
 		JUMP(*f, step4_jumps);
-
+#endif
 		/* Process current format.  */
 		while (1)
 		{
@@ -846,6 +847,7 @@ void Xprintf_buffer(struct Xprintf_buffer *buf, const CHAR_T *format,
 #undef process_arg_wstring
 
 			LABEL(form_float) : LABEL(form_floathex) :
+#ifndef ARDUINO_ARCH_AVR
 			{
 				if (__glibc_unlikely((mode_flags & PRINTF_LDBL_IS_DBL) != 0))
 					is_long_double = 0;
@@ -875,8 +877,10 @@ void Xprintf_buffer(struct Xprintf_buffer *buf, const CHAR_T *format,
 				__printf_fp_spec(buf, &info, &ptr);
 			}
 			break;
-
-			LABEL(form_unknown) : if (spec == L_('\0'))
+#endif
+			LABEL(form_unknown) : break;
+#ifndef ARDUINO_ARCH_AVR
+if (spec == L_('\0'))
 			{
 				/* The format string ended before the specifier is complete.  */
 				__set_errno(EINVAL);
@@ -887,8 +891,9 @@ void Xprintf_buffer(struct Xprintf_buffer *buf, const CHAR_T *format,
 			/* If we are in the fast loop force entering the complicated
 			   one.  */
 			goto do_positional;
+#endif
 		}
-
+#ifndef ARDUINO_ARCH_AVR
 		/* The format is correctly handled.  */
 		++nspecs_done;
 
@@ -902,6 +907,7 @@ void Xprintf_buffer(struct Xprintf_buffer *buf, const CHAR_T *format,
 		/* Write the following constant string.  */
 		Xprintf_buffer_write(buf, (const CHAR_T *)end_of_spec,
 							 f - end_of_spec);
+#endif
 	} while (*f != L_('\0') && !Xprintf_buffer_has_failed(buf));
 
 all_done:
@@ -909,13 +915,11 @@ all_done:
 	   vfprintf-process-arg.c uses it for this function and
 	   printf_positional below.  */
 	return;
-
 	/* Hand off processing for positional parameters.  */
 do_positional:
 	printf_positional(buf, format, readonly_format, ap, &ap_save,
 					  nspecs_done, lead_str_end, work_buffer,
 					  save_errno, grouping, thousands_sep, mode_flags);
-#endif
 }
 
 static void
@@ -927,6 +931,7 @@ printf_positional(struct Xprintf_buffer *buf, const CHAR_T *format,
 				  const char *grouping, THOUSANDS_SEP_T thousands_sep,
 				  unsigned int mode_flags)
 {
+#ifndef ARDUINO_ARCH_AVR
 	/* For positional argument handling.  */
 	struct scratch_buffer specsbuf;
 	scratch_buffer_init(&specsbuf);
@@ -954,7 +959,6 @@ printf_positional(struct Xprintf_buffer *buf, const CHAR_T *format,
 
 	/* Just a counter.  */
 	size_t cnt;
-
 	if (grouping == (const char *)-1)
 	{
 #ifdef COMPILE_WPRINTF
@@ -998,7 +1002,6 @@ printf_positional(struct Xprintf_buffer *buf, const CHAR_T *format,
 			goto all_done;
 		}
 	}
-
 	/* Determine the number of arguments the format string consumes.  */
 	nargs = MAX(nargs, max_ref_arg);
 
@@ -1285,6 +1288,7 @@ printf_positional(struct Xprintf_buffer *buf, const CHAR_T *format,
 all_done:
 	scratch_buffer_free(&argsbuf);
 	scratch_buffer_free(&specsbuf);
+#endif
 }
 
 /* Handle an unknown format specifier.  This prints out a canonicalized

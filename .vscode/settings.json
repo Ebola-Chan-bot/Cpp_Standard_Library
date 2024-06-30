@@ -124,6 +124,8 @@
 		"internal-signals.h": "c",
 		"signum-generic.h": "c",
 		"siginfo_t.h": "c",
-		"sigaction.h": "c"
+		"sigaction.h": "c",
+		"vfprintf-process-arg.h": "c",
+		"libiop.h": "c"
 	}
 }
