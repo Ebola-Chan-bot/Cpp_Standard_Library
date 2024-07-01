@@ -126,6 +126,21 @@
 		"siginfo_t.h": "c",
 		"sigaction.h": "c",
 		"vfprintf-process-arg.h": "c",
-		"libiop.h": "c"
+		"libiop.h": "c",
+		"shlib-compat.h": "c",
+		"gconv.h": "c",
+		"ieee754.h": "c",
+		"array_length.h": "c",
+		"math_ldbl_opt.h": "c",
+		"libio.h": "c",
+		"alloca.h": "c",
+		"fpioconst.h": "c",
+		"printf_buffer_to_file.h": "c",
+		"grouping_iterator.h": "c",
+		"rounding-mode.h": "c",
+		"math.h": "c",
+		"_itowa.h": "c",
+		"gmp-impl.h": "c",
+		"gmp.h": "c"
 	}
 }

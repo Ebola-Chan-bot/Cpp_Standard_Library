@@ -60,5 +60,5 @@ struct __locale_struct _nl_global_locale attribute_hidden =
   };
 
 /* The tsd macros don't permit an initializer.  */
-__thread locale_t __libc_tsd_LOCALE = &_nl_global_locale;
+locale_t __libc_tsd_LOCALE = &_nl_global_locale;
 #endif

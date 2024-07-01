@@ -621,7 +621,6 @@ void Xprintf_buffer(struct Xprintf_buffer *buf, const CHAR_T *format,
 
 		/* The '\'' flag.  */
 		LABEL(flag_quote) : group = 1;
-#ifndef ARDUINO_ARCH_AVR
 		if (grouping == (const char *)-1)
 		{
 #ifdef COMPILE_WPRINTF
@@ -642,13 +641,11 @@ void Xprintf_buffer(struct Xprintf_buffer *buf, const CHAR_T *format,
 				grouping = NULL;
 		}
 		JUMP(*++f, step0_jumps);
-#endif
 		LABEL(flag_i18n) : use_outdigits = 1;
 		JUMP(*++f, step0_jumps);
 
 		/* Get width from argument.  */
 		LABEL(width_asterics) :
-#ifndef ARDUINO_ARCH_AVR
 		{
 			const UCHAR_T *tmp; /* Temporary value.  */
 
@@ -679,10 +676,8 @@ void Xprintf_buffer(struct Xprintf_buffer *buf, const CHAR_T *format,
 			}
 		}
 		JUMP(*f, step1_jumps);
-#endif
 		/* Given width in format string.  */
 		LABEL(width) : width = read_int(&f);
-#ifndef ARDUINO_ARCH_AVR
 		if (__glibc_unlikely(width == -1))
 		{
 			__set_errno(EOVERFLOW);
@@ -694,9 +689,7 @@ void Xprintf_buffer(struct Xprintf_buffer *buf, const CHAR_T *format,
 			/* Oh, oh.  The argument comes from a positional parameter.  */
 			goto do_positional;
 		JUMP(*f, step1_jumps);
-#endif
 		LABEL(precision) : ++f;
-#ifndef ARDUINO_ARCH_AVR
 		if (*f == L_('*'))
 		{
 			const UCHAR_T *tmp; /* Temporary value.  */
@@ -739,7 +732,6 @@ void Xprintf_buffer(struct Xprintf_buffer *buf, const CHAR_T *format,
 		else
 			prec = 0;
 		JUMP(*f, step2_jumps);
-#endif
 		/* Process 'h' modifier.  There might another 'h' following.  */
 		LABEL(mod_half) : is_short = 1;
 		JUMP(*++f, step3a_jumps);
@@ -773,7 +765,6 @@ void Xprintf_buffer(struct Xprintf_buffer *buf, const CHAR_T *format,
 
 		/* Process 'wN' or 'wfN' modifier.  */
 		LABEL(mod_bitwidth) : ++f;
-#ifndef ARDUINO_ARCH_AVR
 		bool is_fast = false;
 		if (*f == L_('f'))
 		{
@@ -820,7 +811,6 @@ void Xprintf_buffer(struct Xprintf_buffer *buf, const CHAR_T *format,
 			goto all_done;
 		}
 		JUMP(*f, step4_jumps);
-#endif
 		/* Process current format.  */
 		while (1)
 		{
@@ -847,7 +837,6 @@ void Xprintf_buffer(struct Xprintf_buffer *buf, const CHAR_T *format,
 #undef process_arg_wstring
 
 			LABEL(form_float) : LABEL(form_floathex) :
-#ifndef ARDUINO_ARCH_AVR
 			{
 				if (__glibc_unlikely((mode_flags & PRINTF_LDBL_IS_DBL) != 0))
 					is_long_double = 0;
@@ -877,10 +866,9 @@ void Xprintf_buffer(struct Xprintf_buffer *buf, const CHAR_T *format,
 				__printf_fp_spec(buf, &info, &ptr);
 			}
 			break;
-#endif
 			LABEL(form_unknown) : break;
 #ifndef ARDUINO_ARCH_AVR
-if (spec == L_('\0'))
+			if (spec == L_('\0'))
 			{
 				/* The format string ended before the specifier is complete.  */
 				__set_errno(EINVAL);

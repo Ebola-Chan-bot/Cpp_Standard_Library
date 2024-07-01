@@ -31,7 +31,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-
 #ifdef _IO_MTSAFE_IO
 static _IO_lock_t list_all_lock = _IO_lock_initializer;
 #endif
@@ -60,77 +59,6 @@ flush_cleanup (void *not_used)
 _Static_assert (offsetof (struct _IO_FILE, _prevchain)
 		> offsetof (struct _IO_FILE, _lock),
 		"offset of _prevchain > offset of _lock");
-
-void
-_IO_un_link (struct _IO_FILE_plus *fp)
-{
-  if (fp->file._flags & _IO_LINKED)
-    {
-      FILE **f;
-#ifdef _IO_MTSAFE_IO
-      _IO_cleanup_region_start_noarg (flush_cleanup);
-      _IO_lock_lock (list_all_lock);
-      run_fp = (FILE *) fp;
-      _IO_flockfile ((FILE *) fp);
-#endif
-      if (_IO_list_all == NULL)
-	;
-      else if (_IO_vtable_offset ((FILE *) fp) == 0)
-	{
-	  FILE **pr = fp->file._prevchain;
-	  FILE *nx = fp->file._chain;
-	  *pr = nx;
-	  if (nx != NULL)
-	    nx->_prevchain = pr;
-	}
-      else if (fp == _IO_list_all)
-	_IO_list_all = (struct _IO_FILE_plus *) _IO_list_all->file._chain;
-      else
-	for (f = &_IO_list_all->file._chain; *f; f = &(*f)->_chain)
-	  if (*f == (FILE *) fp)
-	    {
-	      *f = fp->file._chain;
-	      break;
-	    }
-      fp->file._flags &= ~_IO_LINKED;
-#ifdef _IO_MTSAFE_IO
-      _IO_funlockfile ((FILE *) fp);
-      run_fp = NULL;
-      _IO_lock_unlock (list_all_lock);
-      _IO_cleanup_region_end (0);
-#endif
-    }
-}
-libc_hidden_def (_IO_un_link)
-
-void
-_IO_link_in (struct _IO_FILE_plus *fp)
-{
-  if ((fp->file._flags & _IO_LINKED) == 0)
-    {
-      fp->file._flags |= _IO_LINKED;
-#ifdef _IO_MTSAFE_IO
-      _IO_cleanup_region_start_noarg (flush_cleanup);
-      _IO_lock_lock (list_all_lock);
-      run_fp = (FILE *) fp;
-      _IO_flockfile ((FILE *) fp);
-#endif
-      fp->file._chain = (FILE *) _IO_list_all;
-      if (_IO_vtable_offset ((FILE *) fp) == 0)
-	{
-	  fp->file._prevchain = (FILE **) &_IO_list_all;
-	  _IO_list_all->file._prevchain = &fp->file._chain;
-	}
-      _IO_list_all = fp;
-#ifdef _IO_MTSAFE_IO
-      _IO_funlockfile ((FILE *) fp);
-      run_fp = NULL;
-      _IO_lock_unlock (list_all_lock);
-      _IO_cleanup_region_end (0);
-#endif
-    }
-}
-libc_hidden_def (_IO_link_in)
 
 /* Return minimum _pos markers
    Assumes the current get area is the main get area. */
@@ -528,30 +456,6 @@ _IO_init (FILE *fp, int flags)
 
 static int stdio_needs_locking;
 
-/* In a single-threaded process most stdio locks can be omitted.  After
-   _IO_enable_locks is called, locks are not optimized away any more.
-   It must be first called while the process is still single-threaded.
-
-   This lock optimization can be disabled on a per-file basis by setting
-   _IO_FLAGS2_NEED_LOCK, because a file can have user-defined callbacks
-   or can be locked with flockfile and then a thread may be created
-   between a lock and unlock, so omitting the lock is not valid.
-
-   Here we have to make sure that the flag is set on all existing files
-   and files created later.  */
-void
-_IO_enable_locks (void)
-{
-  _IO_ITER i;
-
-  if (stdio_needs_locking)
-    return;
-  stdio_needs_locking = 1;
-  for (i = _IO_iter_begin (); i != _IO_iter_end (); i = _IO_iter_next (i))
-    _IO_iter_file (i)->_flags2 |= _IO_FLAGS2_NEED_LOCK;
-}
-libc_hidden_def (_IO_enable_locks)
-
 void
 _IO_old_init (FILE *fp, int flags)
 {
@@ -619,37 +523,6 @@ _IO_default_sync (FILE *fp)
   return 0;
 }
 
-/* The way the C++ classes are mapped into the C functions in the
-   current implementation, this function can get called twice! */
-
-void
-_IO_default_finish (FILE *fp, int dummy)
-{
-  struct _IO_marker *mark;
-  if (fp->_IO_buf_base && !(fp->_flags & _IO_USER_BUF))
-    {
-      free (fp->_IO_buf_base);
-      fp->_IO_buf_base = fp->_IO_buf_end = NULL;
-    }
-
-  for (mark = fp->_markers; mark != NULL; mark = mark->_next)
-    mark->_sbuf = NULL;
-
-  if (fp->_IO_save_base)
-    {
-      free (fp->_IO_save_base);
-      fp->_IO_save_base = NULL;
-    }
-
-  _IO_un_link ((struct _IO_FILE_plus *) fp);
-
-#ifdef _IO_MTSAFE_IO
-  if (fp->_lock != NULL)
-    _IO_lock_fini (*fp->_lock);
-#endif
-}
-libc_hidden_def (_IO_default_finish)
-
 off64_t
 _IO_default_seekoff (FILE *fp, off64_t offset, int dir, int mode)
 {
@@ -707,73 +580,6 @@ _IO_adjust_column (unsigned start, const char *line, int count)
 }
 libc_hidden_def (_IO_adjust_column)
 
-int
-_IO_flush_all (void)
-{
-  int result = 0;
-  FILE *fp;
-
-#ifdef _IO_MTSAFE_IO
-  _IO_cleanup_region_start_noarg (flush_cleanup);
-  _IO_lock_lock (list_all_lock);
-#endif
-
-  for (fp = (FILE *) _IO_list_all; fp != NULL; fp = fp->_chain)
-    {
-      run_fp = fp;
-      _IO_flockfile (fp);
-
-      if (((fp->_mode <= 0 && fp->_IO_write_ptr > fp->_IO_write_base)
-	   || (_IO_vtable_offset (fp) == 0
-	       && fp->_mode > 0 && (fp->_wide_data->_IO_write_ptr
-				    > fp->_wide_data->_IO_write_base))
-	   )
-	  && _IO_OVERFLOW (fp, EOF) == EOF)
-	result = EOF;
-
-      _IO_funlockfile (fp);
-      run_fp = NULL;
-    }
-
-#ifdef _IO_MTSAFE_IO
-  _IO_lock_unlock (list_all_lock);
-  _IO_cleanup_region_end (0);
-#endif
-
-  return result;
-}
-libc_hidden_def (_IO_flush_all)
-
-void
-_IO_flush_all_linebuffered (void)
-{
-  FILE *fp;
-
-#ifdef _IO_MTSAFE_IO
-  _IO_cleanup_region_start_noarg (flush_cleanup);
-  _IO_lock_lock (list_all_lock);
-#endif
-
-  for (fp = (FILE *) _IO_list_all; fp != NULL; fp = fp->_chain)
-    {
-      run_fp = fp;
-      _IO_flockfile (fp);
-
-      if ((fp->_flags & _IO_NO_WRITES) == 0 && fp->_flags & _IO_LINE_BUF)
-	_IO_OVERFLOW (fp, EOF);
-
-      _IO_funlockfile (fp);
-      run_fp = NULL;
-    }
-
-#ifdef _IO_MTSAFE_IO
-  _IO_lock_unlock (list_all_lock);
-  _IO_cleanup_region_end (0);
-#endif
-}
-libc_hidden_def (_IO_flush_all_linebuffered)
-weak_alias (_IO_flush_all_linebuffered, _flushlbf)
-
 
 /* The following is a bit tricky.  In general, we want to unbuffer the
    streams so that all output which follows is seen.  If we are not
@@ -793,62 +599,6 @@ static void _IO_unbuffer_all (void);
 static bool dealloc_buffers;
 static FILE *freeres_list;
 
-static void
-_IO_unbuffer_all (void)
-{
-  FILE *fp;
-
-#ifdef _IO_MTSAFE_IO
-  _IO_cleanup_region_start_noarg (flush_cleanup);
-  _IO_lock_lock (list_all_lock);
-#endif
-
-  for (fp = (FILE *) _IO_list_all; fp; fp = fp->_chain)
-    {
-      int legacy = 0;
-
-      run_fp = fp;
-      _IO_flockfile (fp);
-
-#if SHLIB_COMPAT (libc, GLIBC_2_0, GLIBC_2_1)
-      if (__glibc_unlikely (_IO_vtable_offset (fp) != 0))
-	legacy = 1;
-#endif
-
-      if (! (fp->_flags & _IO_UNBUFFERED)
-	  /* Iff stream is un-orientated, it wasn't used. */
-	  && (legacy || fp->_mode != 0))
-	{
-	  if (! legacy && ! dealloc_buffers && !(fp->_flags & _IO_USER_BUF))
-	    {
-	      fp->_flags |= _IO_USER_BUF;
-
-	      fp->_freeres_list = freeres_list;
-	      freeres_list = fp;
-	      fp->_freeres_buf = fp->_IO_buf_base;
-	    }
-
-	  _IO_SETBUF (fp, NULL, 0);
-
-	  if (! legacy && fp->_mode > 0)
-	    _IO_wsetb (fp, NULL, NULL, 0);
-	}
-
-      /* Make sure that never again the wide char functions can be
-	 used.  */
-      if (! legacy)
-	fp->_mode = -1;
-
-      _IO_funlockfile (fp);
-      run_fp = NULL;
-    }
-
-#ifdef _IO_MTSAFE_IO
-  _IO_lock_unlock (list_all_lock);
-  _IO_cleanup_region_end (0);
-#endif
-}
-
 void
 __libio_freemem (void)
 {
@@ -860,24 +610,6 @@ __libio_freemem (void)
 
       freeres_list = freeres_list->_freeres_list;
     }
-}
-
-
-int
-_IO_cleanup (void)
-{
-  int result = _IO_flush_all ();
-
-  /* We currently don't have a reliable mechanism for making sure that
-     C++ static destructors are executed in the correct order.
-     So it is possible that other static destructors might want to
-     write to cout - and they're supposed to be able to do so.
-
-     The following will make the standard streambufs be unbuffered,
-     which forces any output from late destructors to be written out. */
-  _IO_unbuffer_all ();
-
-  return result;
 }
 
 
@@ -1063,13 +795,6 @@ void
 _IO_default_imbue (FILE *fp, void *locale)
 {
 }
-
-_IO_ITER
-_IO_iter_begin (void)
-{
-  return (_IO_ITER) _IO_list_all;
-}
-libc_hidden_def (_IO_iter_begin)
 
 _IO_ITER
 _IO_iter_end (void)

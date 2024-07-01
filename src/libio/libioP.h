@@ -35,14 +35,10 @@
 #ifndef _LIBIOP_H
 #define _LIBIOP_H 1
 
-#include <stddef.h>
-
 #include <errno.h>
 #include <libc-lock.h>
-
 #include <math_ldbl_opt.h>
-
-#include <stdio.h>
+#include <libio/libio.h>
 
 #define _IO_seek_set 0
 #define _IO_seek_cur 1
@@ -330,17 +326,6 @@ struct _IO_FILE_complete_plus
 };
 #endif
 
-/* Special file type for fopencookie function.  */
-struct _IO_cookie_file
-{
-  struct _IO_FILE_plus __fp;
-  void *__cookie;
-  cookie_io_functions_t __io_functions;
-};
-
-FILE *_IO_fopencookie (void *cookie, const char *mode,
-                       cookie_io_functions_t io_functions);
-
 
 /* Iterator type for walking global linked list of _IO_FILE objects. */
 
@@ -469,19 +454,6 @@ extern size_t __wprintf_buffer_as_file_xsputn (FILE *fp, const void *buf,
 
 enum
 {
-  IO_STR_JUMPS                    = 0,
-  IO_WSTR_JUMPS                   = 1,
-  IO_FILE_JUMPS                   = 2,
-  IO_FILE_JUMPS_MMAP              = 3,
-  IO_FILE_JUMPS_MAYBE_MMAP        = 4,
-  IO_WFILE_JUMPS                  = 5,
-  IO_WFILE_JUMPS_MMAP             = 6,
-  IO_WFILE_JUMPS_MAYBE_MMAP       = 7,
-  IO_COOKIE_JUMPS                 = 8,
-  IO_PROC_JUMPS                   = 9,
-  IO_MEM_JUMPS                    = 10,
-  IO_WMEM_JUMPS                   = 11,
-  IO_PRINTF_BUFFER_AS_FILE_JUMPS  = 12,
   IO_WPRINTF_BUFFER_AS_FILE_JUMPS = 13,
 #if SHLIB_COMPAT (libc, GLIBC_2_0, GLIBC_2_1)
   IO_OLD_FILE_JUMPS               = 14,
@@ -498,23 +470,6 @@ enum
 #define IO_VTABLES_LEN (IO_VTABLES_NUM * sizeof (struct _IO_jump_t))
 
 extern const struct _IO_jump_t __io_vtables[] attribute_hidden;
-#define _IO_str_jumps                    (__io_vtables[IO_STR_JUMPS])
-#define _IO_wstr_jumps                   (__io_vtables[IO_WSTR_JUMPS])
-#define _IO_file_jumps                   (__io_vtables[IO_FILE_JUMPS])
-#define _IO_file_jumps_mmap              (__io_vtables[IO_FILE_JUMPS_MMAP])
-#define _IO_file_jumps_maybe_mmap        (__io_vtables[IO_FILE_JUMPS_MAYBE_MMAP])
-#define _IO_wfile_jumps                  (__io_vtables[IO_WFILE_JUMPS])
-#define _IO_wfile_jumps_mmap             (__io_vtables[IO_WFILE_JUMPS_MMAP])
-#define _IO_wfile_jumps_maybe_mmap       (__io_vtables[IO_WFILE_JUMPS_MAYBE_MMAP])
-#define _IO_cookie_jumps                 (__io_vtables[IO_COOKIE_JUMPS])
-#define _IO_proc_jumps                   (__io_vtables[IO_PROC_JUMPS])
-#define _IO_mem_jumps                    (__io_vtables[IO_MEM_JUMPS])
-#define _IO_wmem_jumps                   (__io_vtables[IO_WMEM_JUMPS])
-#define _IO_printf_buffer_as_file_jumps  (__io_vtables[IO_PRINTF_BUFFER_AS_FILE_JUMPS])
-#define _IO_wprintf_buffer_as_file_jumps (__io_vtables[IO_WPRINTF_BUFFER_AS_FILE_JUMPS])
-#define _IO_old_file_jumps               (__io_vtables[IO_OLD_FILE_JUMPS])
-#define _IO_old_proc_jumps               (__io_vtables[IO_OLD_PROC_JUMPS])
-#define _IO_old_cookie_jumps             (__io_vtables[IO_OLD_COOKIED_JUMPS])
 
 #ifdef SHARED
 # define libio_static_fn_required(name)
@@ -532,14 +487,6 @@ extern int _IO_flush_all (void);
 libc_hidden_proto (_IO_flush_all)
 extern void _IO_flush_all_linebuffered (void);
 libc_hidden_proto (_IO_flush_all_linebuffered)
-extern int _IO_new_fgetpos (FILE *, __fpos_t *);
-extern int _IO_old_fgetpos (FILE *, __fpos_t *);
-extern int _IO_new_fsetpos (FILE *, const __fpos_t *);
-extern int _IO_old_fsetpos (FILE *, const __fpos_t *);
-extern int _IO_new_fgetpos64 (FILE *, __fpos64_t *);
-extern int _IO_old_fgetpos64 (FILE *, __fpos64_t *);
-extern int _IO_new_fsetpos64 (FILE *, const __fpos64_t *);
-extern int _IO_old_fsetpos64 (FILE *, const __fpos64_t *);
 extern void _IO_old_init (FILE *fp, int flags) __THROW;
 
 
@@ -933,22 +880,6 @@ _IO_legacy_file (FILE *fp)
 }
 #endif
 
-/* Deallocate a stream if it is heap-allocated.  Preallocated
-   stdin/stdout/stderr streams are not deallocated. */
-static inline void
-_IO_deallocate_file (FILE *fp)
-{
-  /* The current stream variables.  */
-  if (fp == (FILE *) &_IO_2_1_stdin_ || fp == (FILE *) &_IO_2_1_stdout_
-      || fp == (FILE *) &_IO_2_1_stderr_)
-    return;
-#if SHLIB_COMPAT (libc, GLIBC_2_0, GLIBC_2_1)
-  if (_IO_legacy_file (fp))
-    return;
-#endif
-  free (fp);
-}
-
 #ifdef IO_DEBUG
 # define CHECK_FILE(FILE, RET) do {				\
     if ((FILE) == NULL						\
@@ -961,15 +892,6 @@ _IO_deallocate_file (FILE *fp)
 #else
 # define CHECK_FILE(FILE, RET) do { } while (0)
 #endif
-
-static inline void
-__attribute__ ((__always_inline__))
-_IO_acquire_lock_fct (FILE **p)
-{
-  FILE *fp = *p;
-  if ((fp->_flags & _IO_USER_LOCK) == 0)
-    _IO_funlockfile (fp);
-}
 
 #if !defined _IO_MTSAFE_IO && IS_IN (libc)
 # define _IO_acquire_lock(_fp)						      \

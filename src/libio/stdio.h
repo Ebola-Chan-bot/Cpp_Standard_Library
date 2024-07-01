@@ -842,11 +842,12 @@ extern void funlockfile (FILE *__stream) __THROW __nonnull ((1));
 # include <bits/getopt_posix.h>
 #endif
 
+#define FILE struct _IO_FILE
 /* Slow-path routines used by the optimized inline functions in
    bits/stdio.h.  */
 extern int __uflow (FILE *);
 extern int __overflow (FILE *, int);
-
+#undef FILE
 #if __USE_FORTIFY_LEVEL > 0 && defined __fortify_function
 /* Declare all functions from bits/stdio2-decl.h first.  */
 # include <bits/stdio2-decl.h>

@@ -23,6 +23,7 @@
 #define	_CTYPE_H	1
 
 #include <features.h>
+#include <bits/types.h>
 
 __BEGIN_DECLS
 

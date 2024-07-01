@@ -1,6 +1,6 @@
 #pragma once
 #include_next <ctype.h>
-#ifdef ARDUINO_ARCH_SAM
+#ifndef ARDUINO_ARCH_ESP32
 #ifndef _CTYPE_H
 
 #include <ctype/ctype.h>

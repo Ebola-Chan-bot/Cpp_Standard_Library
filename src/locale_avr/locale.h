@@ -117,13 +117,6 @@ struct lconv
 };
 
 
-/* Set and/or return the current locale.  */
-extern char *setlocale (int __category, const char *__locale) __THROW;
-
-/* Return the numeric/monetary information for the current locale.  */
-extern struct lconv *localeconv (void) __THROW;
-
-
 #ifdef	__USE_XOPEN2K8
 /* POSIX.1-2008 extends the locale interface with functions for
    explicit creation and manipulation of 'locale_t' objects

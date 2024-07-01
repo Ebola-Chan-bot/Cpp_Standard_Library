@@ -9,7 +9,7 @@
    that SIZE_MAX is defined as an unsigned long constant instead of an
    unsigned int constant.  Set to 0 if __WORDSIZE is 32 and size_t is
    'unsigned int' and leave undefined if __WORDSIZE is 64.  */
-#define __WORDSIZE32_SIZE_ULONG
+#define __WORDSIZE32_SIZE_ULONG 0
 
 /* This should be set to 1 if __WORDSIZE is 32 and ptrdiff_t is type 'long'
    instead of type 'int'.  This will ensure that PTRDIFF_MIN and PTRDIFF_MAX

@@ -33,7 +33,6 @@
 #include <wchar.h>
 #include <math.h>
 
-
 /* Declare the __nldbl_NAME function the wrappers call that's in libc.so.  */
 #define NLDBL_DECL(name) extern __typeof (name) __nldbl_##name
 
