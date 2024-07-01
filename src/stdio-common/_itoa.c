@@ -22,9 +22,9 @@
 #if BUILD_PIE_DEFAULT
 # pragma GCC visibility push(hidden)
 #endif
-#include <gmp-mparam.h>
 #include <gmp.h>
-#include <limits.h>
+#include <stdlib/gmp-impl.h>
+#include <stdlib/longlong.h>
 
 #include <_itoa.h>
 

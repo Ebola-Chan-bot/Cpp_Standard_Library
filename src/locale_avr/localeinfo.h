@@ -19,7 +19,6 @@
 #ifndef _LOCALEINFO_H
 #define _LOCALEINFO_H 1
 
-#include <stddef.h>
 #include <langinfo.h>
 #include <limits.h>
 #include <locale.h>
@@ -246,7 +245,7 @@ __libc_tsd_define (extern, locale_t, LOCALE)
    and we arrange that linking that module is what brings in all the code
    associated with this category.  */
 #define DEFINE_CATEGORY(category, category_name, items, a) \
-extern __thread struct __locale_data *const *_nl_current_##category \
+extern struct __locale_data *const *_nl_current_##category \
   attribute_hidden attribute_tls_model_ie;
 #include "categories.def"
 #undef	DEFINE_CATEGORY
@@ -271,7 +270,7 @@ extern __thread struct __locale_data *const *_nl_current_##category \
    category as used.  On S390 the used relocation to load the symbol address
    can only handle even addresses.  */
 #define _NL_CURRENT_DEFINE(category) \
-  __thread struct __locale_data *const *_nl_current_##category \
+  struct __locale_data *const *_nl_current_##category \
     attribute_hidden = &_nl_global_locale.__locales[category]; \
   asm (".globl " __SYMBOL_PREFIX "_nl_current_" #category "_used\n" \
        _NL_CURRENT_DEFINE_ABS (_nl_current_##category##_used, 2));

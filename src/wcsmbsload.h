@@ -18,8 +18,8 @@
 #ifndef _WCSMBSLOAD_H
 #define _WCSMBSLOAD_H	1
 
-#include <locale.h>
 #include <wchar.h>
+#include <locale_avr/localeinfo.h>
 
 
 /* Contains pointers to the used functions in the `gconv' modules.  */
@@ -56,5 +56,16 @@ extern struct __gconv_step *__wcsmbs_getfct (const char *to, const char *from,
      attribute_hidden;
 
 extern const struct __locale_data _nl_C_LC_CTYPE attribute_hidden;
+
+/* Check whether the LC_CTYPE locale changed since the last call.
+   Update the pointers appropriately.  */
+static inline const struct gconv_fcts *
+get_gconv_fcts (struct __locale_data *data)
+{
+  struct lc_ctype_data *private = data->private;
+  if (private->fcts == NULL)
+    __wcsmbs_load_conv (data);
+  return private->fcts;
+}
 
 #endif	/* wcsmbsload.h */

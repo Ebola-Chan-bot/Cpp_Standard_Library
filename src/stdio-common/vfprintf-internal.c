@@ -23,12 +23,12 @@
 #include <string.h>
 #include <errno.h>
 #include <_itoa.h>
-#include <locale_avr/localeinfo.h>
 #include <grouping_iterator.h>
 #include <scratch_buffer.h>
 #include <printf_buffer.h>
 #define __STDC_WANT_IEC_60559_BFP_EXT__
 #include <stdint-gcc.h>
+#include <sys/param.h>
 
 /* This code is shared between the standard stdio implementation found
    in GNU C library and the libio implementation originally found in

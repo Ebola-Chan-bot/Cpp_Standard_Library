@@ -26,11 +26,9 @@
   /* Start real work.  We know about all flags and modifiers and
      now process the wanted format specifier.  */
   LABEL(form_percent) :
-#ifndef ARDUINO_ARCH_AVR
                         /* Write a literal "%".  */
                         Xprintf_buffer_putc(buf, L_('%'));
   break;
-#endif
   LABEL(form_integer) :
 #ifndef ARDUINO_ARCH_AVR
                         /* Signed decimal integer.  */
@@ -92,7 +90,6 @@
   /* NOTREACHED */
 #endif
   LABEL(unsigned_number) : /* Unsigned number of base BASE.  */
-#ifndef ARDUINO_ARCH_AVR
                            /* ISO specifies the `+' and ` ' flags only for signed
                               conversions.  */
                            is_negative = 0;
@@ -294,7 +291,6 @@
     Xprintf_buffer_pad(buf, L_(' '), width);
     break;
   }
-#endif
   LABEL(form_pointer) :
 #ifndef ARDUINO_ARCH_AVR
   /* Generic pointer.  */
@@ -485,7 +481,6 @@
 
 #else /* !COMPILE_WPRINTF */
                                                                                                                                                                                                                                                                          LABEL(form_wcharacter) :
-#ifndef ARDUINO_ARCH_AVR
   {
     /* Wide character.  */
     char wcbuf[MB_LEN_MAX];
@@ -507,7 +502,6 @@
     if (left)
       Xprintf_buffer_pad(buf, L_(' '), width);
   }
-#endif
   break;
 #endif /* !COMPILE_WPRINTF */
 }

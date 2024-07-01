@@ -24,6 +24,7 @@
 
 #include <features.h>
 #include <bits/types.h>
+#include <stdint.h>
 
 __BEGIN_DECLS
 
@@ -75,11 +76,11 @@ enum
    rather than `unsigned char's because tolower (EOF) must be EOF, which
    doesn't fit into an `unsigned char'.  But today more important is that
    the arrays are also used for multi-byte character sets.  */
-extern const unsigned short int **__ctype_b_loc (void)
+extern const uint16_t **__ctype_b_loc (void)
      __THROW __attribute__ ((__const__));
-extern const __int32_t **__ctype_tolower_loc (void)
+extern const int32_t **__ctype_tolower_loc (void)
      __THROW __attribute__ ((__const__));
-extern const __int32_t **__ctype_toupper_loc (void)
+extern const int32_t **__ctype_toupper_loc (void)
      __THROW __attribute__ ((__const__));
 
 

@@ -18,7 +18,7 @@ extern int (__isctype) (int __c, int __mask);
 libc_hidden_proto (tolower)
 libc_hidden_proto (toupper)
 
-# if IS_IN (libc)
+# ifndef __cplusplus
 
 /* These accessors are used by the optimized macros to find the
    thread-local cache of ctype information from the current thread's
@@ -27,13 +27,11 @@ libc_hidden_proto (toupper)
    want to cause a link-time ref to _nl_current_LC_CTYPE under
    NL_CURRENT_INDIRECT.  */
 
-#  include "../locale/localeinfo.h"
+#  include <locale_avr/localeinfo.h>
 #  include <libc-tsd.h>
 
-#  ifndef CTYPE_EXTERN_INLINE	/* Used by ctype/ctype-info.c, which see.  */
-#   define CTYPE_EXTERN_INLINE extern inline
-#  endif
-
+#  ifdef CTYPE_EXTERN_INLINE	/* Used by ctype/ctype-info.c, which see.  */
+//原版GLIBC把CTYPE_EXTERN_INLINE定义为extern inline，实测这并不能避免头文件中的重定义问题，不清楚是怎么回事。只有ctype-info.c编译单元会定义CTYPE_EXTERN_INLINE，所以仅在此时编译这些定义。
 __libc_tsd_define (extern, const uint16_t *, CTYPE_B)
 __libc_tsd_define (extern, const int32_t *, CTYPE_TOUPPER)
 __libc_tsd_define (extern, const int32_t *, CTYPE_TOLOWER)
@@ -57,6 +55,7 @@ __ctype_tolower_loc (void)
   return __libc_tsd_address (const int32_t *, CTYPE_TOLOWER);
 }
 
+#  endif
 #  ifndef __NO_CTYPE
 /* The spec says that isdigit must only match the decimal digits.  We
    can check this without a memory access.  */

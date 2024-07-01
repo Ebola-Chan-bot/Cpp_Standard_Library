@@ -37,7 +37,6 @@ __ctype_init (void)
 }
 libc_hidden_def (__ctype_init)
 
-#define SHARED
 #include <shlib-compat.h>
 #if SHLIB_COMPAT (libc, GLIBC_2_0, GLIBC_2_3)
 

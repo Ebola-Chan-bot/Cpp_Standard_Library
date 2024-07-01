@@ -33,6 +33,7 @@
 #include <printf.h>
 #include <string.h>
 #include <unistd.h>
+#include <rounding-mode.h>
 #include <printf_buffer_to_file.h>
 #include <grouping_iterator.h>
 #include <stdlib/longlong.h>

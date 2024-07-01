@@ -141,6 +141,13 @@
 		"math.h": "c",
 		"_itowa.h": "c",
 		"gmp-impl.h": "c",
-		"gmp.h": "c"
+		"gmp.h": "c",
+		"longlong.h": "c",
+		"scratch_buffer.h": "c",
+		"wcsmbsload.h": "c",
+		"dlfcn.h": "c",
+		"gconv_int.h": "c",
+		"search.h": "c",
+		"stdalign.h": "c"
 	}
 }
