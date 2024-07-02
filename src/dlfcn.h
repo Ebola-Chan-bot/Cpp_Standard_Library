@@ -1,6 +1,7 @@
 #ifndef _DLFCN_H
 #include <dlfcn/dlfcn.h>
 #ifndef _ISOMAC
+#include <link.h>		/* For ElfW.  */
 #include <stdbool.h>
 
 extern __typeof (_dl_find_object) __dl_find_object;

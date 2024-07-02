@@ -86,17 +86,10 @@
 #include <assert.h>
 #include <stdalign.h>
 #include <stddef.h>
+#include <stdlib.h>
 #include <string.h>
 #include <search.h>
 #include <stdint.h>
-
-/* Assume malloc returns naturally aligned (alignof (max_align_t))
-   pointers so we can use the low bits to store some extra info.  This
-   works for the left/right node pointers since they are not user
-   visible and always allocated by malloc.  The user provides the key
-   pointer and so that can point anywhere and doesn't have to be
-   aligned.  */
-#define USE_MALLOC_LOW_BIT 1
 
 #ifndef USE_MALLOC_LOW_BIT
 typedef struct node_t

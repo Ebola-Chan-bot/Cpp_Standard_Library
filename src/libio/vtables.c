@@ -88,7 +88,7 @@
 #pragma weak __wprintf_buffer_as_file_xsputn
 #endif
 
-const struct _IO_jump_t __io_vtables[] attribute_relro =
+const struct _IO_jump_t __io_vtables[] =
     {
         [IO_WPRINTF_BUFFER_AS_FILE_JUMPS] = {},
 #if SHLIB_COMPAT(libc, GLIBC_2_0, GLIBC_2_1)

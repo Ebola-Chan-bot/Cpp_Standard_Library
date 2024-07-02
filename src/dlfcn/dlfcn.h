@@ -23,6 +23,9 @@
 #define __need_size_t
 #include <stddef.h>
 
+/* Collect various system dependent definitions and declarations.  */
+#include <bits/dlfcn.h>
+
 
 #ifdef __USE_GNU
 

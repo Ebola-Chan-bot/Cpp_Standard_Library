@@ -148,6 +148,9 @@
 		"dlfcn.h": "c",
 		"gconv_int.h": "c",
 		"search.h": "c",
-		"stdalign.h": "c"
+		"stdalign.h": "c",
+		"link.h": "c",
+		"elf.h": "c",
+		"libc-lock.h": "c"
 	}
 }

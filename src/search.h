@@ -1,4 +1,5 @@
 #ifndef _SEARCH_H
+#include <misc/search.h>
 
 #ifndef _ISOMAC
 

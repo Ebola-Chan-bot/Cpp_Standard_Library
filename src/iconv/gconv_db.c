@@ -804,28 +804,4 @@ free_modules_db (struct gconv_module *node)
     }
   while (node != NULL);
 }
-
-
-/* Free all resources if necessary.  */
-void
-__gconv_db_freemem (void)
-{
-  /* First free locale memory.  This needs to be done before freeing
-     derivations, as ctype cleanup functions dereference steps arrays which we
-     free below.  */
-  _nl_locale_subfreeres ();
-
-  /* finddomain.c has similar problem.  */
-  extern void _nl_finddomain_subfreeres (void) attribute_hidden;
-  _nl_finddomain_subfreeres ();
-
-  if (__gconv_alias_db != NULL)
-    __tdestroy (__gconv_alias_db, free);
-
-  if (__gconv_modules_db != NULL)
-    free_modules_db (__gconv_modules_db);
-
-  if (known_derivations != NULL)
-    __tdestroy (known_derivations, free_derivation);
-}
 #endif
