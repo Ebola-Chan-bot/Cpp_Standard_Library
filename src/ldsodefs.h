@@ -1259,23 +1259,6 @@ rtld_hidden_proto (_dl_find_dso_for_object)
 extern void _dl_non_dynamic_init (void)
      attribute_hidden;
 
-/* Initialize the static TLS space for the link map in all existing
-   threads. */
-#if PTHREAD_IN_LIBC
-void _dl_init_static_tls (struct link_map *map) attribute_hidden;
-#endif
-static inline void
-dl_init_static_tls (struct link_map *map)
-{
-#if PTHREAD_IN_LIBC
-  /* The stack list is available to ld.so, so the initialization can
-     be handled within ld.so directly.  */
-  _dl_init_static_tls (map);
-#else
-  GL (dl_init_static_tls) (map);
-#endif
-}
-
 #ifndef SHARED
 /* Called before relocating ld.so during static dlopen.  This can be
    used to partly initialize the dormant ld.so copy in the static

@@ -151,6 +151,9 @@
 		"stdalign.h": "c",
 		"link.h": "c",
 		"elf.h": "c",
-		"libc-lock.h": "c"
+		"libc-lock.h": "c",
+		"confdefs.h": "c",
+		"tls.h": "c",
+		"dl-dtv.h": "c"
 	}
 }

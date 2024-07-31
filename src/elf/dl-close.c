@@ -20,6 +20,7 @@
 #include <assert.h>
 #include <dlfcn.h>
 #include <errno.h>
+#include <libintl.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,7 +33,9 @@
 #include <sysdep-cancel.h>
 #include <tls.h>
 #include <stap-probe.h>
+#include <dl-find_object.h>
 #include <confdefs.h>
+
 /* Special l_idx value used to indicate which objects remain loaded.  */
 #define IDX_STILL_USED -1
 
