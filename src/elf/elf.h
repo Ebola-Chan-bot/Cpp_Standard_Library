@@ -601,6 +601,11 @@ typedef struct
 #define ELF64_ST_TYPE(val)		ELF32_ST_TYPE (val)
 #define ELF64_ST_INFO(bind, type)	ELF32_ST_INFO ((bind), (type))
 
+/* Both Elf32_Sym and Elf64_Sym use the same one-byte st_info field.  */
+#define ELF16_ST_BIND(val)		ELF32_ST_BIND (val)
+#define ELF16_ST_TYPE(val)		ELF32_ST_TYPE (val)
+#define ELF16_ST_INFO(bind, type)	ELF32_ST_INFO ((bind), (type))
+
 /* Legal values for ST_BIND subfield of st_info (symbol binding).  */
 
 #define STB_LOCAL	0		/* Local symbol */
@@ -643,6 +648,9 @@ typedef struct
 
 /* For ELF64 the definitions are the same.  */
 #define ELF64_ST_VISIBILITY(o)	ELF32_ST_VISIBILITY (o)
+
+/* For ELF16 the definitions are the same.  */
+#define ELF16_ST_VISIBILITY(o)	ELF32_ST_VISIBILITY (o)
 
 /* Symbol visibility specification encoded in the st_other field.  */
 #define STV_DEFAULT	0		/* Default symbol visibility rules */
@@ -1207,6 +1215,18 @@ typedef struct
    can't hurt.  We rename it to avoid conflicts.  The sizes of these
    types are an arrangement between the exec server and the program
    interpreter, so we don't fully specify them here.  */
+
+typedef struct
+{
+  uint16_t a_type;		/* Entry type */
+  union
+    {
+      uint16_t a_val;		/* Integer value */
+      /* We use to have pointer elements added here.  We cannot do that,
+	 though, since it does not work when using 32-bit definitions
+	 on 64-bit platforms and vice versa.  */
+    } a_un;
+} Elf16_auxv_t;
 
 typedef struct
 {

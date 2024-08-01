@@ -88,16 +88,6 @@ struct do_dlvsym_args
 };
 
 static void
-do_dlopen (void *ptr)
-{
-  struct do_dlopen_args *args = (struct do_dlopen_args *) ptr;
-  /* Open and relocate the shared object.  */
-  args->map = GLRO(dl_open) (args->name, args->mode, args->caller_dlopen,
-			     __LM_ID_CALLER, __libc_argc, __libc_argv,
-			     __environ);
-}
-
-static void
 do_dlsym (void *ptr)
 {
   struct do_dlsym_args *args = (struct do_dlsym_args *) ptr;
@@ -144,23 +134,6 @@ do_dlsym_private (void *ptr)
   args->loadbase = l;
 }
 #endif
-
-/* ... and these functions call dlerror_run. */
-
-void *
-__libc_dlopen_mode (const char *name, int mode)
-{
-  struct do_dlopen_args args;
-  args.name = name;
-  args.mode = mode;
-  args.caller_dlopen = RETURN_ADDRESS (0);
-
-#ifdef SHARED
-  if (GLRO (dl_dlfcn_hook) != NULL)
-    return GLRO (dl_dlfcn_hook)->libc_dlopen_mode (name, mode);
-#endif
-  return dlerror_run (do_dlopen, &args) ? NULL : (void *) args.map;
-}
 
 #ifndef SHARED
 void *

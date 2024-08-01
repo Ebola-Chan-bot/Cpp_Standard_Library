@@ -122,8 +122,6 @@ void *_dl_random;
 
 size_t _dl_pagesize = EXEC_PAGESIZE;
 
-size_t _dl_minsigstacksize = CONSTANT_MINSIGSTKSZ;
-
 int _dl_inhibit_cache;
 
 /* All known directories in sorted order.  */
@@ -147,13 +145,6 @@ uint64_t _dl_hwcap3;
 uint64_t _dl_hwcap4;
 
 enum dso_sort_algorithm _dl_dso_sort_algo;
-
-/* The value of the FPU control word the kernel will preset in hardware.  */
-fpu_control_t _dl_fpu_control = _FPU_DEFAULT;
-
-/* Prevailing state of the stack.  Generally this includes PF_X, indicating it's
- * executable but this isn't true for all platforms.  */
-ElfW(Word) _dl_stack_flags = DEFAULT_STACK_PERMS;
 
 #if PTHREAD_IN_LIBC
 list_t _dl_stack_used;
@@ -249,81 +240,6 @@ _dl_aux_init (ElfW(auxv_t) *av)
 #endif
 
 
-void
-_dl_non_dynamic_init (void)
-{
-  _dl_main_map.l_origin = _dl_get_origin ();
-  _dl_main_map.l_phdr = GL(dl_phdr);
-  _dl_main_map.l_phnum = GL(dl_phnum);
-
-  /* Set up the data structures for the system-supplied DSO early,
-     so they can influence _dl_init_paths.  */
-  setup_vdso (NULL, NULL);
-
-  /* With vDSO setup we can initialize the function pointers.  */
-  setup_vdso_pointers ();
-
-  if (__libc_enable_secure)
-    {
-      static const char unsecure_envvars[] =
-	UNSECURE_ENVVARS
-	;
-      const char *cp = unsecure_envvars;
-
-      while (cp < unsecure_envvars + sizeof (unsecure_envvars))
-	{
-	  __unsetenv (cp);
-	  cp = strchr (cp, '\0') + 1;
-	}
-    }
-
-  _dl_verbose = *(getenv ("LD_WARN") ?: "") == '\0' ? 0 : 1;
-
-  /* Initialize the data structures for the search paths for shared
-     objects.  */
-  _dl_init_paths (getenv ("LD_LIBRARY_PATH"), "LD_LIBRARY_PATH",
-		  /* No glibc-hwcaps selection support in statically
-		     linked binaries.  */
-		  NULL, NULL);
-
-  /* Remember the last search directory added at startup.  */
-  _dl_init_all_dirs = GL(dl_all_dirs);
-
-  _dl_lazy = *(getenv ("LD_BIND_NOW") ?: "") == '\0';
-
-  _dl_bind_not = *(getenv ("LD_BIND_NOT") ?: "") != '\0';
-
-  _dl_dynamic_weak = *(getenv ("LD_DYNAMIC_WEAK") ?: "") == '\0';
-
-#ifdef DL_PLATFORM_INIT
-  DL_PLATFORM_INIT;
-#endif
-
-  /* Now determine the length of the platform string.  */
-  if (_dl_platform != NULL)
-    _dl_platformlen = strlen (_dl_platform);
-
-  for (const ElfW(Phdr) *ph = _dl_phdr; ph < &_dl_phdr[_dl_phnum]; ++ph)
-    switch (ph->p_type)
-      {
-      /* Check if the stack is nonexecutable.  */
-      case PT_GNU_STACK:
-	_dl_stack_flags = ph->p_flags;
-	break;
-
-      case PT_GNU_RELRO:
-	_dl_main_map.l_relro_addr = ph->p_vaddr;
-	_dl_main_map.l_relro_size = ph->p_memsz;
-	break;
-      }
-
-  call_function_static_weak (_dl_find_object_init);
-
-  /* Setup relro on the binary itself.  */
-  if (_dl_main_map.l_relro_size != 0)
-    _dl_protect_relro (&_dl_main_map);
-}
-
 #ifdef DL_SYSINFO_IMPLEMENTATION
 DL_SYSINFO_IMPLEMENTATION
 #endif
@@ -335,13 +251,5 @@ struct link_map *
 _dl_get_dl_main_map (void)
 {
   return &_dl_main_map;
-}
-
-/* This is used by _dl_runtime_profile, not used on static code.  */
-void
-DL_ARCH_FIXUP_ATTRIBUTE
-_dl_audit_pltexit (struct link_map *l, ElfW(Word) reloc_arg,
-		   const void *inregs, void *outregs)
-{
 }
 #endif

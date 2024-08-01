@@ -34,6 +34,9 @@
 #include <link.h>
 #include <libc-lock.h>
 
+#include <atomic.h>
+#include <elf/dl-unmap-segments.h>
+
 __BEGIN_DECLS
 
 #define VERSYMIDX(sym)	(DT_NUM + DT_THISPROCNUM + DT_VERSIONTAGIDX (sym))

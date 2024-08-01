@@ -285,14 +285,6 @@ _dl_sort_maps_dfs (struct link_map **maps, unsigned int nmaps,
 }
 
 void
-_dl_sort_maps_init (void)
-{
-  int32_t algorithm = TUNABLE_GET (glibc, rtld, dynamic_sort, int32_t, NULL);
-  GLRO(dl_dso_sort_algo) = algorithm == 1 ? dso_sort_algorithm_original
-					  : dso_sort_algorithm_dfs;
-}
-
-void
 _dl_sort_maps (struct link_map **maps, unsigned int nmaps,
 	       bool force_first, bool for_fini)
 {

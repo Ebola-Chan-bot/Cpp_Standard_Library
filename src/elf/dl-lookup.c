@@ -22,10 +22,14 @@
 #include <string.h>
 #include <unistd.h>
 #include <ldsodefs.h>
+#include <dl-hash.h>
 #include <sysdep-cancel.h>
+#include <dl-new-hash.h>
+#include <dl-protected.h>
 #include <libc-lock.h>
 #include <tls.h>
 #include <atomic.h>
+#include <elf_machine_sym_no_match.h>
 
 #include <assert.h>
 
