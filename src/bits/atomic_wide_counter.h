@@ -1,5 +1,5 @@
-#ifdef ARDUINO_ARCH_AVR
-/* Copyright (C) 1991-2024 Free Software Foundation, Inc.
+/* Monotonically increasing wide counters (at least 62 bits).
+   Copyright (C) 2016-2024 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -16,21 +16,20 @@
    License along with the GNU C Library; if not, see
    <https://www.gnu.org/licenses/>.  */
 
-#include <errno.h>
-#include <setjmp.h>
+#ifndef _BITS_ATOMIC_WIDE_COUNTER_H
+#define _BITS_ATOMIC_WIDE_COUNTER_H
 
-
-/* Jump to the position specified by ENV, causing the
-   setjmp call there to return VAL, or 1 if VAL is 0.  */
-void
-__longjmp (jmp_buf env, int val)
+/* Counter that is monotonically increasing (by less than 2**31 per
+   increment), with a single writer, and an arbitrary number of
+   readers.  */
+typedef union
 {
-  if (val == 0)
-    val = 1;
+  __extension__ unsigned long long int __value64;
+  struct
+  {
+    unsigned int __low;
+    unsigned int __high;
+  } __value32;
+} __atomic_wide_counter;
 
-  __set_errno (ENOSYS);
-  /* No way to signal failure.	*/
-}
-
-stub_warning (longjmp)
-#endif
+#endif /* _BITS_ATOMIC_WIDE_COUNTER_H */

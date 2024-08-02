@@ -44,6 +44,102 @@ __gconv_get_cache (void)
 }
 
 
+int
+__gconv_load_cache (void)
+{
+  int fd;
+  struct __stat64_t64 st;
+  struct gconvcache_header *header;
+
+  /* We cannot use the cache if the GCONV_PATH environment variable is
+     set.  */
+  __gconv_path_envvar = getenv ("GCONV_PATH");
+  if (__gconv_path_envvar != NULL)
+    return -1;
+
+  /* See whether the cache file exists.  */
+  fd = __open_nocancel (GCONV_MODULES_CACHE, O_RDONLY | O_CLOEXEC, 0);
+  if (__builtin_expect (fd, 0) == -1)
+    /* Not available.  */
+    return -1;
+
+  /* Get information about the file.  */
+  if (__glibc_unlikely (__fstat64_time64 (fd, &st) < 0)
+      /* We do not have to start looking at the file if it cannot contain
+	 at least the cache header.  */
+      || (size_t) st.st_size < sizeof (struct gconvcache_header))
+    {
+    close_and_exit:
+      __close_nocancel_nostatus (fd);
+      return -1;
+    }
+
+  /* Make the file content available.  */
+  cache_size = st.st_size;
+#ifdef _POSIX_MAPPED_FILES
+  gconv_cache = __mmap (NULL, cache_size, PROT_READ, MAP_SHARED, fd, 0);
+  if (__glibc_unlikely (gconv_cache == MAP_FAILED))
+#endif
+    {
+      size_t already_read;
+
+      gconv_cache = malloc (cache_size);
+      if (gconv_cache == NULL)
+	goto close_and_exit;
+
+      already_read = 0;
+      do
+	{
+	  ssize_t n = __read (fd, (char *) gconv_cache + already_read,
+			      cache_size - already_read);
+	  if (__builtin_expect (n, 0) == -1)
+	    {
+	      free (gconv_cache);
+	      gconv_cache = NULL;
+	      goto close_and_exit;
+	    }
+
+	  already_read += n;
+	}
+      while (already_read < cache_size);
+
+      cache_malloced = 1;
+    }
+
+  /* We don't need the file descriptor anymore.  */
+  __close_nocancel_nostatus (fd);
+
+  /* Check the consistency.  */
+  header = (struct gconvcache_header *) gconv_cache;
+  if (__builtin_expect (header->magic, GCONVCACHE_MAGIC) != GCONVCACHE_MAGIC
+      || __builtin_expect (header->string_offset >= cache_size, 0)
+      || __builtin_expect (header->hash_offset >= cache_size, 0)
+      || __builtin_expect (header->hash_size == 0, 0)
+      || __builtin_expect ((header->hash_offset
+			    + header->hash_size * sizeof (struct hash_entry))
+			   > cache_size, 0)
+      || __builtin_expect (header->module_offset >= cache_size, 0)
+      || __builtin_expect (header->otherconv_offset > cache_size, 0))
+    {
+      if (cache_malloced)
+	{
+	  free (gconv_cache);
+	  cache_malloced = 0;
+	}
+#ifdef _POSIX_MAPPED_FILES
+      else
+	__munmap (gconv_cache, cache_size);
+#endif
+      gconv_cache = NULL;
+
+      return -1;
+    }
+
+  /* That worked.  */
+  return 0;
+}
+
+
 static int
 find_module_idx (const char *str, size_t *idxp)
 {

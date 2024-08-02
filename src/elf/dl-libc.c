@@ -20,6 +20,7 @@
 #include <dlfcn.h>
 #include <stdlib.h>
 #include <ldsodefs.h>
+#include <dl-hash.h>
 
 extern int __libc_argc attribute_hidden;
 extern char **__libc_argv attribute_hidden;
@@ -88,6 +89,16 @@ struct do_dlvsym_args
 };
 
 static void
+do_dlopen (void *ptr)
+{
+  struct do_dlopen_args *args = (struct do_dlopen_args *) ptr;
+  /* Open and relocate the shared object.  */
+  args->map = GLRO(dl_open) (args->name, args->mode, args->caller_dlopen,
+			     __LM_ID_CALLER, __libc_argc, __libc_argv,
+			     __environ);
+}
+
+static void
 do_dlsym (void *ptr)
 {
   struct do_dlsym_args *args = (struct do_dlsym_args *) ptr;
@@ -134,6 +145,23 @@ do_dlsym_private (void *ptr)
   args->loadbase = l;
 }
 #endif
+
+/* ... and these functions call dlerror_run. */
+
+void *
+__libc_dlopen_mode (const char *name, int mode)
+{
+  struct do_dlopen_args args;
+  args.name = name;
+  args.mode = mode;
+  args.caller_dlopen = RETURN_ADDRESS (0);
+
+#ifdef SHARED
+  if (GLRO (dl_dlfcn_hook) != NULL)
+    return GLRO (dl_dlfcn_hook)->libc_dlopen_mode (name, mode);
+#endif
+  return dlerror_run (do_dlopen, &args) ? NULL : (void *) args.map;
+}
 
 #ifndef SHARED
 void *
@@ -226,5 +254,84 @@ free_slotinfo (struct dtv_slotinfo_list **elemp)
   *elemp = NULL;
 
   return true;
+}
+
+
+void
+__dl_libc_freemem (void)
+{
+  struct link_map *l;
+  struct r_search_path_elem *d;
+
+  /* Remove all search directories.  */
+  d = GL(dl_all_dirs);
+  while (d != GLRO(dl_init_all_dirs))
+    {
+      struct r_search_path_elem *old = d;
+      d = d->next;
+      free (old);
+    }
+
+  for (Lmid_t ns = 0; ns < GL(dl_nns); ++ns)
+    {
+      for (l = GL(dl_ns)[ns]._ns_loaded; l != NULL; l = l->l_next)
+	{
+	  struct libname_list *lnp = l->l_libname->next;
+
+	  l->l_libname->next = NULL;
+
+	  /* Remove all additional names added to the objects.  */
+	  while (lnp != NULL)
+	    {
+	      struct libname_list *old = lnp;
+	      lnp = lnp->next;
+	      if (! old->dont_free)
+		free (old);
+	    }
+
+	  /* Free the initfini dependency list.  */
+	  if (l->l_free_initfini)
+	    free (l->l_initfini);
+	  l->l_initfini = NULL;
+	}
+
+      if (__builtin_expect (GL(dl_ns)[ns]._ns_global_scope_alloc, 0) != 0
+	  && (GL(dl_ns)[ns]._ns_main_searchlist->r_nlist
+	      // XXX Check whether we need NS-specific initial_searchlist
+	      == GLRO(dl_initial_searchlist).r_nlist))
+	{
+	  /* All object dynamically loaded by the program are unloaded.  Free
+	     the memory allocated for the global scope variable.  */
+	  struct link_map **old = GL(dl_ns)[ns]._ns_main_searchlist->r_list;
+
+	  /* Put the old map in.  */
+	  GL(dl_ns)[ns]._ns_main_searchlist->r_list
+	    // XXX Check whether we need NS-specific initial_searchlist
+	    = GLRO(dl_initial_searchlist).r_list;
+	  /* Signal that the original map is used.  */
+	  GL(dl_ns)[ns]._ns_global_scope_alloc = 0;
+
+	  /* Now free the old map.  */
+	  free (old);
+	}
+    }
+
+  /* Free the memory allocated for the dtv slotinfo array.  We can do
+     this only if all modules which used this memory are unloaded.  */
+#ifdef SHARED
+  if (GL(dl_initial_dtv) == NULL)
+    /* There was no initial TLS setup, it was set up later when
+       it used the normal malloc.  */
+    free_slotinfo (&GL(dl_tls_dtv_slotinfo_list));
+  else
+#endif
+    /* The first element of the list does not have to be deallocated.
+       It was allocated in the dynamic linker (i.e., with a different
+       malloc), and in the static library it's in .bss space.  */
+    free_slotinfo (&GL(dl_tls_dtv_slotinfo_list)->next);
+
+  void *scope_free_list = GL(dl_scope_free_list);
+  GL(dl_scope_free_list) = NULL;
+  free (scope_free_list);
 }
 #endif

@@ -157,6 +157,7 @@
 		"dl-dtv.h": "c",
 		"elf_machine_sym_no_match.h": "c",
 		"dl-protected.h": "c",
-		"setjmp.h": "c"
+		"setjmp.h": "c",
+		"time.h": "c"
 	}
 }

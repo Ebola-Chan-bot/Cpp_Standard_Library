@@ -19,6 +19,7 @@
 
 #include <assert.h>
 #include <atomic.h>
+#include <atomic_wide_counter.h>
 #include <dl-find_object.h>
 #include <dlfcn.h>
 #include <ldsodefs.h>

@@ -17,20 +17,18 @@
    <https://www.gnu.org/licenses/>.  */
 
 #include <errno.h>
-#include <setjmp.h>
+#include <unistd.h>
 
-
-/* Jump to the position specified by ENV, causing the
-   setjmp call there to return VAL, or 1 if VAL is 0.  */
-void
-__longjmp (jmp_buf env, int val)
+/* Get the process ID of the calling process.  */
+int
+__getpid (void)
 {
-  if (val == 0)
-    val = 1;
-
   __set_errno (ENOSYS);
-  /* No way to signal failure.	*/
+  return -1;
 }
+libc_hidden_def (__getpid)
+stub_warning (getpid)
 
-stub_warning (longjmp)
+weak_alias (__getpid, getpid)
+libc_hidden_weak (getpid)
 #endif

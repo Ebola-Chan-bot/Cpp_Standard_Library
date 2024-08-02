@@ -34,7 +34,7 @@
 #include <gconv_int.h>
 
 /* This is the default path where we look for module lists.  */
-static const char default_gconv_path[] = GCONV_PATH;
+static const char default_gconv_path[] = "";//无GCONV_PATH
 
 /* Type to represent search path.  */
 struct path_elem

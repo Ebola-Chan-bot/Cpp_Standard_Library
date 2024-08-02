@@ -24,6 +24,7 @@
 #endif
 #include <_itoa.h>
 #include <assert.h>
+#include <dl-writev.h>
 #include <ldsodefs.h>
 #include <limits.h>
 #include <stdarg.h>
@@ -32,6 +33,7 @@
 #include <sys/uio.h>
 #include <unistd.h>
 #include <intprops.h>
+#include <misc/sys/param.h>
 
 /* The function might be called before the process is self-relocated.  */
 static size_t
