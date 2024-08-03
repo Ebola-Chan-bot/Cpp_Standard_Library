@@ -62,4 +62,4 @@ struct extra_entry
 #define GCONVCACHE_MAGIC	0x20010324
 
 
-#define GCONV_MODULES_CACHE	GCONV_DIR "/gconv-modules.cache"
+#define GCONV_MODULES_CACHE	/*GCONV_DIR*/ "/gconv-modules.cache"

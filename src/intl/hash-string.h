@@ -17,6 +17,7 @@
 /* @@ end of prolog @@ */
 
 /* We assume to have `unsigned long int' value with at least 32 bits.  */
+#include <libc-symbols.h>
 #define HASHWORDBITS 32
 
 

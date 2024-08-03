@@ -5,7 +5,6 @@
 #include_next <stdlib.h>
 #ifdef ARDUINO_ARCH_AVR
 #include <libc-symbols.h>
-#include <stdlib/stdlib.h>
 # include <rtld-malloc.h>
 // 355
 struct abort_msg_s

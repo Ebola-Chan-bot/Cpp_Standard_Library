@@ -36,9 +36,6 @@ __BEGIN_DECLS
 #define	_STDLIB_H	1
 
 #if (defined __USE_XOPEN || defined __USE_XOPEN2K8) && !defined _SYS_WAIT_H
-/* XPG requires a few symbols from <sys/wait.h> being defined.  */
-# include <bits/waitflags.h>
-# include <bits/waitstatus.h>
 
 /* Define the macros <sys/wait.h> also would define this way.  */
 # define WEXITSTATUS(status)	__WEXITSTATUS (status)
@@ -51,9 +48,6 @@ __BEGIN_DECLS
 #  define WIFCONTINUED(status)	__WIFCONTINUED (status)
 # endif
 #endif	/* X/Open or XPG7 and <sys/wait.h> not included.  */
-
-/* _FloatN API tests for enablement.  */
-#include <bits/floatn.h>
 
 /* Returned by `div'.  */
 typedef struct
@@ -1152,14 +1146,11 @@ extern int getloadavg (double __loadavg[], int __nelem)
 extern int ttyslot (void) __THROW;
 #endif
 
-#include <bits/stdlib-float.h>
-
 /* Define some macros helping to catch buffer overflows.  */
 #if __USE_FORTIFY_LEVEL > 0 && defined __fortify_function
 # include <bits/stdlib.h>
 #endif
 
-#include <bits/floatn.h>
 #if defined __LDBL_COMPAT || __LDOUBLE_REDIRECTS_TO_FLOAT128_ABI == 1
 # include <bits/stdlib-ldbl.h>
 #endif

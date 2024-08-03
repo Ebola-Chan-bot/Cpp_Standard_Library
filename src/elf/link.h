@@ -22,6 +22,7 @@
 
 #include <features.h>
 #include <elf.h>
+#include <dlfcn.h>
 #include <sys/types.h>
 
 /* We use this macro to refer to ELF types independent of the native wordsize.

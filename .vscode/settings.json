@@ -158,6 +158,9 @@
 		"elf_machine_sym_no_match.h": "c",
 		"dl-protected.h": "c",
 		"setjmp.h": "c",
-		"time.h": "c"
+		"time.h": "c",
+		"dl-hash.h": "c",
+		"hurd.h": "c",
+		"error_t.h": "c"
 	}
 }

@@ -24,6 +24,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/mman.h>
+#include <sys/stat.h>
 
 #include <gconv_int.h>
 #include <iconvconfig.h>

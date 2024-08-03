@@ -24,13 +24,8 @@
 
 __BEGIN_DECLS
 
-#include <bits/signum-generic.h>
 
 typedef sigset_t __sigset_t;
-
-#if defined __USE_POSIX199309 || defined __USE_XOPEN_EXTENDED
-# include <bits/types/siginfo_t.h>
-#endif
 
 #if defined __USE_XOPEN || defined __USE_XOPEN2K
 # ifndef __pid_t_defined
@@ -201,10 +196,6 @@ extern int sigandset (sigset_t *__set, const sigset_t *__left,
 extern int sigorset (sigset_t *__set, const sigset_t *__left,
 		     const sigset_t *__right) __THROW __nonnull ((1, 2, 3));
 # endif /* GNU */
-
-/* Get the system-specific definitions of `struct sigaction'
-   and the `SA_*' and `SIG_*'. constants.  */
-# include <bits/sigaction.h>
 
 /* Get and/or change the set of blocked signals.  */
 extern int sigprocmask (int __how, const sigset_t *__restrict __set,

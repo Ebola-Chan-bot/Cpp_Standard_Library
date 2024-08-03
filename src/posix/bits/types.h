@@ -25,6 +25,7 @@
 
 #include <features.h>
 #include <bits/wordsize.h>
+#include <bits/timesize.h>
 
 /* Convenience types.  */
 typedef unsigned char __u_char;
