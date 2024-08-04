@@ -22,6 +22,7 @@
 #include <atomic.h>
 #include <bits/atomic_wide_counter.h>
 #include <stdint.h>
+#include <libc-symbols.h>
 
 #if __HAVE_64B_ATOMICS
 

@@ -1,11 +1,6 @@
 #ifndef _DLFCN_H
-#include <dlfcn/dlfcn.h>
 #ifndef _ISOMAC
-#include <link.h>		/* For ElfW.  */
 #include <stdbool.h>
-
-extern __typeof (_dl_find_object) __dl_find_object;
-hidden_proto (__dl_find_object)
 
 /* Internally used flag.  */
 #define __RTLD_DLOPEN	0x80000000
@@ -59,13 +54,6 @@ extern void *__libc_dlvsym (void *map, const char *name, const char *version)
 extern int   __libc_dlclose (void *__map)
   attribute_hidden;
 
-/* Locate shared object containing the given address.  */
-#ifdef ElfW
-extern int _dl_addr (const void *address, Dl_info *info,
-		     struct link_map **mapp, const ElfW(Sym) **symbolp)
-  attribute_hidden;
-#endif
-
 struct link_map;
 
 /* Close an object previously opened by _dl_open.  */
@@ -106,11 +94,7 @@ struct dlfcn_hook
   void *(*dlvsym) (void *handle, const char *name, const char *version,
 		   void *dl_caller);
   char *(*dlerror) (void);
-  int (*dladdr) (const void *address, Dl_info *info);
-  int (*dladdr1) (const void *address, Dl_info *info,
-		  void **extra_info, int flags);
   int (*dlinfo) (void *handle, int request, void *arg);
-  void *(*dlmopen) (Lmid_t nsid, const char *file, int mode, void *dl_caller);
 
   /* Internal interfaces.  */
   void* (*libc_dlopen_mode)  (const char *__name, int __mode);
@@ -124,15 +108,10 @@ struct dlfcn_hook
    the __libc_dl* functions defined in elf/dl-libc.c instead.  */
 
 extern void *__dlopen (const char *file, int mode, void *caller);
-extern void *__dlmopen (Lmid_t nsid, const char *file, int mode,
-			void *dl_caller);
 extern int __dlclose (void *handle);
 extern void *__dlsym (void *handle, const char *name, void *dl_caller);
 extern void *__dlvsym (void *handle, const char *name, const char *version,
 		       void *dl_caller);
-extern int __dladdr (const void *address, Dl_info *info);
-extern int __dladdr1 (const void *address, Dl_info *info,
-		      void **extra_info, int flags);
 extern int __dlinfo (void *handle, int request, void *arg);
 extern char *__dlerror (void);
 

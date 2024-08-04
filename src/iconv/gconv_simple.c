@@ -17,7 +17,6 @@
    License along with the GNU C Library; if not, see
    <https://www.gnu.org/licenses/>.  */
 
-#include <dlfcn.h>
 #include <endian.h>
 #include <errno.h>
 #include <gconv.h>

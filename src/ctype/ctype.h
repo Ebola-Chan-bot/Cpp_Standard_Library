@@ -22,7 +22,6 @@
 #ifndef	_CTYPE_H
 #define	_CTYPE_H	1
 
-#include <features.h>
 #include <bits/types.h>
 #include <stdint.h>
 
@@ -100,22 +99,6 @@ extern const int32_t **__ctype_toupper_loc (void)
 #define	__toascii(c)	((c) & 0x7f)		/* Mask off high bits.  */
 
 #define	__exctype(name)	extern int name (int) __THROW
-
-/* The following names are all functions:
-     int isCHARACTERISTIC(int c);
-   which return nonzero iff C has CHARACTERISTIC.
-   For the meaning of the characteristic names, see the `enum' above.  */
-__exctype (isalnum);
-__exctype (isalpha);
-__exctype (iscntrl);
-__exctype (isdigit);
-__exctype (islower);
-__exctype (isgraph);
-__exctype (isprint);
-__exctype (ispunct);
-__exctype (isspace);
-__exctype (isupper);
-__exctype (isxdigit);
 
 
 /* Return the lowercase version of C.  */

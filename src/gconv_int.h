@@ -18,9 +18,9 @@
 #ifndef _GCONV_INT_H
 #define _GCONV_INT_H	1
 
+#include <ctype.h>		/* For __toupper_l used in macro below.  */
 #include <gconv.h>
 #include <stdlib.h>		/* For alloca used in macro below.  */
-#include <ctype.h>		/* For __toupper_l used in macro below.  */
 #include <string.h>		/* For strlen et al used in macro below.  */
 #include <libc-lock.h>
 #include <stdbool.h>

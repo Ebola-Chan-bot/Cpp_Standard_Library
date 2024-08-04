@@ -161,6 +161,10 @@
 		"time.h": "c",
 		"dl-hash.h": "c",
 		"hurd.h": "c",
-		"error_t.h": "c"
+		"error_t.h": "c",
+		"rtld-malloc.h": "c",
+		"timesize.h": "c",
+		"wordsize.h": "c",
+		"allocalim.h": "c"
 	}
 }

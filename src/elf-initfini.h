@@ -1,5 +1,5 @@
-/* Check if dynamic section should be relocated.  Generic version.
-   Copyright (C) 2021-2024 Free Software Foundation, Inc.
+/* Determine DT_INIT/DT_FINI support in the dynamic loader.  AArch64 version.
+   Copyright (C) 2020-2024 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -14,12 +14,7 @@
 
    You should have received a copy of the GNU Lesser General Public
    License along with the GNU C Library; if not, see
-   <https://www.gnu.org/licenses/>.  */
+   <http://www.gnu.org/licenses/>.  */
 
-#ifndef _DL_RELOCATE_LD_H
-#define _DL_RELOCATE_LD_H
-
-/* The dynamic section is writable.  */
-#define DL_RO_DYN_SECTION 0
-
-#endif /* _DL_RELOCATE_LD_H */
+/* Enable DT_INIT/DT_FINI support.  */
+#define ELF_INITFINI 1

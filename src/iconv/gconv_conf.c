@@ -458,23 +458,6 @@ __gconv_read_conf (void)
   int save_errno = errno;
   size_t cnt;
 
-  /* First see whether we should use the cache.  */
-  if (__gconv_load_cache () == 0)
-    {
-      /* Yes, we are done.  */
-      __set_errno (save_errno);
-      return;
-    }
-
-#ifndef STATIC_GCONV
-  /* Find out where we have to look.  */
-  __gconv_get_path ();
-
-  for (cnt = 0; __gconv_path_elem[cnt].name != NULL; ++cnt)
-    gconv_parseconfdir (NULL, __gconv_path_elem[cnt].name,
-			__gconv_path_elem[cnt].len);
-#endif
-
   /* Add the internal modules.  */
   for (cnt = 0; cnt < sizeof (builtin_modules) / sizeof (builtin_modules[0]);
        ++cnt)
@@ -490,18 +473,6 @@ __gconv_read_conf (void)
 
       insert_module (&builtin_modules[cnt], 0);
     }
-
-  /* Add aliases for builtin conversions.  */
-  const char *cp = builtin_aliases;
-  do
-    {
-      const char *from = cp;
-      const char *to = strchr (from, '\0') + 1;
-      cp = strchr (to, '\0') + 1;
-
-      add_alias2 (from, to, cp);
-    }
-  while (*cp != '\0');
 
   /* Restore the error number.  */
   __set_errno (save_errno);

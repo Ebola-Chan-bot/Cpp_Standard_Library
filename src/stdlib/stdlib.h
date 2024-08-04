@@ -49,23 +49,6 @@ __BEGIN_DECLS
 # endif
 #endif	/* X/Open or XPG7 and <sys/wait.h> not included.  */
 
-/* Returned by `div'.  */
-typedef struct
-  {
-    int quot;			/* Quotient.  */
-    int rem;			/* Remainder.  */
-  } div_t;
-
-/* Returned by `ldiv'.  */
-#ifndef __ldiv_t_defined
-typedef struct
-  {
-    long int quot;		/* Quotient.  */
-    long int rem;		/* Remainder.  */
-  } ldiv_t;
-# define __ldiv_t_defined	1
-#endif
-
 #if defined __USE_ISOC99 && !defined __lldiv_t_defined
 /* Returned by `lldiv'.  */
 __extension__ typedef struct
@@ -514,9 +497,6 @@ extern long int a64l (const char *__s)
 /* Return a random long integer between 0 and 2^31-1 inclusive.  */
 extern long int random (void) __THROW;
 
-/* Seed the random number generator with the given number.  */
-extern void srandom (unsigned int __seed) __THROW;
-
 /* Initialize the random number generator to use state buffer STATEBUF,
    of length STATELEN, and seed it with SEED.  Optimal lengths are 8, 16,
    32, 64, 128 and 256, the bigger the better; values less than 8 will
@@ -545,9 +525,6 @@ struct random_data
     int32_t *end_ptr;		/* Pointer behind state table.  */
   };
 
-extern int random_r (struct random_data *__restrict __buf,
-		     int32_t *__restrict __result) __THROW __nonnull ((1, 2));
-
 extern int srandom_r (unsigned int __seed, struct random_data *__buf)
      __THROW __nonnull ((2));
 
@@ -567,11 +544,6 @@ extern int setstate_r (char *__restrict __statebuf,
 extern int rand (void) __THROW;
 /* Seed the random number generator with the given number.  */
 extern void srand (unsigned int __seed) __THROW;
-
-#ifdef __USE_POSIX199506
-/* Reentrant interface according to POSIX.1.  */
-extern int rand_r (unsigned int *__seed) __THROW;
-#endif
 
 
 #if defined __USE_MISC || defined __USE_XOPEN

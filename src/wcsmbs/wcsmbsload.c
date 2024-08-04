@@ -24,7 +24,10 @@
 #include <wcsmbsload.h>
 #include <libc-lock.h>
 
-
+void FF()
+{
+  __alloca(10);
+}
 /* These are the descriptions for the default conversion functions.  */
 static const struct __gconv_step to_wc =
 {

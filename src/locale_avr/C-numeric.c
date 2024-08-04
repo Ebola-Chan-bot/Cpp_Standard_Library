@@ -1,5 +1,5 @@
-/* Generic declarations for DTV-based TLS handling in the dynamic linker.
-   Copyright (C) 2002-2024 Free Software Foundation, Inc.
+#ifdef ARDUINO_ARCH_AVR
+/* Copyright (C) 1995-2024 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -16,23 +16,25 @@
    License along with the GNU C Library; if not, see
    <https://www.gnu.org/licenses/>.  */
 
-#ifndef _DL_DTV_H
-#define _DL_DTV_H
+#include "localeinfo.h"
 
-struct dtv_pointer
+/* This table's entries are taken from POSIX.2 Table 2-10
+   ``LC_NUMERIC Category Definition in the POSIX Locale''.  */
+const struct __locale_data _nl_C_LC_NUMERIC attribute_hidden =
 {
-  void *val;                    /* Pointer to data, or TLS_DTV_UNALLOCATED.  */
-  void *to_free;                /* Unaligned pointer, for deallocation.  */
+  _nl_C_name,
+  NULL, 0, 0,			/* no file mapped */
+  NULL, 			/* No cached data.  */
+  UNDELETABLE,
+  0,
+  6,
+  {
+    { .string = "." },
+    { .string = "" },
+    { .string = "" },
+    { .word = (unsigned int) L'.' },
+    { .word = (unsigned int) L'\0' },
+    { .string = _nl_C_codeset }
+  }
 };
-
-/* Type for the dtv.  */
-typedef union dtv
-{
-  size_t counter;
-  struct dtv_pointer pointer;
-} dtv_t;
-
-/* Value used for dtv entries for which the allocation is delayed.  */
-#define TLS_DTV_UNALLOCATED ((void *) -1l)
-
-#endif /* _DLT_DTV_H */
+#endif

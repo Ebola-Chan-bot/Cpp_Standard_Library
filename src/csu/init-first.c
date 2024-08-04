@@ -24,8 +24,6 @@
 #include <sys/param.h>
 #include <sys/types.h>
 
-#include <ldsodefs.h>
-
 /* Remember the command line argument and environment contents for
    later calls of initializers for dynamic libraries.  */
 int __libc_argc attribute_hidden;

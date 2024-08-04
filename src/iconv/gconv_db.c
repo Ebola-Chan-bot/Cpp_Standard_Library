@@ -21,7 +21,6 @@
 #include <search.h>
 #include <sys/param.h>
 
-#include <dlfcn.h>
 #include <gconv_int.h>
 #include <pointer_guard.h>
 

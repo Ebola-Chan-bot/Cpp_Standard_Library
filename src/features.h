@@ -4,6 +4,7 @@
 #ifdef VSCODE
 #undef __STRICT_ANSI__
 #endif
+#define STATIC_GCONV
 /* Copyright (C) 1991-2024 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 

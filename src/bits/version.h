@@ -1938,7 +1938,7 @@
 #undef __glibcxx_want_tuple_like
 
 #if !defined(__cpp_lib_unreachable)
-#if (__cplusplus >= 202100L)
+#if (__cplusplus >= 202100L)||defined ARDUINO_ARCH_AVR
 #define __glibcxx_unreachable 202202L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_unreachable)
 #define __cpp_lib_unreachable 202202L
