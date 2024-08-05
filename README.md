@@ -33,6 +33,10 @@
 - （AVR不支持）C++标准异常处理和RTTI。要使用此功能，请确保编译选项包含-fexceptions且不含-fno-rtti。异常处理代码依赖RTTI，因此不能在关闭RTTI的情况下使用异常处理。
 
 安装后记得查看示例项目！
+
+# FAQ
+
+链接时提示__libc_use_alloca重定义：这是 Arduino IDE 的缓存机制bug，清理`%TEMP%\arduino\sketches`重新编译即可。
 # 原版README（仅供参考，部分内容已过时）
 
 This is an implementation of a C++ standard library packaged as an Arduino library. The library supports teaching my CS-11M class by adding key C++ features into the Arduino environment. 

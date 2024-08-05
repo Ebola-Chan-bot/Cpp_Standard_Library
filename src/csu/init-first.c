@@ -22,7 +22,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/param.h>
-#include <sys/types.h>
 
 /* Remember the command line argument and environment contents for
    later calls of initializers for dynamic libraries.  */

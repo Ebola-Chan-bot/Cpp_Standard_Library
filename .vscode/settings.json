@@ -165,6 +165,7 @@
 		"rtld-malloc.h": "c",
 		"timesize.h": "c",
 		"wordsize.h": "c",
-		"allocalim.h": "c"
+		"allocalim.h": "c",
+		"locale_t.h": "c"
 	}
 }

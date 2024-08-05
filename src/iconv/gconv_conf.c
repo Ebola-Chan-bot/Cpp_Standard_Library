@@ -18,19 +18,13 @@
    <https://www.gnu.org/licenses/>.  */
 
 #include <assert.h>
-#include <ctype.h>
 #include <errno.h>
-#include <limits.h>
 #include <locale.h>
 #include <search.h>
-#include <stddef.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
 #include <sys/param.h>
 
-#include <libc-lock.h>
 #include <gconv_int.h>
 
 /* This is the default path where we look for module lists.  */

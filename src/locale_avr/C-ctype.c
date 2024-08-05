@@ -21,7 +21,7 @@
 #include <stdalign.h>
 #include <stdint.h>
 #include <wcsmbs/wcsmbsload.h>
-
+#define const const __attribute__((__progmem__))
 /* This table's entries are taken from POSIX.2 Table 2-6
    ``LC_CTYPE Category Definition in the POSIX Locale''.
 

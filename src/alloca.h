@@ -1,7 +1,7 @@
 #pragma once
 #include_next <alloca.h>
 #ifdef ARDUINO_ARCH_AVR
-
+#include <libc-symbols.h>
 #ifndef _ISOMAC
 
 #undef __alloca
@@ -15,8 +15,6 @@ extern int __libc_alloca_cutoff(size_t size) __attribute__((const));
 libc_hidden_proto(__libc_alloca_cutoff)
 
 #define __MAX_ALLOCA_CUTOFF 65536
-
-#include <allocalim.h>
 
 #if defined stackinfo_get_sp && defined stackinfo_sub_sp
 #define alloca_account(size, avar) \

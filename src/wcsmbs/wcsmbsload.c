@@ -16,18 +16,11 @@
    License along with the GNU C Library; if not, see
    <https://www.gnu.org/licenses/>.  */
 
-#include <ctype.h>
-#include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
 #include <gconv_int.h>
 #include <wcsmbsload.h>
-#include <libc-lock.h>
 
-void FF()
-{
-  __alloca(10);
-}
+
 /* These are the descriptions for the default conversion functions.  */
 static const struct __gconv_step to_wc =
 {
