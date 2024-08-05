@@ -17,13 +17,12 @@
    <https://www.gnu.org/licenses/>.  */
 
 #include <endian.h>
-
 #include "localeinfo.h"
-
+#define const const __attribute__((__progmem__))
 /* This table's entries are taken from ISO 14652, the table in section
    4.12 "LC_IDENTIFICATION".  */
 
-const struct __locale_data _nl_C_LC_IDENTIFICATION attribute_hidden =
+const struct __locale_data _nl_C_LC_IDENTIFICATION  attribute_hidden =
 {
   _nl_C_name,
   NULL, 0, 0,			/* no file mapped */

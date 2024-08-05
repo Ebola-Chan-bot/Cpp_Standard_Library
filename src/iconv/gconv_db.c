@@ -24,7 +24,7 @@
 #include <gconv_int.h>
 #include <pointer_guard.h>
 
-
+#define const const __attribute__((__progmem__))
 /* Simple data structure for alias mapping.  We have two names, `from'
    and `to'.  */
 void *__gconv_alias_db;

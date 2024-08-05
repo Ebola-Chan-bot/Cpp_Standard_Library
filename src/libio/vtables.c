@@ -20,7 +20,7 @@
 #include <libio/libioP.h>
 #include <stdio.h>
 #include <array_length.h>
-
+#define const const __attribute__((__progmem__))
 /* Both _IO_str_* and _IO_new_file functions are pulled into every link (from
    stdio initialization).  */
 #ifndef SHARED

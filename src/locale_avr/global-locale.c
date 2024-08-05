@@ -19,7 +19,7 @@
 
 #include <locale.h>
 #include "localeinfo.h"
-
+#define const const __attribute__((__progmem__))
 #define DEFINE_CATEGORY(category, category_name, items, a) \
 extern struct __locale_data _nl_C_##category; weak_extern (_nl_C_##category)
 #include "categories.def"

@@ -30,7 +30,7 @@
 #include <printf.h>
 
 #include "nldbl-compat.h"
-
+#define const const __attribute__((__progmem__))
 libc_hidden_proto (__nldbl_vsscanf)
 libc_hidden_proto (__nldbl_vfscanf)
 libc_hidden_proto (__nldbl_vfwscanf)

@@ -23,7 +23,7 @@
 #include <wchar.h>
 #include <libc-lock.h>
 
-
+#define const const __attribute__((__progmem__))
 struct printf_modifier_record
 {
   struct printf_modifier_record *next;

@@ -19,7 +19,7 @@
 #include <errno.h>
 #include <unistd.h>
 #include <sys/uio.h>
-
+#define const const __attribute__((__progmem__))
 /* Write data pointed by the buffers described by VECTOR, which
    is a vector of COUNT `struct iovec's, to file descriptor FD.
    The data is written in the order specified.

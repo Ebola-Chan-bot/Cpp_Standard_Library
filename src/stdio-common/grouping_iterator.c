@@ -24,7 +24,7 @@
 #include <locale_avr/localeinfo.h>
 #include <stdint.h>
 #include <string.h>
-
+#define const const __attribute__((__progmem__))
 /* Initializes *IT with no grouping information for a string of length
    DIGITS, and return false to indicate no grouping.  */
 bool

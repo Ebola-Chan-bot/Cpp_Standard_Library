@@ -26,7 +26,7 @@
 #include <wchar.h>
 #include <sys/param.h>
 #include <gconv_int.h>
-
+#define const const __attribute__((__progmem__))
 #define BUILTIN_ALIAS(s1, s2) /* nothing */
 #define BUILTIN_TRANSFORMATION(From, To, Cost, Name, Fct, BtowcFct, \
 			       MinF, MaxF, MinT, MaxT) \

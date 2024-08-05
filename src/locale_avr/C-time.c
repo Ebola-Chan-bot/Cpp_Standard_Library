@@ -18,12 +18,12 @@
 
 #include <stdint.h>
 #include "localeinfo.h"
-
+#define const const __attribute__((__progmem__))
 /* This table's entries are taken from POSIX.2 Table 2-11
    ``LC_TIME Category Definition in the POSIX Locale'',
    with additions from ISO 14652, section 4.6.  */
 
-const struct __locale_data _nl_C_LC_TIME attribute_hidden =
+const struct __locale_data _nl_C_LC_TIME  attribute_hidden =
 {
   _nl_C_name,
   NULL, 0, 0,			/* no file mapped */

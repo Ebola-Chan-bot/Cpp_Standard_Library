@@ -21,7 +21,7 @@
 #include <errno.h>
 #include <libintl.h>
 #include <stdio.h>
-
+#define const const __attribute__((__progmem__))
 const char *
 __get_errlist (int errnum)
 {

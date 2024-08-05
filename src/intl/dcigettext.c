@@ -22,7 +22,7 @@
 #ifdef _LIBC
 # include <libintl.h>
 #endif
-
+#define const const __attribute__((__progmem__))
 /* @@ end of prolog @@ */
 
 /* Names for the libintl functions are a problem.  They must not clash

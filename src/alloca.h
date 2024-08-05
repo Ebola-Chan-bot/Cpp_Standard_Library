@@ -9,7 +9,6 @@
 #ifdef __GNUC__
 #define __alloca(size) __builtin_alloca(size)
 #endif /* GCC.  */
-
 extern int __libc_use_alloca(size_t size) __attribute__((const));
 extern int __libc_alloca_cutoff(size_t size) __attribute__((const));
 libc_hidden_proto(__libc_alloca_cutoff)

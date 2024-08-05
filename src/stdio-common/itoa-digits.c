@@ -18,9 +18,9 @@
    <https://www.gnu.org/licenses/>.  */
 
 #include <_itoa.h>
-
+#define const const __attribute__((__progmem__))
 /* Lower-case digits.  */
-const char _itoa_lower_digits[36]
+const char _itoa_lower_digits[36] 
 	= "0123456789abcdefghijklmnopqrstuvwxyz";
 libc_hidden_data_def (_itoa_lower_digits)
 #endif

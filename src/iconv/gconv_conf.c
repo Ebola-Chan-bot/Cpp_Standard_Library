@@ -26,9 +26,9 @@
 #include <sys/param.h>
 
 #include <gconv_int.h>
-
+#define const const __attribute__((__progmem__))
 /* This is the default path where we look for module lists.  */
-static const char default_gconv_path[] = "";//无GCONV_PATH
+static const char default_gconv_path[] __attribute__((__progmem__)) = "";//无GCONV_PATH
 
 /* Type to represent search path.  */
 struct path_elem
@@ -44,13 +44,13 @@ struct path_elem *__gconv_path_elem;
 size_t __gconv_max_path_elem_len;
 
 /* We use the following struct if we couldn't allocate memory.  */
-static const struct path_elem empty_path_elem = { NULL, 0 };
+static const struct path_elem empty_path_elem __attribute__((__progmem__)) = { NULL, 0 };
 
 /* Filename extension for the modules.  */
 #ifndef MODULE_EXT
 # define MODULE_EXT ".so"
 #endif
-static const char gconv_module_ext[] = MODULE_EXT;
+static const char gconv_module_ext[] __attribute__((__progmem__)) = MODULE_EXT;
 
 /* We have a few builtin transformations.  */
 static struct gconv_module builtin_modules[] =
@@ -69,7 +69,7 @@ static struct gconv_module builtin_modules[] =
 #undef BUILTIN_ALIAS
 };
 
-static const char builtin_aliases[] =
+static const char builtin_aliases[] __attribute__((__progmem__))=
 {
 #define BUILTIN_TRANSFORMATION(From, To, Cost, Name, Fct, BtowcFct, \
 			       MinF, MaxF, MinT, MaxT)
@@ -79,10 +79,10 @@ static const char builtin_aliases[] =
 #undef BUILTIN_ALIAS
 };
 
-
+#undef const
 /* Value of the GCONV_PATH environment variable.  */
 const char *__gconv_path_envvar;
-
+#define const const __attribute__((__progmem__))
 
 /* Test whether there is already a matching module known.  */
 static int

@@ -21,7 +21,7 @@
 #include <string-fzc.h>
 #include <string-shift.h>
 #include <string.h>
-
+#define const const __attribute__((__progmem__))
 #undef __strchrnul
 #undef strchrnul
 

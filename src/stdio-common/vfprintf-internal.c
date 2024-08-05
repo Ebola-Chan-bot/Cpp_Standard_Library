@@ -42,7 +42,7 @@
 #ifdef COMPILE_WPRINTF
 #include <wctype.h>
 #endif
-
+#define const const __attribute__((__progmem__))
 #define ARGCHECK(S, Format)                         \
 	do                                              \
 	{                                               \
@@ -148,10 +148,10 @@ typedef wchar_t THOUSANDS_SEP_T;
 #undef EOF
 #define EOF WEOF
 #endif
-
+#undef const
 /* Include the shared code for parsing the format string.  */
 #include "printf-parse.h"
-
+#define const const __attribute__((__progmem__))
 /* Calls __printf_fp or __printf_fphex based on the value of the
    format specifier INFO->spec.  */
 static inline void
@@ -525,9 +525,10 @@ void Xprintf_buffer(struct Xprintf_buffer *buf, const CHAR_T *format,
 	/* 1 if format is in read-only memory, -1 if it is in writable memory,
 	   0 if unknown.  */
 	int readonly_format = 0;
-
+#undef const
 	/* Initialize local variables.  */
 	grouping = (const char *)-1;
+#define const const __attribute__((__progmem__))
 #ifdef __va_copy
 	/* This macro will be available soon in gcc's <stdarg.h>.  We need it
 	   since on some systems `va_list' is not an integral type.  */
@@ -621,7 +622,9 @@ void Xprintf_buffer(struct Xprintf_buffer *buf, const CHAR_T *format,
 
 		/* The '\'' flag.  */
 		LABEL(flag_quote) : group = 1;
+#undef const
 		if (grouping == (const char *)-1)
+#define const const __attribute__((__progmem__))
 		{
 #ifdef COMPILE_WPRINTF
 			thousands_sep = _NL_CURRENT_WORD(LC_NUMERIC,

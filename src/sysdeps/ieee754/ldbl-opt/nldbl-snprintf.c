@@ -1,5 +1,6 @@
 #ifdef ARDUINO_ARCH_AVR
 #include "nldbl-compat.h"
+#define const const __attribute__((__progmem__))
 int
 attribute_hidden
 weak_function

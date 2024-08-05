@@ -31,7 +31,7 @@
 #include <pointer_guard.h>
 
 #include "../intl/hash-string.h"
-
+#define const const __attribute__((__progmem__))
 static void *gconv_cache;
 static size_t cache_size;
 static int cache_malloced;

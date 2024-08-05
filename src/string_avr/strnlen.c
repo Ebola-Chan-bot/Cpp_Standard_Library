@@ -17,7 +17,7 @@
    not, see <https://www.gnu.org/licenses/>.  */
 
 #include <string.h>
-
+#define const const __attribute__((__progmem__))
 /* Find the length of S, but scan at most MAXLEN characters.  If no
    '\0' terminator is found in that many characters, return MAXLEN.  */
 

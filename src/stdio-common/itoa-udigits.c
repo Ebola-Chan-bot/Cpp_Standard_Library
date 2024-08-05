@@ -18,9 +18,9 @@
    <https://www.gnu.org/licenses/>.  */
 
 #include <_itoa.h>
-
+#define const const __attribute__((__progmem__))
 /* Upper-case digits.  */
-const char _itoa_upper_digits[36]
+const char _itoa_upper_digits[36] 
 	= "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 libc_hidden_data_def (_itoa_upper_digits)
 #endif

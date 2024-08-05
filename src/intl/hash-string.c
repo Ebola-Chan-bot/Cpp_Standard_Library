@@ -23,8 +23,7 @@
 
 /* Specification.  */
 #include "hash-string.h"
-
-
+#define const const __attribute__((__progmem__))
 /* Defines the so called `hashpjw' function by P.J. Weinberger
    [see Aho/Sethi/Ullman, COMPILERS: Principles, Techniques and Tools,
    1986, 1987 Bell Telephone Laboratories, Inc.]  */

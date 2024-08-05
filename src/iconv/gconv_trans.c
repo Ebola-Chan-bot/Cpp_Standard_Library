@@ -23,7 +23,7 @@
 #include <search.h>
 #include "../locale_avr/localeinfo.h"
 #include <pointer_guard.h>
-
+#define const const __attribute__((__progmem__))
 
 int
 __gconv_transliterate (struct __gconv_step *step,

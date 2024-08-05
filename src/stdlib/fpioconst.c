@@ -19,7 +19,7 @@
 
 #include "fpioconst.h"
 #include <gmp-mparam.h>		/* This defines BITS_PER_MP_LIMB.  */
-
+#define const const __attribute__((__progmem__))
 /* First page	: 32-bit limbs
    Second page	: 64-bit limbs
    Last page	: table of pointers
@@ -32,7 +32,7 @@
 
 /* Table with constants of 10^(2^i), i=0..12 for 32-bit limbs.	*/
 
-const mp_limb_t __tens[] =
+const mp_limb_t __tens[]  =
 {
 #define TENS_P0_IDX	0
 #define TENS_P0_SIZE	3
@@ -1308,7 +1308,7 @@ const mp_limb_t __tens[] =
 /* Each of array variable above defines one mpn integer which is a power of 10.
    This table points to those variables, indexed by the exponent.  */
 
-const struct mp_power _fpioconst_pow10[FPIOCONST_POW10_ARRAY_SIZE] =
+const struct mp_power _fpioconst_pow10[FPIOCONST_POW10_ARRAY_SIZE]  =
 {
   { TENS_P0_IDX, TENS_P0_SIZE,		4,	     },
   { TENS_P1_IDX, TENS_P1_SIZE,		7,	   4 },

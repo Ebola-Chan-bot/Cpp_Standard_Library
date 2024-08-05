@@ -18,7 +18,7 @@
 
 #include <stdarg.h>
 #include <libioP.h>
-
+#define const const __attribute__((__progmem__))
 /* Write formatted output into S, according to the format
    string FORMAT, writing no more than MAXLEN characters.  */
 /* VARARGS3 */

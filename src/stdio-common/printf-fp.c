@@ -39,7 +39,7 @@
 #include <stdlib/longlong.h>
 
 #include <assert.h>
-
+#define const const __attribute__((__progmem__))
 /* We use the GNU MP library to handle large numbers.
 
    An MP variable occupies a varying number of entries in its array.  We keep

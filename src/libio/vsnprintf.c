@@ -30,7 +30,7 @@
 #include <array_length.h>
 #include <printf.h>
 #include <printf_buffer.h>
-
+#define const const __attribute__((__progmem__))
 void
 __printf_buffer_flush_snprintf (struct __printf_buffer_snprintf *buf)
 {

@@ -34,9 +34,13 @@
 
 安装后记得查看示例项目！
 
-# FAQ
+# 其它已知问题
 
-链接时提示__libc_use_alloca重定义：这是 Arduino IDE 的缓存机制bug，清理`%TEMP%\arduino\sketches`重新编译即可。
+AVR架构默认不支持64位整数格式化输出为字符串。如果一定要支持，在包含任何头文件之前添加一个宏定义：
+```C++
+#define CSL_GLIBC_SNPRINTF
+```
+这将导致3㎅的额外RAM占用（默认不支持的原因）
 # 原版README（仅供参考，部分内容已过时）
 
 This is an implementation of a C++ standard library packaged as an Arduino library. The library supports teaching my CS-11M class by adding key C++ features into the Arduino environment. 

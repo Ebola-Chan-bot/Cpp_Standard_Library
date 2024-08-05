@@ -32,7 +32,7 @@
 #include <rounding-mode.h>
 #include <sys/param.h>
 #include <printf_buffer.h>
-
+#define const const __attribute__((__progmem__))
 #if __HAVE_DISTINCT_FLOAT128
 # include "ieee754_float128.h"
 # include <ldbl-128/printf_fphex_macros.h>

@@ -25,7 +25,7 @@
 #include <gconv_int.h>
 
 #include <assert.h>
-
+#define const const __attribute__((__progmem__))
 
 static const struct builtin_map
 {

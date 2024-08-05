@@ -22,7 +22,7 @@
 
 #define NO_MEMPCPY_STPCPY_REDIRECT
 #include <string.h>
-
+#define const const __attribute__((__progmem__))
 #undef mempcpy
 #undef __mempcpy
 

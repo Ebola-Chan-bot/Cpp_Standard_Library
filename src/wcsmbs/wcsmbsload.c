@@ -19,7 +19,7 @@
 #include <stdio.h>
 #include <gconv_int.h>
 #include <wcsmbsload.h>
-
+#define const const __attribute__((__progmem__))
 
 /* These are the descriptions for the default conversion functions.  */
 static const struct __gconv_step to_wc =

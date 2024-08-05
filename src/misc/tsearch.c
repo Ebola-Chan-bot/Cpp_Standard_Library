@@ -90,7 +90,7 @@
 #include <string.h>
 #include <search.h>
 #include <stdint.h>
-
+#define const const __attribute__((__progmem__))
 #ifndef USE_MALLOC_LOW_BIT
 typedef struct node_t
 {

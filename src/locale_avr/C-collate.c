@@ -21,7 +21,7 @@
 #include "localeinfo.h"
 
 #include "C-collate-seq.h"
-
+#define const const __attribute__((__progmem__))
 const struct __locale_data _nl_C_LC_COLLATE attribute_hidden =
 {
   _nl_C_name,

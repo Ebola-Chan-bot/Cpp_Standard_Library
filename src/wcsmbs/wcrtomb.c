@@ -25,7 +25,7 @@
 #include <wcsmbsload.h>
 
 #include <pointer_guard.h>
-
+#define const const __attribute__((__progmem__))
 #ifndef EILSEQ
 # define EILSEQ EINVAL
 #endif

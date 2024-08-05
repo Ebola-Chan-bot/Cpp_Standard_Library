@@ -21,7 +21,7 @@ along with the GNU MP Library; see the file COPYING.LIB.  If not, see
 
 #include <gmp.h>
 #include "gmp-impl.h"
-
+#define const const __attribute__((__progmem__))
 /* Shift U (pointed to by UP and USIZE digits long) CNT bits to the left
    and store the USIZE least significant digits of the result at WP.
    Return the bits shifted out from the most significant digit.

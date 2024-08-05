@@ -23,7 +23,7 @@ along with the GNU MP Library; see the file COPYING.LIB.  If not, see
 #include "gmp-impl.h"
 
 #include <assert.h>
-
+#define const const __attribute__((__progmem__))
 /* Shift U (pointed to by UP and USIZE limbs long) CNT bits to the right
    and store the USIZE least significant limbs of the result at WP.
    The bits shifted out to the right are returned.

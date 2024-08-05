@@ -19,7 +19,7 @@
 #include <endian.h>
 
 #include "localeinfo.h"
-
+#define const const __attribute__((__progmem__))
 /* This table's entries are taken from ISO 14652, the table in section
    4.10 "LC_ADDRESS".  */
 

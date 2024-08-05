@@ -19,11 +19,11 @@
 #include <endian.h>
 
 #include "localeinfo.h"
-
+#define const const __attribute__((__progmem__))
 /* This table's entries are taken from ISO 14652, the table in section
    4.9 "LC_NAME".  */
 
-const struct __locale_data _nl_C_LC_NAME attribute_hidden =
+const struct __locale_data _nl_C_LC_NAME  attribute_hidden =
 {
   _nl_C_name,
   NULL, 0, 0,			/* no file mapped */

@@ -27,7 +27,7 @@
 #include <stdlib/longlong.h>
 
 #include <_itoa.h>
-
+#define const const __attribute__((__progmem__))
 
 /* Canonize environment.  For some architectures not all values might
    be defined in the GMP header files.  */
@@ -82,7 +82,7 @@ struct base_table_t
 /* We do not compile _itoa if we always can use _itoa_word.  */
 #if _ITOA_NEEDED
 /* Local variables.  */
-const struct base_table_t _itoa_base_table[] attribute_hidden =
+const struct base_table_t _itoa_base_table[]  attribute_hidden =
 {
 # if BITS_PER_MP_LIMB == 64
   /*  2 */ {SEL1(0ull) 1, 1},

@@ -21,7 +21,7 @@ along with the GNU MP Library; see the file COPYING.LIB.  If not, see
 
 #include <gmp.h>
 #include "gmp-impl.h"
-
+#define const const __attribute__((__progmem__))
 /* Multiply the natural numbers u (pointed to by UP) and v (pointed to by VP),
    both with SIZE limbs, and store the result at PRODP.  2 * SIZE limbs are
    always stored.  Return the most significant limb.

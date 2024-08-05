@@ -19,6 +19,7 @@
 #include <stdarg.h>
 #include <stddef.h>
 #include <math_ldbl_opt.h>
+#define const const __attribute__((__progmem__))
 /* Write formatted output into S, according to the format string FORMAT.  */
 /* VARARGS3 */
 int

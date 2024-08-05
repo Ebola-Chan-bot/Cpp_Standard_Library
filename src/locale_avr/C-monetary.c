@@ -17,7 +17,7 @@
    <https://www.gnu.org/licenses/>.  */
 
 #include "localeinfo.h"
-
+#define const const __attribute__((__progmem__))
 /* This table's entries are taken from POSIX.2 Table 2-9
    ``LC_MONETARY Category Definition in the POSIX Locale'',
    with additions from ISO 14652, section 4.4.  */
