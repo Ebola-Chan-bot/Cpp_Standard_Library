@@ -1,5 +1,5 @@
 #pragma once
-#ifdef ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_AVR
 // functional_hash.h header -*- C++ -*-
 
 // Copyright (C) 2007-2024 Free Software Foundation, Inc.

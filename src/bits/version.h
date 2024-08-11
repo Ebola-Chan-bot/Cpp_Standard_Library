@@ -925,7 +925,7 @@
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_optional)
 #define __cpp_lib_optional 202106L
 #endif
-#elif (__cplusplus >= 201703L)
+#elif (__cplusplus >= 201703L)||defined ARDUINO_ARCH_SAM
 #define __glibcxx_optional 201606L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_optional)
 #define __cpp_lib_optional 201606L

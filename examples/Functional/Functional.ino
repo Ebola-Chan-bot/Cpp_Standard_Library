@@ -7,15 +7,16 @@
 #include <dynarray>
 #include <cmath>
 #include <unordered_map>
+#include <optional>
 void Translate(std::chrono::hours H) {
   std::cout << std::chrono::duration_cast<std::chrono::seconds>(H + H).count() << std::endl;
 }
-std::move_only_function<void()> FF;
+std::vector<std::optional<std::move_only_function<void()const>>> FF;
 void setup() {
   std::unique_ptr<std::chrono::hours[]> US = std::make_unique_for_overwrite<std::chrono::hours[]>(10);
   std::fill_n(US.get(), 10, std::chrono::hours(1));
   std::chrono::hours H = US[5];
-  FF = [H]() {
+  FF[0] = [H]() {
     Translate(H);
   };
   std::dynarray<int> D(std::log2(1024));
@@ -28,5 +29,5 @@ void setup() {
 #endif
 }
 void loop() {
-  FF();
+  FF[0]();
 }

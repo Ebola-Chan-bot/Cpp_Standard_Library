@@ -1551,13 +1551,17 @@ namespace std
         static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
                       "template argument must be a complete class or an unbounded array");
     };
-    // 1278
+// 1278
+#endif // ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
     // 1322
     /// @cond undocumented
     template <typename _Tp, typename... _Args>
     using __is_trivially_constructible_impl = __bool_constant<__is_trivially_constructible(_Tp, _Args...)>;
-    /// @endcond
-    // 1328
+/// @endcond
+// 1328
+#endif
+#ifdef ARDUINO_ARCH_AVR
     //  1337
     /// is_trivially_default_constructible
     template <typename _Tp>
@@ -1611,6 +1615,20 @@ namespace std
     };
 #endif
     // 1387
+#endif // ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
+    // 1389
+    /// is_trivially_copy_constructible
+    template <typename _Tp>
+    struct is_trivially_copy_constructible
+        : public __is_trivially_constructible_impl<_Tp, __add_lval_ref_t<const _Tp>>
+    {
+        static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
+                      "template argument must be a complete class or an unbounded array");
+    };
+    // 1398
+#endif
+#ifdef ARDUINO_ARCH_AVR
     //   1402
     /// is_trivially_destructible
     template <typename _Tp>
@@ -1619,7 +1637,17 @@ namespace std
                         __bool_constant<__has_trivial_destructor(_Tp)>>::type
     {
     };
-    // 1412
+// 1412
+#endif // ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
+    // 1407
+    /// @cond undocumented
+    template <typename _Tp, typename _Up>
+    using __is_trivially_assignable_impl = __bool_constant<__is_trivially_assignable(_Tp, _Up)>;
+/// @endcond
+// 1413
+#endif
+#ifdef ARDUINO_ARCH_AVR
     // 1276
     template <class _Ty, unsigned int _Ix = 0>
     struct extent
@@ -1650,8 +1678,6 @@ namespace std
     template <class _Base, class _Derived>
     _INLINE_VAR constexpr bool is_base_of_v = __is_base_of(_Base, _Derived);
 #endif
-#endif
-#ifdef ARDUINO_ARCH_AVR
 
     template <class _Ty>
     _Ty _Returns_exactly() noexcept; // not defined
@@ -1893,6 +1919,19 @@ namespace std
     };
 #endif
 // 2693
+#ifndef ARDUINO_ARCH_ESP32
+    // 1422
+    /// is_trivially_copy_assignable
+    template <typename _Tp>
+    struct is_trivially_copy_assignable
+        : public __is_trivially_assignable_impl<__add_lval_ref_t<_Tp>,
+                                                __add_lval_ref_t<const _Tp>>
+    {
+        static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
+                      "template argument must be a complete class or an unbounded array");
+    };
+// 1432
+#endif
 // 1423
 #ifdef ARDUINO_ARCH_AVR
     // type property queries.
@@ -3086,6 +3125,8 @@ namespace std
               typename... _Args>
     using __detected_or_t = typename __detected_or<_Default, _Op, _Args...>::type;
     // 2771
+#endif // ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
     // 2785
     template <typename _Tp>
     struct __is_swappable;
@@ -3170,7 +3211,6 @@ namespace std
     {
     };
     /// @endcond
-
 #ifdef __cpp_lib_is_swappable // C++ >= 17 || GNU++ >= 11
 
     /// Metafunctions used for detecting swappable types: p0185r1
@@ -3192,7 +3232,10 @@ namespace std
         static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
                       "template argument must be a complete class or an unbounded array");
     };
+
 #endif
+#endif //! defined ARDUINO_ARCH_ESP32
+#ifdef ARDUINO_ARCH_AVR
 #if __cplusplus >= 201402L
     /// is_swappable_v
     template <typename _Tp>
@@ -3264,7 +3307,7 @@ namespace std
         using type = decltype(__test<_Tp &>(0));
     };
     /// @endcond
-#ifdef ARDUINO_ARCH_AVR
+
     /// is_swappable_with
     template <typename _Tp, typename _Up>
     struct is_swappable_with
@@ -3286,7 +3329,7 @@ namespace std
         static_assert(std::__is_complete_or_unbounded(__type_identity<_Up>{}),
                       "second template argument must be a complete class or an unbounded array");
     };
-#endif
+
 #if __cplusplus >= 201402L
     /// is_swappable_with_v
     template <typename _Tp, typename _Up>
@@ -3299,7 +3342,7 @@ namespace std
         is_nothrow_swappable_with<_Tp, _Up>::value;
 #endif // __cplusplus >= 201402L
 
-#endif // __cpp_lib_is_swappable
+#endif
 #ifndef ARDUINO_ARCH_ESP32
     /// @cond undocumented
 
