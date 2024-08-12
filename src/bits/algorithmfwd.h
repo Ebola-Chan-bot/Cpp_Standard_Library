@@ -765,12 +765,12 @@ _GLIBCXX_BEGIN_NAMESPACE_ALGO
     lexicographical_compare(_IIter1, _IIter1, _IIter2, _IIter2, _Compare);
 
   template<typename _FIter>
-    _GLIBCXX14_CONSTEXPR
+    constexpr
     _FIter
     max_element(_FIter, _FIter);
 
   template<typename _FIter, typename _Compare>
-    _GLIBCXX14_CONSTEXPR
+    constexpr
     _FIter
     max_element(_FIter, _FIter, _Compare);
 
@@ -786,12 +786,12 @@ _GLIBCXX_BEGIN_NAMESPACE_ALGO
     merge(_IIter1, _IIter1, _IIter2, _IIter2, _OIter, _Compare);
 
   template<typename _FIter>
-    _GLIBCXX14_CONSTEXPR
+    constexpr
     _FIter
     min_element(_FIter, _FIter);
 
   template<typename _FIter, typename _Compare>
-    _GLIBCXX14_CONSTEXPR
+    constexpr
     _FIter
     min_element(_FIter, _FIter, _Compare);
 

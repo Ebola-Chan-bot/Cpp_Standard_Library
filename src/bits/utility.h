@@ -145,26 +145,27 @@ namespace std _GLIBCXX_VISIBILITY(default)
 #ifndef ARDUINO_ARCH_ESP32
 #ifdef __glibcxx_integer_sequence // C++ >= 14
 
-	_EXPORT_STD template <class _Ty, _Ty... _Vals>
+	/// Class template integer_sequence
+	template <typename _Tp, _Tp... _Idx>
 	struct integer_sequence
-	{ // sequence of integer parameters
-		static_assert(is_integral<_Ty>::value, "integer_sequence<T, I...> requires T to be an integral type.");
-
-		using value_type = _Ty;
-
-		_NODISCARD static constexpr size_t size() noexcept
-		{
-			return sizeof...(_Vals);
-		}
+	{
+#if __cplusplus >= 202002L
+		static_assert(is_integral_v<_Tp>);
+#endif
+		typedef _Tp value_type;
+		static constexpr size_t size() noexcept { return sizeof...(_Idx); }
 	};
+
 	// LLVM实现
 #include "__utility/integer_sequence.h"
 
-	_EXPORT_STD template <size_t... _Vals>
-	using index_sequence = integer_sequence<size_t, _Vals...>;
+	/// Alias template index_sequence
+	template <size_t... _Idx>
+	using index_sequence = integer_sequence<size_t, _Idx...>;
 
-	_EXPORT_STD template <size_t _Size>
-	using make_index_sequence = make_integer_sequence<size_t, _Size>;
+	/// Alias template make_index_sequence
+	template <size_t _Num>
+	using make_index_sequence = make_integer_sequence<size_t, _Num>;
 
 	/// Alias template index_sequence_for
 	template <typename... _Types>

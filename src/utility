@@ -1,4 +1,10 @@
 #pragma once
+#ifndef ARDUINO_ARCH_AVR
+#include_next <utility>
+#endif
+#ifndef ARDUINO_ARCH_ESP32
+#include <bits/utility.h>
+#endif
 #ifdef ARDUINO_ARCH_AVR
 /*	Copyright (C) 2004 Garrett A. Kajmowicz
 	This file is part of the uClibc++ Library.
@@ -19,8 +25,6 @@
 
 */
 #include <initializer_list>
-#include <type_traits>
-#include <bits/utility.h>
 
 #pragma GCC visibility push(default)
 
@@ -53,12 +57,6 @@ namespace std
 			return !(x < y);
 		}
 	}
-
-	_EXPORT_STD template <class _Ty, class _Pr>
-	_NODISCARD constexpr _Ty(max)(initializer_list<_Ty>, _Pr); // implemented in <algorithm>
-
-	_EXPORT_STD template <class _Ty>
-	_NODISCARD constexpr _Ty(max)(initializer_list<_Ty>); // implemented in <algorithm>
 														  // 86
 	//   757
 	template <class _Ty, class _Other = _Ty>
@@ -74,9 +72,4 @@ namespace std
 #endif
 }
 #pragma GCC visibility pop
-#else
-#include_next <utility>
-#endif
-#ifdef ARDUINO_ARCH_SAM
-#include <bits/utility.h>
 #endif

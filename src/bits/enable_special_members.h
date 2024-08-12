@@ -1,5 +1,5 @@
 #pragma once
-#ifdef ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
 // <bits/enable_special_members.h> -*- C++ -*-
 
 // Copyright (C) 2013-2024 Free Software Foundation, Inc.
