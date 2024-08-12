@@ -174,7 +174,7 @@
 #undef __glibcxx_want_exchange_function
 
 #if !defined(__cpp_lib_integer_sequence)
-#if (__cplusplus >= 201402L) || defined ARDUINO_ARCH_SAM
+#if (__cplusplus >= 201402L) || !defined ARDUINO_ARCH_ESP32
 #define __glibcxx_integer_sequence 201304L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_integer_sequence)
 #define __cpp_lib_integer_sequence 201304L
@@ -224,7 +224,7 @@
 #undef __glibcxx_want_null_iterators
 
 #if !defined(__cpp_lib_transformation_trait_aliases)
-#if (__cplusplus >= 201402L) || defined ARDUINO_ARCH_SAM
+#if (__cplusplus >= 201402L) || !defined ARDUINO_ARCH_ESP32
 #define __glibcxx_transformation_trait_aliases 201304L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_transformation_trait_aliases)
 #define __cpp_lib_transformation_trait_aliases 201304L
@@ -409,7 +409,7 @@
 #undef __glibcxx_want_atomic_is_always_lock_free
 
 #if !defined(__cpp_lib_bool_constant)
-#if (__cplusplus >= 201703L || defined ARDUINO_ARCH_SAM)
+#if __cplusplus >= 201703L || !defined ARDUINO_ARCH_ESP32
 #define __glibcxx_bool_constant 201505L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_bool_constant)
 #define __cpp_lib_bool_constant 201505L
@@ -469,7 +469,7 @@
 #undef __glibcxx_want_is_aggregate
 
 #if !defined(__cpp_lib_is_invocable)
-#if (__cplusplus >= 201703L) || defined ARDUINO_ARCH_SAM
+#if (__cplusplus >= 201703L) || !defined ARDUINO_ARCH_ESP32
 #define __glibcxx_is_invocable 201703L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_is_invocable)
 #define __cpp_lib_is_invocable 201703L
@@ -489,7 +489,7 @@
 #undef __glibcxx_want_launder
 
 #if !defined(__cpp_lib_logical_traits)
-#if (__cplusplus >= 201703L)
+#if __cplusplus >= 201703L || defined ARDUINO_ARCH_AVR
 #define __glibcxx_logical_traits 201510L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_logical_traits)
 #define __cpp_lib_logical_traits 201510L
@@ -925,7 +925,7 @@
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_optional)
 #define __cpp_lib_optional 202106L
 #endif
-#elif (__cplusplus >= 201703L)||defined ARDUINO_ARCH_SAM
+#elif __cplusplus >= 201703L || !defined ARDUINO_ARCH_ESP32
 #define __glibcxx_optional 201606L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_optional)
 #define __cpp_lib_optional 201606L

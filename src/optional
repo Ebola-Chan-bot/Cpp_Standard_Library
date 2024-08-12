@@ -1,3 +1,4 @@
+#ifndef ARDUINO_ARCH_ESP32
 // <optional> -*- C++ -*-
 
 // Copyright (C) 2013-2024 Free Software Foundation, Inc.
@@ -39,7 +40,6 @@
 
 #ifdef __cpp_lib_optional // C++ >= 17
 
-#include <type_traits>
 #include <exception>
 #include <new>
 #include <initializer_list>
@@ -55,7 +55,11 @@
 #if __cplusplus > 202002L
 #include <concepts>
 #endif
-
+#if __cpp_static_assert < 201411L
+#define _STATICASSERT17(expr) static_assert(expr, #expr)
+#else
+#define _STATICASSERT17(expr) static_assert(expr)
+#endif
 namespace std _GLIBCXX_VISIBILITY(default)
 {
 	_GLIBCXX_BEGIN_NAMESPACE_VERSION
@@ -305,7 +309,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		bool _M_engaged = false;
 
 		template <typename... _Args>
-		constexpr void
+		_CONSTEXPR14() void
 		_M_construct(_Args &&...__args) noexcept(_STRUCT14VALUE_V(is_nothrow_constructible, _Stored_type, _Args...))
 		{
 			std::_Construct(std::__addressof(this->_M_payload._M_value),
@@ -313,7 +317,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 			this->_M_engaged = true;
 		}
 
-		constexpr void
+		_CONSTEXPR14() void
 		_M_destroy() noexcept
 		{
 			_M_engaged = false;
@@ -553,7 +557,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		// The _M_construct operation has !_M_engaged as a precondition
 		// while _M_destruct has _M_engaged as a precondition.
 		template <typename... _Args>
-		constexpr void
+		_CONSTEXPR14() void
 		_M_construct(_Args &&...__args) noexcept(_STRUCT14VALUE_V(is_nothrow_constructible, _Stored_type, _Args...))
 		{
 			_M_payload._M_construct(std::forward<_Args>(__args)...);
@@ -578,14 +582,14 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		}
 
 		// The _M_get operations have _M_engaged as a precondition.
-		constexpr _Tp &
-		_M_get() noexcept
+		_CONSTEXPR14()
+		_Tp &_M_get() noexcept
 		{
 			return _M_payload._M_get();
 		}
 
-		constexpr const _Tp &
-		_M_get() const noexcept
+		_CONSTEXPR14()
+		const _Tp &_M_get() const noexcept
 		{
 			return _M_payload._M_get();
 		}
@@ -637,14 +641,14 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		}
 
 		// The _M_get operations have _M_engaged as a precondition.
-		constexpr _Tp &
-		_M_get() noexcept
+		_CONSTEXPR14()
+		_Tp &_M_get() noexcept
 		{
 			return static_cast<_Dp *>(this)->_M_payload._M_get();
 		}
 
-		constexpr const _Tp &
-		_M_get() const noexcept
+		_CONSTEXPR14()
+		const _Tp &_M_get() const noexcept
 		{
 			return static_cast<const _Dp *>(this)->_M_payload._M_get();
 		}
@@ -666,9 +670,9 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		}
 
 		template <typename _Up, typename... _Args,
-				  enable_if_t<is_constructible_v<_Tp,
-												 initializer_list<_Up> &,
-												 _Args...>,
+				  enable_if_t<_STRUCT14VALUE_V(is_constructible, _Tp,
+											   initializer_list<_Up> &,
+											   _Args...),
 							  bool> = false>
 		constexpr explicit _Optional_base(in_place_t,
 										  initializer_list<_Up> __il,
@@ -708,9 +712,9 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		}
 
 		template <typename _Up, typename... _Args,
-				  enable_if_t<is_constructible_v<_Tp,
-												 initializer_list<_Up> &,
-												 _Args...>,
+				  enable_if_t<_STRUCT14VALUE_V(is_constructible, _Tp,
+											   initializer_list<_Up> &,
+											   _Args...),
 							  bool> = false>
 		constexpr explicit _Optional_base(in_place_t,
 										  initializer_list<_Up> __il,
@@ -751,9 +755,9 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		}
 
 		template <typename _Up, typename... _Args,
-				  enable_if_t<is_constructible_v<_Tp,
-												 initializer_list<_Up> &,
-												 _Args...>,
+				  enable_if_t<_STRUCT14VALUE_V(is_constructible, _Tp,
+											   initializer_list<_Up> &,
+											   _Args...),
 							  bool> = false>
 		constexpr explicit _Optional_base(in_place_t,
 										  initializer_list<_Up> __il,
@@ -832,9 +836,9 @@ namespace std _GLIBCXX_VISIBILITY(default)
 			  // Unique tag type.
 			  optional<_Tp>>
 	{
-		static_assert(!_STRUCT14VALUE_V(is_same, remove_cv_t<_Tp>, nullopt_t));
-		static_assert(!_STRUCT14VALUE_V(is_same, remove_cv_t<_Tp>, in_place_t));
-		static_assert(_STRUCT14VALUE_V(is_object, _Tp) && !_STRUCT14VALUE_V(is_array, _Tp));
+		_STATICASSERT17(!_STRUCT14VALUE_V(is_same, remove_cv_t<_Tp>, nullopt_t));
+		_STATICASSERT17(!_STRUCT14VALUE_V(is_same, remove_cv_t<_Tp>, in_place_t));
+		_STATICASSERT17(_STRUCT14VALUE_V(is_object, _Tp) && !_STRUCT14VALUE_V(is_array, _Tp));
 
 	private:
 		using _Base = _Optional_base<_Tp>;
@@ -874,8 +878,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		};
 
 		template <typename _From>
-			struct __not_constructing_bool_from_optional<_From, bool>
-			: bool_constant < !_STRUCT14VALUE_V(__is_optional, __remove_cvref_t < _From >)>
+		struct __not_constructing_bool_from_optional<_From, bool>
+			: bool_constant<!_STRUCT14VALUE_V(__is_optional, __remove_cvref_t<_From>)>
 		{
 		};
 
@@ -969,7 +973,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
 							is_constructible<_Tp, const _Up &>,
 							is_convertible<const _Up &, _Tp>,
 							__construct_from_contained_value<_Up>> = true>
-		_CONSTEXPR14() optional(const optional<_Up> &__t) noexcept(_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, const _Up &))
+		_CONSTEXPR14()
+		optional(const optional<_Up> &__t) noexcept(_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, const _Up &))
 		{
 			if (__t)
 				emplace(__t._M_get());
@@ -991,7 +996,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
 							is_constructible<_Tp, _Up>,
 							is_convertible<_Up, _Tp>,
 							__construct_from_contained_value<_Up>> = true>
-		_CONSTEXPR14() optional(optional<_Up> &&__t) noexcept(_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, _Up))
+		_CONSTEXPR14()
+		optional(optional<_Up> &&__t) noexcept(_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, _Up))
 		{
 			if (__t)
 				emplace(std::move(__t._M_get()));
@@ -1017,8 +1023,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
 				  _Requires<is_constructible<_Tp,
 											 initializer_list<_Up> &,
 											 _Args...>> = false>
-		explicit constexpr optional(in_place_t, initializer_list<_Up> __il, _Args &&...__args) noexcept(_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, initializer_list < _Up) &,
-																										_Args... >)
+		explicit constexpr optional(in_place_t, initializer_list<_Up> __il, _Args &&...__args) noexcept(_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, initializer_list<_Up> &,
+																														 _Args...))
 			: _Base(std::in_place, __il, std::forward<_Args>(__args)...) {}
 #endif
 
@@ -1121,10 +1127,10 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 		template <typename _Up, typename... _Args>
 		_GLIBCXX20_CONSTEXPR
-			enable_if_t<_STRUCT14VALUE_V(is_constructible, _Tp, initializer_list < _Up) &, _Args...>,
-			_Tp & >
-				emplace(initializer_list<_Up> __il, _Args &&...__args) noexcept(_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, initializer_list < _Up) &,
-																				_Args... >)
+			enable_if_t<_STRUCT14VALUE_V(is_constructible, _Tp, initializer_list<_Up> &, _Args...),
+						_Tp &>
+			emplace(initializer_list<_Up> __il, _Args &&...__args) noexcept(_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, initializer_list<_Up> &,
+																							 _Args...))
 		{
 			this->_M_reset();
 			this->_M_construct(__il, std::forward<_Args>(__args)...);
@@ -1154,42 +1160,48 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		}
 
 		// Observers.
-		_CONSTEXPR14() const _Tp *
+		_CONSTEXPR14()
+		const _Tp *
 		operator->() const noexcept
 		{
 			__glibcxx_assert(this->_M_is_engaged());
 			return std::__addressof(this->_M_get());
 		}
 
-		_CONSTEXPR14() _Tp *
+		_CONSTEXPR14()
+		_Tp *
 		operator->() noexcept
 		{
 			__glibcxx_assert(this->_M_is_engaged());
 			return std::__addressof(this->_M_get());
 		}
 
-		_CONSTEXPR14() const _Tp &
+		_CONSTEXPR14()
+		const _Tp &
 		operator*() const & noexcept
 		{
 			__glibcxx_assert(this->_M_is_engaged());
 			return this->_M_get();
 		}
 
-		_CONSTEXPR14() _Tp &
+		_CONSTEXPR14()
+		_Tp &
 		operator*() & noexcept
 		{
 			__glibcxx_assert(this->_M_is_engaged());
 			return this->_M_get();
 		}
 
-		_CONSTEXPR14() _Tp &&
+		_CONSTEXPR14()
+		_Tp &&
 		operator*() && noexcept
 		{
 			__glibcxx_assert(this->_M_is_engaged());
 			return std::move(this->_M_get());
 		}
 
-		_CONSTEXPR14() const _Tp &&
+		_CONSTEXPR14()
+		const _Tp &&
 		operator*() const && noexcept
 		{
 			__glibcxx_assert(this->_M_is_engaged());
@@ -1206,32 +1218,32 @@ namespace std _GLIBCXX_VISIBILITY(default)
 			return this->_M_is_engaged();
 		}
 
-		_CONSTEXPR14() const _Tp &
-		value() const &
+		_CONSTEXPR14()
+		const _Tp &value() const &
 		{
 			if (this->_M_is_engaged())
 				return this->_M_get();
 			__throw_bad_optional_access();
 		}
 
-		_CONSTEXPR14() _Tp &
-		value() &
+		_CONSTEXPR14()
+		_Tp &value() &
 		{
 			if (this->_M_is_engaged())
 				return this->_M_get();
 			__throw_bad_optional_access();
 		}
 
-		_CONSTEXPR14() _Tp &&
-		value() &&
+		_CONSTEXPR14()
+		_Tp &&value() &&
 		{
 			if (this->_M_is_engaged())
 				return std::move(this->_M_get());
 			__throw_bad_optional_access();
 		}
 
-		_CONSTEXPR14() const _Tp &&
-		value() const &&
+		_CONSTEXPR14()
+		const _Tp &&value() const &&
 		{
 			if (this->_M_is_engaged())
 				return std::move(this->_M_get());
@@ -1242,8 +1254,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		constexpr _Tp
 		value_or(_Up &&__u) const &
 		{
-			static_assert(_STRUCT14VALUE_V(is_copy_constructible, _Tp));
-			static_assert(_STRUCT14VALUE_V(is_convertible, _Up &&, _Tp));
+			_STATICASSERT17(_STRUCT14VALUE_V(is_copy_constructible, _Tp));
+			_STATICASSERT17(_STRUCT14VALUE_V(is_convertible, _Up &&, _Tp));
 
 			if (this->_M_is_engaged())
 				return this->_M_get();
@@ -1255,8 +1267,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		constexpr _Tp
 		value_or(_Up &&__u) &&
 		{
-			static_assert(_STRUCT14VALUE_V(is_move_constructible, _Tp));
-			static_assert(_STRUCT14VALUE_V(is_convertible, _Up &&, _Tp));
+			_STATICASSERT17(_STRUCT14VALUE_V(is_move_constructible, _Tp));
+			_STATICASSERT17(_STRUCT14VALUE_V(is_convertible, _Up &&, _Tp));
 
 			if (this->_M_is_engaged())
 				return std::move(this->_M_get());
@@ -1272,7 +1284,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		and_then(_Fn &&__f) &
 		{
 			using _Up = remove_cvref_t<invoke_result_t<_Fn, _Tp &>>;
-			static_assert(_STRUCT14VALUE_V(__is_optional, remove_cvref_t < _Up >),
+			static_assert(_STRUCT14VALUE_V(__is_optional, remove_cvref_t<_Up>),
 						  "the function passed to std::optional<T>::and_then "
 						  "must return a std::optional");
 			if (has_value())
@@ -1300,7 +1312,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		and_then(_Fn &&__f) &&
 		{
 			using _Up = remove_cvref_t<invoke_result_t<_Fn, _Tp>>;
-			static_assert(_STRUCT14VALUE_V(__is_optional, remove_cvref_t < _Up >),
+			static_assert(_STRUCT14VALUE_V(__is_optional, remove_cvref_t<_Up>),
 						  "the function passed to std::optional<T>::and_then "
 						  "must return a std::optional");
 			if (has_value())
@@ -1314,7 +1326,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		and_then(_Fn &&__f) const &&
 		{
 			using _Up = remove_cvref_t<invoke_result_t<_Fn, const _Tp>>;
-			static_assert(_STRUCT14VALUE_V(__is_optional, remove_cvref_t < _Up >),
+			static_assert(_STRUCT14VALUE_V(__is_optional, remove_cvref_t<_Up>),
 						  "the function passed to std::optional<T>::and_then "
 						  "must return a std::optional");
 			if (has_value())
@@ -1743,9 +1755,9 @@ namespace std _GLIBCXX_VISIBILITY(default)
 	swap(optional<_Tp> &, optional<_Tp> &) = delete;
 
 	template <typename _Tp>
-	constexpr enable_if_t<_STRUCT14VALUE_V(is_constructible, decay_t < _Tp), _Tp>,
-		optional < decay_t < _Tp >>>
-			make_optional(_Tp &&__t) noexcept(_STRUCT14VALUE_V(is_nothrow_constructible, optional < decay_t < _Tp> >, _Tp ))
+	constexpr enable_if_t<_STRUCT14VALUE_V(is_constructible, decay_t<_Tp>, _Tp),
+						  optional<decay_t<_Tp>>>
+	make_optional(_Tp &&__t) noexcept(_STRUCT14VALUE_V(is_nothrow_constructible, optional<decay_t<_Tp>>, _Tp))
 	{
 		return optional<decay_t<_Tp>>{std::forward<_Tp>(__t)};
 	}
@@ -1759,9 +1771,9 @@ namespace std _GLIBCXX_VISIBILITY(default)
 	}
 
 	template <typename _Tp, typename _Up, typename... _Args>
-	constexpr enable_if_t<_STRUCT14VALUE_V(is_constructible, _Tp, initializer_list < _Up> &, _Args...),
-		optional < _Tp >>
-			make_optional(initializer_list<_Up> __il, _Args &&...__args) noexcept(_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, initializer_list < _Up> &, _Args... ))
+	constexpr enable_if_t<_STRUCT14VALUE_V(is_constructible, _Tp, initializer_list<_Up> &, _Args...),
+						  optional<_Tp>>
+	make_optional(initializer_list<_Up> __il, _Args &&...__args) noexcept(_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, initializer_list<_Up> &, _Args...))
 	{
 		return optional<_Tp>{in_place, __il, std::forward<_Args>(__args)...};
 	}
@@ -1817,3 +1829,6 @@ namespace std _GLIBCXX_VISIBILITY(default)
 #endif // __cpp_lib_optional
 
 #endif // _GLIBCXX_OPTIONAL
+#else
+#include_next <optional>
+#endif

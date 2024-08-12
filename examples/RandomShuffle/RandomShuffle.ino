@@ -18,6 +18,9 @@ void setup() {
   std::cout << "原始数组：";
   for (size_t A : Array)
     std::cout << A;
+  //很多平台并不原生支持uint64_t，但本库仍能输出
+  for (uint64_t A : Array)
+    std::cout << A;
   std::cout << std::endl;
 }
 void loop() {

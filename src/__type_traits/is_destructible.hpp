@@ -1,5 +1,4 @@
 #pragma once
-#include "../detail/workaround.hpp"
 #include "detail/yes_no_type.hpp"
 #include "is_complete.hpp"
 #include "../static_assert.hpp"
@@ -28,15 +27,12 @@ struct is_destructible : public integral_constant<bool, sizeof(detail::is_destru
 #include <boost/type_traits/is_pod.hpp>
 #include <boost/type_traits/is_class.hpp>
 
-namespace boost
+// We don't know how to implement this:
+template <class T>
+struct is_destructible : public integral_constant<bool, is_pod<T>::value || is_class<T>::value>
 {
-
-	// We don't know how to implement this:
-	template <class T>
-	struct is_destructible : public integral_constant<bool, is_pod<T>::value || is_class<T>::value>
-	{
-		BOOST_STATIC_ASSERT_MSG(is_complete<T>::value, "Arguments to is_destructible must be complete types");
-	};
+	BOOST_STATIC_ASSERT_MSG(is_complete<T>::value, "Arguments to is_destructible must be complete types");
+};
 #endif
 
 template <>

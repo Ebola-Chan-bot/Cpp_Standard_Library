@@ -29,5 +29,5 @@ void setup() {
 #endif
 }
 void loop() {
-  FF[0]();
+  FF[0].value()();
 }
