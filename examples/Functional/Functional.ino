@@ -10,10 +10,10 @@
 #include <optional>
 #include <map>
 #include <queue>
-#include <set>
+#include <unordered_set>
 std::map<uint8_t, std::move_only_function<void(std::dynarray<char> &&) const>> ListeningPorts;
 std::queue<std::dynarray<char>> MessageQueue;
-std::set<std::function<void()>> IdleTasks;
+std::unordered_set<const std::function<void()>*> IdleTasks;
 void Translate(std::chrono::hours H) {
   std::cout << std::chrono::duration_cast<std::chrono::seconds>(H + H).count() << std::endl;
 }

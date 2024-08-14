@@ -94,6 +94,7 @@
 		"types.h": "cpp",
 		"string.h": "cpp",
 		"bit": "cpp",
-		"libc-symbols.h": "cpp"
+		"libc-symbols.h": "cpp",
+		"unordered_set": "cpp"
 	}
 }

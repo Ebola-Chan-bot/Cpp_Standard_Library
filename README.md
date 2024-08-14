@@ -28,6 +28,8 @@
 - `<ratio>`
 - `<set>`
 - `<type_traits>`
+- `<unordered_map>`
+- `<unordered_set>`
 - `<vector>`
 - `std::begin std::end`
 - 如果编译器随附了某些重名的标准库功能，将优先使用随附的版本。编译器可能还随附了本库未提供的其它标准库功能，那些功能也不会与本库冲突。

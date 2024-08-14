@@ -182,6 +182,5 @@ namespace std _GLIBCXX_VISIBILITY(default)
 	_GLIBCXX_END_NAMESPACE_VERSION
 } // namespace
 #else
-#include "Cpp_Standard_Library.h"
-#include CSL_Official(stdexcept)
+#include_next <stdexcept>
 #endif

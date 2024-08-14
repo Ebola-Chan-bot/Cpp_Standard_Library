@@ -54,9 +54,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 #include "new"
 #include "initializer_list"
-#include "stdexcept"
-#include "cstdlib"
-#include "yvals_core.h"
+#include <stdexcept>
+#include <cstdlib>
+#include <memory>
+#include <limits>
+#include <yvals_core.h>//ESP32在上述头文件中未包含此头文件
 
 #if __cplusplus >= 202002L || (defined(_MSVC_LANG) && (_MSVC_LANG >= 202002L))
 #define CPP20_DYNARRAY_CONSTEXPR constexpr
