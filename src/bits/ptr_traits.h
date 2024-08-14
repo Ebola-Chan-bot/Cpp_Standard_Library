@@ -1,5 +1,4 @@
 #pragma once
-#ifdef ARDUINO_ARCH_AVR
 // Pointer Traits -*- C++ -*-
 
 // Copyright (C) 2011-2024 Free Software Foundation, Inc.
@@ -29,18 +28,21 @@
  *  Do not attempt to use it directly. @headername{memory}
  */
 
-#ifndef _PTR_TRAITS_H
-#define _PTR_TRAITS_H 1
-
 #if __cplusplus >= 201103L
-
+#ifdef ARDUINO_ARCH_AVR
 #include <bits/move.h>
 
 #if __cplusplus > 201703L
 #include <concepts>
 namespace __gnu_debug { struct _Safe_iterator_base; }
 #endif
-
+#endif
+#ifdef ARDUINO_ARCH_SAM
+#include <bits/c++config.h>
+#endif
+#ifdef ARDUINO_ARCH_ESP32
+#include_next <bits/ptr_traits.h>
+#else
 namespace std _GLIBCXX_VISIBILITY(default)
 {
 _GLIBCXX_BEGIN_NAMESPACE_VERSION
@@ -70,7 +72,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
            typename _Tp, typename... _Types>
     struct __replace_first_arg<_SomeTemplate<_Tp, _Types...>, _Up>
     { using type = _SomeTemplate<_Up, _Types...>; };
-
+#ifdef ARDUINO_ARCH_AVR
   // Detect the element type of a pointer-like type.
   template<typename _Ptr, typename = void>
     struct __ptr_traits_elem : __get_first_arg<_Ptr>
@@ -262,13 +264,8 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     { return std::to_address(__ptr); }
   /// @endcond
 #endif // __glibcxx_to_address
-
+#endif
 _GLIBCXX_END_NAMESPACE_VERSION
 } // namespace std
-
 #endif
-
-#endif
-#else
-#include_next<bits/ptr_traits.h>
 #endif

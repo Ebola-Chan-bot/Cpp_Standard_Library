@@ -1,4 +1,6 @@
-#ifdef ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
+//SAM架构自带unordered_set，但不支持contains，所以覆盖掉
+
 // unordered_set implementation -*- C++ -*-
 
 // Copyright (C) 2010-2024 Free Software Foundation, Inc.
@@ -702,7 +704,6 @@ _GLIBCXX_BEGIN_NAMESPACE_CONTAINER
 #endif
       ///@}
 
-#if __cplusplus > 201703L
       ///@{
       /**
        *  @brief  Finds whether an element with the given key exists.
@@ -719,7 +720,6 @@ _GLIBCXX_BEGIN_NAMESPACE_CONTAINER
 	-> decltype(_M_h._M_find_tr(__k), void(), true)
 	{ return _M_h._M_find_tr(__k) != _M_h.end(); }
       ///@}
-#endif
 
       ///@{
       /**

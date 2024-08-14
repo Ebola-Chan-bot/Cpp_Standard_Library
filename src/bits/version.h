@@ -1388,7 +1388,7 @@
 #undef __glibcxx_want_erase_if
 
 #if !defined(__cpp_lib_generic_unordered_lookup)
-#if (__cplusplus >= 202002L) && _GLIBCXX_HOSTED
+#if (__cplusplus >= 202002L) && _GLIBCXX_HOSTED || !defined ARDUINO_ARCH_ESP32
 #define __glibcxx_generic_unordered_lookup 201811L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_generic_unordered_lookup)
 #define __cpp_lib_generic_unordered_lookup 201811L
