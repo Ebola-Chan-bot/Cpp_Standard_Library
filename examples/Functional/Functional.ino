@@ -27,6 +27,7 @@ void setup() {
   };
   std::dynarray<int> D(std::log2(1024));
   std::unordered_map<int, std::move_only_function<void()>> UIF;
+  bool A = IdleTasks.contains(nullptr);
   UIF[1] = []() {};
 #if __cpp_exceptions
   try {

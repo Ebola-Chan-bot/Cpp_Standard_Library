@@ -58,7 +58,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstdlib>
 #include <memory>
 #include <limits>
-#include <yvals_core.h>//ESP32在上述头文件中未包含此头文件
+#include <yvals_core.h> //ESP32在上述头文件中未包含此头文件
 
 #if __cplusplus >= 202002L || (defined(_MSVC_LANG) && (_MSVC_LANG >= 202002L))
 #define CPP20_DYNARRAY_CONSTEXPR constexpr
@@ -872,6 +872,17 @@ namespace std
 	}
 
 	template <typename T>
+	static inline CPP20_DYNARRAY_CONSTEXPR enable_if_t<!is_same<T, typename std::internal_impl::inner_type<T>::value_type>::value> _copy_array(T &current, const T &other)
+	{
+		current.copy_array(other);
+	}
+	template <typename T>
+	static inline CPP20_DYNARRAY_CONSTEXPR enable_if_t<is_same<T, typename std::internal_impl::inner_type<T>::value_type>::value> _copy_array(T &current, const T &other)
+	{
+		current = other;
+	}
+
+	template <typename T>
 	inline CPP20_DYNARRAY_CONSTEXPR void
 	dynarray<T>::copy_array(const dynarray &other)
 	{
@@ -881,13 +892,7 @@ namespace std
 
 		current_dimension_array_data = std::make_unique<T[]>(current_dimension_array_size);
 		for (size_type i = 0; i < current_dimension_array_size; ++i)
-		{
-			if _CONSTEXPR14 ()
-				(_STRUCT14VALUE_V(is_same, T, internal_value_type))
-					current_dimension_array_data[i] = other.current_dimension_array_data[i];
-			else
-				current_dimension_array_data[i].copy_array(other.current_dimension_array_data[i]);
-		}
+			_copy_array(current_dimension_array_data[i], other.current_dimension_array_data[i]);
 	}
 
 	template <typename T>
@@ -906,13 +911,7 @@ namespace std
 		current_dimension_array_data = std::make_unique<T[]>(current_dimension_array_size);
 		InputIterator other = other_begin;
 		for (size_type i = 0; i < current_dimension_array_size; ++i, ++other)
-		{
-			if _CONSTEXPR14 ()
-				(_STRUCT14VALUE_V(is_same, T, internal_value_type))
-					current_dimension_array_data[i] = *other;
-			else
-				current_dimension_array_data[i].copy_array(*other);
-		}
+			_copy_array(current_dimension_array_data[i], *other);
 	}
 
 	template <typename T>
