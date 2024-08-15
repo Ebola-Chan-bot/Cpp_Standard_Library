@@ -1,5 +1,7 @@
 #pragma once
-#ifdef ARDUINO_ARCH_AVR
+#ifdef ARDUINO_ARCH_ESP32
+#include_next <exception_defines.h>
+#else
 // -fno-exceptions Support -*- C++ -*-
 
 // Copyright (C) 2001-2024 Free Software Foundation, Inc.
@@ -45,6 +47,4 @@
 #endif
 
 #endif
-#else
-#include_next <exception_defines.h>
 #endif

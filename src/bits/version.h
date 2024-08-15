@@ -234,7 +234,7 @@
 #undef __glibcxx_want_transformation_trait_aliases
 
 #if !defined(__cpp_lib_transparent_operators)
-#if (__cplusplus >= 201402L)
+#if (__cplusplus >= 201402L) || !defined ARDUINO_ARCH_ESP32
 #define __glibcxx_transparent_operators 201510L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_transparent_operators)
 #define __cpp_lib_transparent_operators 201510L

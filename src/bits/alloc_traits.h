@@ -28,6 +28,7 @@
  *  Do not attempt to use it directly. @headername{memory}
  */
 #ifdef ARDUINO_ARCH_AVR
+#include <bits/ptr_traits.h>
 #include <bits/stl_construct.h>
 #if __cplusplus >= 201103L
 #include <ext/numeric_traits.h>
@@ -44,9 +45,7 @@
 #ifdef ARDUINO_ARCH_SAM
 #include <bits/c++config.h>
 #endif
-#ifdef ARDUINO_ARCH_ESP32
-#else
-#include <bits/ptr_traits.h>
+#ifndef ARDUINO_ARCH_ESP32
 namespace std _GLIBCXX_VISIBILITY(default)
 {
   _GLIBCXX_BEGIN_NAMESPACE_VERSION

@@ -1,5 +1,5 @@
 #pragma once
-#ifdef ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
 // Aligned memory buffer -*- C++ -*-
 
 // Copyright (C) 2013-2024 Free Software Foundation, Inc.

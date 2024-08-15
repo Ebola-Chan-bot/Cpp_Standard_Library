@@ -1,4 +1,4 @@
-#ifdef ARDUINO_ARCH_AVR
+#pragma once
 // Functor implementations -*- C++ -*-
 
 // Copyright (C) 2001-2024 Free Software Foundation, Inc.
@@ -53,18 +53,24 @@
  *  This is an internal header file, included by other library headers.
  *  Do not attempt to use it directly. @headername{functional}
  */
-#ifndef _STL_FUNCTION_H
-#define _STL_FUNCTION_H 1
-
+#ifdef ARDUINO_ARCH_AVR
 #if __cplusplus > 201103L
 #include <bits/move.h>
 #endif
 #include <functional>
+#else
+#include_next <bits/stl_function.h>
+#endif
+#ifdef ARDUINO_ARCH_SAM
+#include <type_traits>
+#endif
+#ifndef ARDUINO_ARCH_ESP32
 namespace std _GLIBCXX_VISIBILITY(default)
 {
   _GLIBCXX_BEGIN_NAMESPACE_VERSION
   /** @}  */
-
+#endif
+#ifdef ARDUINO_ARCH_AVR
   // 20.3.2 arithmetic
 
   /** @defgroup arithmetic_functors Arithmetic Function Object Classes
@@ -94,8 +100,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   struct modulus<void>
   {
     template <typename _Tp, typename _Up>
-    _GLIBCXX14_CONSTEXPR
-    auto
+    _GLIBCXX14_CONSTEXPR auto
     operator()(_Tp &&__t, _Up &&__u) const
         noexcept(noexcept(std::forward<_Tp>(__t) % std::forward<_Up>(__u)))
             -> decltype(std::forward<_Tp>(__t) % std::forward<_Up>(__u))
@@ -111,8 +116,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   struct negate<void>
   {
     template <typename _Tp>
-    _GLIBCXX14_CONSTEXPR
-    auto
+    _GLIBCXX14_CONSTEXPR auto
     operator()(_Tp &&__t) const
         noexcept(noexcept(-std::forward<_Tp>(__t)))
             -> decltype(-std::forward<_Tp>(__t))
@@ -206,8 +210,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
   private:
     template <typename _Tp, typename _Up>
-    static constexpr decltype(auto)
-    _S_cmp(_Tp &&__t, _Up &&__u, false_type)
+    static constexpr auto
+    _S_cmp(_Tp &&__t, _Up &&__u, false_type) -> decltype(std::forward<_Tp>(__t) >= std::forward<_Up>(__u))
     {
       return std::forward<_Tp>(__t) >= std::forward<_Up>(__u);
     }
@@ -278,8 +282,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
   private:
     template <typename _Tp, typename _Up>
-    static constexpr decltype(auto)
-    _S_cmp(_Tp &&__t, _Up &&__u, false_type)
+    static constexpr auto
+    _S_cmp(_Tp &&__t, _Up &&__u, false_type) -> decltype(std::forward<_Tp>(__t) <= std::forward<_Up>(__u))
     {
       return std::forward<_Tp>(__t) <= std::forward<_Up>(__u);
     }
@@ -395,8 +399,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   struct bit_and<void>
   {
     template <typename _Tp, typename _Up>
-    _GLIBCXX14_CONSTEXPR
-    auto
+    _GLIBCXX14_CONSTEXPR auto
     operator()(_Tp &&__t, _Up &&__u) const
         noexcept(noexcept(std::forward<_Tp>(__t) & std::forward<_Up>(__u)))
             -> decltype(std::forward<_Tp>(__t) & std::forward<_Up>(__u))
@@ -411,8 +414,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   struct bit_or<void>
   {
     template <typename _Tp, typename _Up>
-    _GLIBCXX14_CONSTEXPR
-    auto
+    _GLIBCXX14_CONSTEXPR auto
     operator()(_Tp &&__t, _Up &&__u) const
         noexcept(noexcept(std::forward<_Tp>(__t) | std::forward<_Up>(__u)))
             -> decltype(std::forward<_Tp>(__t) | std::forward<_Up>(__u))
@@ -427,8 +429,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   struct bit_xor<void>
   {
     template <typename _Tp, typename _Up>
-    _GLIBCXX14_CONSTEXPR
-    auto
+    _GLIBCXX14_CONSTEXPR auto
     operator()(_Tp &&__t, _Up &&__u) const
         noexcept(noexcept(std::forward<_Tp>(__t) ^ std::forward<_Up>(__u)))
             -> decltype(std::forward<_Tp>(__t) ^ std::forward<_Up>(__u))
@@ -443,8 +444,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   struct bit_not<void>
   {
     template <typename _Tp>
-    _GLIBCXX14_CONSTEXPR
-    auto
+    _GLIBCXX14_CONSTEXPR auto
     operator()(_Tp &&__t) const
         noexcept(noexcept(~std::forward<_Tp>(__t)))
             -> decltype(~std::forward<_Tp>(__t))
@@ -532,7 +532,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
     }
   };
 #pragma GCC diagnostic pop
-
+#endif // ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
   /** @}  */
 
 #ifdef __glibcxx_transparent_operators // C++ >= 14
@@ -558,8 +559,4 @@ namespace std _GLIBCXX_VISIBILITY(default)
 #if (__cplusplus < 201103L) || _GLIBCXX_USE_DEPRECATED
 // # include <backward/binders.h>
 #endif
-
-#endif /* _STL_FUNCTION_H */
-#else
-#include_next <bits/stl_function.h>
 #endif

@@ -34,18 +34,21 @@
 
 #if __cplusplus > 201703L
 #include <concepts>
-namespace __gnu_debug { struct _Safe_iterator_base; }
+namespace __gnu_debug
+{
+  struct _Safe_iterator_base;
+}
 #endif
+#else
+#include_next <bits/ptr_traits.h>
 #endif
 #ifdef ARDUINO_ARCH_SAM
 #include <bits/c++config.h>
 #endif
-#ifdef ARDUINO_ARCH_ESP32
-#include_next <bits/ptr_traits.h>
-#else
+#ifndef ARDUINO_ARCH_ESP32
 namespace std _GLIBCXX_VISIBILITY(default)
 {
-_GLIBCXX_BEGIN_NAMESPACE_VERSION
+  _GLIBCXX_BEGIN_NAMESPACE_VERSION
 
   /// @cond undocumented
 
@@ -53,188 +56,213 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 
   // For a specialization `SomeTemplate<T, Types...>` the member `type` is T,
   // otherwise `type` is `__undefined`.
-  template<typename _Tp>
-    struct __get_first_arg
-    { using type = __undefined; };
+  template <typename _Tp>
+  struct __get_first_arg
+  {
+    using type = __undefined;
+  };
 
-  template<template<typename, typename...> class _SomeTemplate, typename _Tp,
-           typename... _Types>
-    struct __get_first_arg<_SomeTemplate<_Tp, _Types...>>
-    { using type = _Tp; };
+  template <template <typename, typename...> class _SomeTemplate, typename _Tp,
+            typename... _Types>
+  struct __get_first_arg<_SomeTemplate<_Tp, _Types...>>
+  {
+    using type = _Tp;
+  };
 
   // For a specialization `SomeTemplate<T, Args...>` and a type `U` the member
   // `type` is `SomeTemplate<U, Args...>`, otherwise there is no member `type`.
-  template<typename _Tp, typename _Up>
-    struct __replace_first_arg
-    { };
+  template <typename _Tp, typename _Up>
+  struct __replace_first_arg
+  {
+  };
 
-  template<template<typename, typename...> class _SomeTemplate, typename _Up,
-           typename _Tp, typename... _Types>
-    struct __replace_first_arg<_SomeTemplate<_Tp, _Types...>, _Up>
-    { using type = _SomeTemplate<_Up, _Types...>; };
+  template <template <typename, typename...> class _SomeTemplate, typename _Up,
+            typename _Tp, typename... _Types>
+  struct __replace_first_arg<_SomeTemplate<_Tp, _Types...>, _Up>
+  {
+    using type = _SomeTemplate<_Up, _Types...>;
+  };
+#endif
 #ifdef ARDUINO_ARCH_AVR
   // Detect the element type of a pointer-like type.
-  template<typename _Ptr, typename = void>
-    struct __ptr_traits_elem : __get_first_arg<_Ptr>
-    { };
+  template <typename _Ptr, typename = void>
+  struct __ptr_traits_elem : __get_first_arg<_Ptr>
+  {
+  };
 
   // Use _Ptr::element_type if is a valid type.
 #if __cpp_concepts
-  template<typename _Ptr> requires requires { typename _Ptr::element_type; }
-    struct __ptr_traits_elem<_Ptr, void>
-    { using type = typename _Ptr::element_type; };
+  template <typename _Ptr>
+    requires requires { typename _Ptr::element_type; }
+  struct __ptr_traits_elem<_Ptr, void>
+  {
+    using type = typename _Ptr::element_type;
+  };
 #else
-  template<typename _Ptr>
-    struct __ptr_traits_elem<_Ptr, __void_t<typename _Ptr::element_type>>
-    { using type = typename _Ptr::element_type; };
+  template <typename _Ptr>
+  struct __ptr_traits_elem<_Ptr, __void_t<typename _Ptr::element_type>>
+  {
+    using type = typename _Ptr::element_type;
+  };
 #endif
 
-  template<typename _Ptr>
-    using __ptr_traits_elem_t = typename __ptr_traits_elem<_Ptr>::type;
+  template <typename _Ptr>
+  using __ptr_traits_elem_t = typename __ptr_traits_elem<_Ptr>::type;
 
   /// @endcond
 
   // Define pointer_traits<P>::pointer_to.
-  template<typename _Ptr, typename _Elt, bool = is_void<_Elt>::value>
-    struct __ptr_traits_ptr_to
-    {
-      using pointer = _Ptr;
-      using element_type = _Elt;
+  template <typename _Ptr, typename _Elt, bool = is_void<_Elt>::value>
+  struct __ptr_traits_ptr_to
+  {
+    using pointer = _Ptr;
+    using element_type = _Elt;
 
-      /**
-       *  @brief  Obtain a pointer to an object
-       *  @param  __r  A reference to an object of type `element_type`
-       *  @return `pointer::pointer_to(__r)`
-       *  @pre `pointer::pointer_to(__r)` is a valid expression.
-      */
-      static pointer
-      pointer_to(element_type& __r)
+    /**
+     *  @brief  Obtain a pointer to an object
+     *  @param  __r  A reference to an object of type `element_type`
+     *  @return `pointer::pointer_to(__r)`
+     *  @pre `pointer::pointer_to(__r)` is a valid expression.
+     */
+    static pointer
+    pointer_to(element_type &__r)
 #if __cpp_lib_concepts
       requires requires {
-	{ pointer::pointer_to(__r) } -> convertible_to<pointer>;
+        { pointer::pointer_to(__r) } -> convertible_to<pointer>;
       }
 #endif
-      { return pointer::pointer_to(__r); }
-    };
+    {
+      return pointer::pointer_to(__r);
+    }
+  };
 
   // Do not define pointer_traits<P>::pointer_to if element type is void.
-  template<typename _Ptr, typename _Elt>
-    struct __ptr_traits_ptr_to<_Ptr, _Elt, true>
-    { };
+  template <typename _Ptr, typename _Elt>
+  struct __ptr_traits_ptr_to<_Ptr, _Elt, true>
+  {
+  };
 
   // Partial specialization defining pointer_traits<T*>::pointer_to(T&).
-  template<typename _Tp>
-    struct __ptr_traits_ptr_to<_Tp*, _Tp, false>
+  template <typename _Tp>
+  struct __ptr_traits_ptr_to<_Tp *, _Tp, false>
+  {
+    using pointer = _Tp *;
+    using element_type = _Tp;
+
+    /**
+     *  @brief  Obtain a pointer to an object
+     *  @param  __r  A reference to an object of type `element_type`
+     *  @return `addressof(__r)`
+     */
+    static _GLIBCXX20_CONSTEXPR pointer
+    pointer_to(element_type &__r) noexcept
     {
-      using pointer = _Tp*;
-      using element_type = _Tp;
+      return std::addressof(__r);
+    }
+  };
 
-      /**
-       *  @brief  Obtain a pointer to an object
-       *  @param  __r  A reference to an object of type `element_type`
-       *  @return `addressof(__r)`
-      */
-      static _GLIBCXX20_CONSTEXPR pointer
-      pointer_to(element_type& __r) noexcept
-      { return std::addressof(__r); }
-    };
+  template <typename _Ptr, typename _Elt>
+  struct __ptr_traits_impl : __ptr_traits_ptr_to<_Ptr, _Elt>
+  {
+  private:
+    template <typename _Tp>
+    using __diff_t = typename _Tp::difference_type;
 
-  template<typename _Ptr, typename _Elt>
-    struct __ptr_traits_impl : __ptr_traits_ptr_to<_Ptr, _Elt>
-    {
-    private:
-      template<typename _Tp>
-	using __diff_t = typename _Tp::difference_type;
+    template <typename _Tp, typename _Up>
+    using __rebind = __type_identity<typename _Tp::template rebind<_Up>>;
 
-      template<typename _Tp, typename _Up>
-	using __rebind = __type_identity<typename _Tp::template rebind<_Up>>;
+  public:
+    /// The pointer type.
+    using pointer = _Ptr;
 
-    public:
-      /// The pointer type.
-      using pointer = _Ptr;
+    /// The type pointed to.
+    using element_type = _Elt;
 
-      /// The type pointed to.
-      using element_type = _Elt;
+    /// The type used to represent the difference between two pointers.
+    using difference_type = __detected_or_t<ptrdiff_t, __diff_t, _Ptr>;
 
-      /// The type used to represent the difference between two pointers.
-      using difference_type = __detected_or_t<ptrdiff_t, __diff_t, _Ptr>;
-
-      /// A pointer to a different type.
-      template<typename _Up>
-	using rebind = typename __detected_or_t<__replace_first_arg<_Ptr, _Up>,
-						__rebind, _Ptr, _Up>::type;
-    };
+    /// A pointer to a different type.
+    template <typename _Up>
+    using rebind = typename __detected_or_t<__replace_first_arg<_Ptr, _Up>,
+                                            __rebind, _Ptr, _Up>::type;
+  };
 
   // _GLIBCXX_RESOLVE_LIB_DEFECTS
   // 3545. std::pointer_traits should be SFINAE-friendly
-  template<typename _Ptr>
-    struct __ptr_traits_impl<_Ptr, __undefined>
-    { };
+  template <typename _Ptr>
+  struct __ptr_traits_impl<_Ptr, __undefined>
+  {
+  };
 
   /**
    * @brief  Uniform interface to all pointer-like types
    * @headerfile memory
    * @ingroup pointer_abstractions
    * @since C++11
-  */
-  template<typename _Ptr>
-    struct pointer_traits : __ptr_traits_impl<_Ptr, __ptr_traits_elem_t<_Ptr>>
-    { };
+   */
+  template <typename _Ptr>
+  struct pointer_traits : __ptr_traits_impl<_Ptr, __ptr_traits_elem_t<_Ptr>>
+  {
+  };
 
   /**
    * @brief  Partial specialization for built-in pointers.
    * @headerfile memory
    * @ingroup pointer_abstractions
    * @since C++11
-  */
-  template<typename _Tp>
-    struct pointer_traits<_Tp*> : __ptr_traits_ptr_to<_Tp*, _Tp>
-    {
-      /// The pointer type
-      typedef _Tp* pointer;
-      /// The type pointed to
-      typedef _Tp  element_type;
-      /// Type used to represent the difference between two pointers
-      typedef ptrdiff_t difference_type;
-      /// A pointer to a different type.
-      template<typename _Up> using rebind = _Up*;
-    };
+   */
+  template <typename _Tp>
+  struct pointer_traits<_Tp *> : __ptr_traits_ptr_to<_Tp *, _Tp>
+  {
+    /// The pointer type
+    typedef _Tp *pointer;
+    /// The type pointed to
+    typedef _Tp element_type;
+    /// Type used to represent the difference between two pointers
+    typedef ptrdiff_t difference_type;
+    /// A pointer to a different type.
+    template <typename _Up>
+    using rebind = _Up *;
+  };
 
   /// Convenience alias for rebinding pointers.
-  template<typename _Ptr, typename _Tp>
-    using __ptr_rebind = typename pointer_traits<_Ptr>::template rebind<_Tp>;
-
+  template <typename _Ptr, typename _Tp>
+  using __ptr_rebind = typename pointer_traits<_Ptr>::template rebind<_Tp>;
+#endif // ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
 #ifndef __glibcxx_to_address // C++ < 20
-  template<typename _Tp>
-    [[__gnu__::__always_inline__]]
-    constexpr _Tp*
-    __to_address(_Tp* __ptr) noexcept
-    {
-      static_assert(!std::is_function<_Tp>::value, "std::to_address argument "
-		    "must not be a function pointer");
-      return __ptr;
-    }
+  template <typename _Tp>
+  [[__gnu__::__always_inline__]]
+  constexpr _Tp *
+  __to_address(_Tp *__ptr) noexcept
+  {
+    static_assert(!std::is_function<_Tp>::value, "std::to_address argument "
+                                                 "must not be a function pointer");
+    return __ptr;
+  }
 
-  template<typename _Ptr>
-    constexpr typename std::pointer_traits<_Ptr>::element_type*
-    __to_address(const _Ptr& __ptr)
-    { return std::__to_address(__ptr.operator->()); }
+  template <typename _Ptr>
+  constexpr typename std::pointer_traits<_Ptr>::element_type *
+  __to_address(const _Ptr &__ptr)
+  {
+    return std::__to_address(__ptr.operator->());
+  }
 #else
   /**
    * @brief Obtain address referenced by a pointer to an object
    * @param __ptr A pointer to an object
    * @return @c __ptr
    * @ingroup pointer_abstractions
-  */
-  template<typename _Tp>
-    [[__gnu__::__always_inline__]]
-    constexpr _Tp*
-    to_address(_Tp* __ptr) noexcept
-    {
-      static_assert(!is_function_v<_Tp>, "std::to_address argument "
-		    "must not be a function pointer");
-      return __ptr;
-    }
+   */
+  template <typename _Tp>
+  [[__gnu__::__always_inline__]]
+  constexpr _Tp *
+  to_address(_Tp *__ptr) noexcept
+  {
+    static_assert(!is_function_v<_Tp>, "std::to_address argument "
+                                       "must not be a function pointer");
+    return __ptr;
+  }
 
   /**
    * @brief Obtain address referenced by a pointer to an object
@@ -243,29 +271,31 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
              well-formed, otherwise @c to_address(__ptr.operator->())
    * @ingroup pointer_abstractions
   */
-  template<typename _Ptr>
-    constexpr auto
-    to_address(const _Ptr& __ptr) noexcept
-    {
-      if constexpr (requires { pointer_traits<_Ptr>::to_address(__ptr); })
-	return pointer_traits<_Ptr>::to_address(__ptr);
-      else if constexpr (is_base_of_v<__gnu_debug::_Safe_iterator_base, _Ptr>)
-	return std::to_address(__ptr.base().operator->());
-      else
-	return std::to_address(__ptr.operator->());
-    }
+  template <typename _Ptr>
+  constexpr auto
+  to_address(const _Ptr &__ptr) noexcept
+  {
+    if constexpr (requires { pointer_traits<_Ptr>::to_address(__ptr); })
+      return pointer_traits<_Ptr>::to_address(__ptr);
+    else if constexpr (is_base_of_v<__gnu_debug::_Safe_iterator_base, _Ptr>)
+      return std::to_address(__ptr.base().operator->());
+    else
+      return std::to_address(__ptr.operator->());
+  }
 
   /// @cond undocumented
   /// Compatibility for use in code that is also compiled as pre-C++20.
-  template<typename _Ptr>
-    [[__gnu__::__always_inline__]]
-    constexpr auto
-    __to_address(const _Ptr& __ptr) noexcept
-    { return std::to_address(__ptr); }
+  template <typename _Ptr>
+  [[__gnu__::__always_inline__]]
+  constexpr auto
+  __to_address(const _Ptr &__ptr) noexcept
+  {
+    return std::to_address(__ptr);
+  }
   /// @endcond
 #endif // __glibcxx_to_address
-#endif
-_GLIBCXX_END_NAMESPACE_VERSION
+
+  _GLIBCXX_END_NAMESPACE_VERSION
 } // namespace std
 #endif
 #endif

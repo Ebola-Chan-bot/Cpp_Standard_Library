@@ -1,4 +1,8 @@
 #pragma once
+#ifdef ARDUINO_ARCH_ESP32
+#include_next <bits/hashtable_policy.h>
+#else
+//_Hashtable_base在SAM平台缺少必要的无参构造，只能也覆盖掉
 // Internal policy header for unordered_set and unordered_map -*- C++ -*-
 
 // Copyright (C) 2010-2024 Free Software Foundation, Inc.
@@ -29,21 +33,18 @@
  *  @headername{unordered_map,unordered_set}
  */
 
-#ifdef ARDUINO_ARCH_AVR
 #include <tuple>                  // for std::tuple, std::forward_as_tuple
 #include <bits/functional_hash.h> // for __is_fast_hash
 #include <bits/stl_algobase.h>    // for std::min, std::is_permutation.
-#include <ext/aligned_buffer.h>   // for __gnu_cxx::__aligned_buffer
 #include <ext/alloc_traits.h>     // for std::__alloc_rebind
 #include <ext/numeric_traits.h>   // for __gnu_cxx::__int_traits
 #include <utility>
 #include <iterator_base>
 #include <exception_defines.h>
-#else
-#include_next <bits/hashtable_policy.h>
+#include <ext/aligned_buffer.h>   // for __gnu_cxx::__aligned_buffer
 #endif
 #ifdef ARDUINO_ARCH_SAM
-#include <bits/alloc_traits.h>
+#include <bits/algorithmfwd.h>
 #endif
 #ifndef ARDUINO_ARCH_ESP32
 namespace std _GLIBCXX_VISIBILITY(default)
@@ -58,7 +59,6 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
   namespace __detail
   {
-#ifdef ARDUINO_ARCH_AVR
     /**
      *  @defgroup hashtable-detail Base and Implementation Classes
      *  @ingroup unordered_associative_containers
@@ -2060,7 +2060,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
       }
       return true;
     }
-#endif
+
     /**
      * This type deals with all allocation and keeps an allocator instance
      * through inheritance to benefit from EBO when possible.

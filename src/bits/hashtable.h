@@ -342,17 +342,10 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
       static_assert(is_nothrow_default_constructible<_RangeHash>::value,
 		    "Functor used to map hash code to bucket index"
 		    " must be nothrow default constructible");
-      static_assert(noexcept(
-	std::declval<const _RangeHash&>()((std::size_t)0, (std::size_t)0)),
-		    "Functor used to map hash code to bucket index must be"
-		    " noexcept");
 
       // To compute bucket index we also need _ExtratKey not to throw.
       static_assert(is_nothrow_default_constructible<_ExtractKey>::value,
 		    "_ExtractKey must be nothrow default constructible");
-      static_assert(noexcept(
-	std::declval<const _ExtractKey&>()(std::declval<_Value>())),
-		    "_ExtractKey functor must be noexcept invocable");
 
       template<typename _Keya, typename _Valuea, typename _Alloca,
 	       typename _ExtractKeya, typename _Equala,
@@ -1763,7 +1756,6 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
       return const_iterator(_M_find_node(__bkt, __k, __code));
     }
 
-#if __cplusplus > 201703L
   template<typename _Key, typename _Value, typename _Alloc,
 	   typename _ExtractKey, typename _Equal,
 	   typename _Hash, typename _RangeHash, typename _Unused,
@@ -1811,7 +1803,6 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 	std::size_t __bkt = _M_bucket_index(__code);
 	return const_iterator(_M_find_node_tr(__bkt, __k, __code));
       }
-#endif
 
   template<typename _Key, typename _Value, typename _Alloc,
 	   typename _ExtractKey, typename _Equal,

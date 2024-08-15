@@ -3108,7 +3108,8 @@ namespace std
     template <typename...>
     using void_t = void;
 #endif
-
+#endif // ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
     /// @cond undocumented
 
     // Detection idiom.
@@ -3160,8 +3161,6 @@ namespace std
               typename... _Args>
     using __detected_or_t = typename __detected_or<_Default, _Op, _Args...>::type;
     // 2771
-#endif // ARDUINO_ARCH_AVR
-#ifndef ARDUINO_ARCH_ESP32
     // 2785
     template <typename _Tp>
     struct __is_swappable;
