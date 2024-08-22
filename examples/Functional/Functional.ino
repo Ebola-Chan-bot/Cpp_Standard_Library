@@ -12,6 +12,7 @@
 #include <queue>
 #include <unordered_set>
 std::map<uint8_t, std::move_only_function<void(std::dynarray<char> &&) const>> ListeningPorts;
+std::unordered_map<uint8_t, std::move_only_function<void(std::dynarray<char> &&) const>> UListeningPorts;
 std::queue<std::dynarray<char>> MessageQueue;
 std::unordered_set<const std::function<void()> *> IdleTasks;
 void Translate(std::chrono::hours H) {
@@ -29,6 +30,7 @@ void setup() {
   std::unordered_map<int, std::move_only_function<void()>> UIF;
   bool A = IdleTasks.contains(nullptr);
   bool B = ListeningPorts.contains(0);
+  bool C = UListeningPorts.contains(0);
   UIF[1] = []() {};
 #if __cpp_exceptions
   try {

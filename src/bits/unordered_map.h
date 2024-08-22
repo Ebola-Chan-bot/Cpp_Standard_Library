@@ -1,5 +1,7 @@
 #pragma once
-#ifdef ARDUINO_ARCH_AVR
+#ifdef ARDUINO_ARCH_ESP32
+#include_next <bits/unordered_map.h>
+#else
 // unordered_map implementation -*- C++ -*-
 
 // Copyright (C) 2010-2024 Free Software Foundation, Inc.
@@ -918,7 +920,6 @@ _GLIBCXX_BEGIN_NAMESPACE_CONTAINER
 #endif
       ///@}
 
-#if __cplusplus > 201703L
       ///@{
       /**
        *  @brief  Finds whether an element with the given key exists.
@@ -935,7 +936,6 @@ _GLIBCXX_BEGIN_NAMESPACE_CONTAINER
 	-> decltype(_M_h._M_find_tr(__x), void(), true)
 	{ return _M_h._M_find_tr(__x) != _M_h.end(); }
       ///@}
-#endif
 
       ///@{
       /**
@@ -1271,6 +1271,4 @@ _GLIBCXX_END_NAMESPACE_VERSION
 } // namespace std
 
 #endif /* _UNORDERED_MAP_H */
-#else
-#include_next <bits/unordered_map.h>
 #endif
