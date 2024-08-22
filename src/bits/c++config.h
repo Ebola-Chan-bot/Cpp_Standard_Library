@@ -1,11 +1,12 @@
 #pragma once
 #ifdef ARDUINO_ARCH_ESP32
 #include_next <bits/c++config.h>
-#else
+#endif
 #ifdef ARDUINO_ARCH_SAM
 #include <arm-none-eabi/bits/c++config.h>
 #define _GLIBCXX_EXTERN_TEMPLATE 0
 #endif
+#ifndef ARDUINO_ARCH_ESP32
 #include "../__config"
 // 一些GCC特定版本才支持的定义
 #define __unlikely__
@@ -86,7 +87,23 @@
 #define _GLIBCXX_NODISCARD
 #endif
 // 157
+// 222
+//  Macro for noexcept, to support in mixed 03/0x mode.
+#if !defined _GLIBCXX_NOEXCEPT || defined ARDUINO_ARCH_SAM // SAM定义了这个，但是没定义_GLIBCXX_NOEXCEPT_IF
+#if __cplusplus >= 201103L
+#define _GLIBCXX_NOEXCEPT noexcept
+#define _GLIBCXX_NOEXCEPT_IF(...) noexcept(__VA_ARGS__)
+#define _GLIBCXX_USE_NOEXCEPT noexcept
+#define _GLIBCXX_THROW(_EXC)
+#else
+#define _GLIBCXX_NOEXCEPT
+#define _GLIBCXX_NOEXCEPT_IF(...)
+#define _GLIBCXX_USE_NOEXCEPT throw()
+#define _GLIBCXX_THROW(_EXC) throw(_EXC)
 #endif
+#endif
+// 237
+#endif //! ARDUINO_ARCH_ESP32
 // 830
 #ifdef __has_builtin
 #ifdef __is_identifier
@@ -151,7 +168,13 @@
 #define _GLIBCXX_VISIBILITY(V) _GLIBCXX_PSEUDO_VISIBILITY(V)
 #endif
 // 76
-// 159
+// 155
+// Macros for ABI tag attributes.
+#ifndef _GLIBCXX_ABI_TAG_CXX11
+#define _GLIBCXX_ABI_TAG_CXX11 __attribute((__abi_tag__("cxx11")))
+#endif
+// 160
+//  159
 #if __cplusplus
 
 // Macro for constexpr, to support in mixed 03/0x mode.
@@ -166,26 +189,11 @@
 #endif
 #endif
 // 172
-// 210
-//  Macro for noexcept, to support in mixed 03/0x mode.
-#ifndef _GLIBCXX_NOEXCEPT
-#if __cplusplus >= 201103L
-#define _GLIBCXX_NOEXCEPT noexcept
-#define _GLIBCXX_NOEXCEPT_IF(...) noexcept(__VA_ARGS__)
-#define _GLIBCXX_USE_NOEXCEPT noexcept
-#define _GLIBCXX_THROW(_EXC)
-#else
-#define _GLIBCXX_NOEXCEPT
-#define _GLIBCXX_NOEXCEPT_IF(...)
-#define _GLIBCXX_USE_NOEXCEPT throw()
-#define _GLIBCXX_THROW(_EXC) throw(_EXC)
-#endif
-#endif
-
+// 237
 #ifndef _GLIBCXX_NOTHROW
 #define _GLIBCXX_NOTHROW _GLIBCXX_USE_NOEXCEPT
 #endif
-// 229
+// 241
 //  357
 //   Non-zero if inline namespaces are used for versioning the entire library.
 #define _GLIBCXX_INLINE_VERSION 0

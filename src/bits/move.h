@@ -184,8 +184,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
     __obj = std::forward<_Up>(__new_val);
     return __old_val;
   }
-#endif
-#ifdef ARDUINO_ARCH_AVR
+  
   /// @} group utilities
 
 #define _GLIBCXX_FWDREF(_Tp) _Tp &&
