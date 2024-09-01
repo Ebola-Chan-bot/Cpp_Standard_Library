@@ -19,7 +19,6 @@
 #include <iterator>
 #include <functional>
 #include <xutility>
-#include <bits/stl_algo.h>
 // Elliminate any previously defined macro
 #undef min
 #undef max
@@ -1926,7 +1925,7 @@ namespace std
 		}
 	}
 }
-
+#include <bits/stl_algo.h>
 #pragma GCC visibility pop
 #else
 #include_next <algorithm>

@@ -252,8 +252,8 @@ namespace std
 			return !(x.backing == backing);
 		}
 
-	protected:
 		void swap(__base_associative &x);
+	protected:
 
 		Compare c;
 		std::list<value_type> backing;

@@ -64,6 +64,7 @@
 #pragma GCC system_header
 
 #include <bits/stl_algobase.h>
+#include <algorithm>
 #include <bits/allocator.h>
 #include <bits/stl_function.h>
 #include <bits/cpp_type_traits.h>

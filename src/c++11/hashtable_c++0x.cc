@@ -32,6 +32,7 @@
 #include <ext/alloc_traits.h>
 #include <bits/functional_hash.h>
 #include <bits/hashtable_policy.h>
+#include <algorithm>
 
 namespace std _GLIBCXX_VISIBILITY(default)
 {

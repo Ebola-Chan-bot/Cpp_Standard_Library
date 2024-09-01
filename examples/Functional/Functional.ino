@@ -32,6 +32,9 @@ void setup() {
   bool B = ListeningPorts.contains(0);
   bool C = UListeningPorts.contains(0);
   UIF[1] = []() {};
+  std::queue<std::move_only_function<void()>> QF;
+  QF.emplace([]() {});
+  QF.pop();
 #if __cpp_exceptions
   try {
     throw 0;

@@ -1,5 +1,6 @@
 #pragma once
 #ifndef ARDUINO_ARCH_ESP32
+#undef max
 // hashtable.h header -*- C++ -*-
 
 // Copyright (C) 2007-2024 Free Software Foundation, Inc.

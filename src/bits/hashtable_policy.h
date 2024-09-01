@@ -40,8 +40,10 @@
 #include <ext/numeric_traits.h>   // for __gnu_cxx::__int_traits
 #include <utility>
 #include <iterator_base>
-#include <exception_defines.h>
 #include <ext/aligned_buffer.h>   // for __gnu_cxx::__aligned_buffer
+#endif
+#ifdef ARDUINO_ARCH_AVR
+#include <bits/exception_defines.h>
 #endif
 #ifdef ARDUINO_ARCH_SAM
 #include <bits/algorithmfwd.h>

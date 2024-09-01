@@ -438,7 +438,6 @@ namespace std
 			randomSeed(S);
 		}
 	};
-#ifndef ARDUINO_ARCH_AVR
 #ifdef ARDUINO_ARCH_SAM
 	// 基于TRNG的真随机数生成器
 	struct TrueUrng
@@ -452,7 +451,7 @@ namespace std
 		{
 			return (numeric_limits<result_type>::min)();
 		};
-		//第一次调用此方法会自动在PMC中启用ID_TRNG时钟，并设置TRNG_CR中的标志位。如果以后这些设置被其它代码更改，此方法将永不返回。
+		// 第一次调用此方法会自动在PMC中启用ID_TRNG时钟，并设置TRNG_CR中的标志位。如果以后这些设置被其它代码更改，此方法将永不返回。
 		result_type operator()() const
 		{
 			static bool Initialized = []()
@@ -467,6 +466,8 @@ namespace std
 			return TRNG->TRNG_ODATA;
 		}
 	};
+#undef min
+#undef max
 #endif
 #ifdef ARDUINO_ARCH_ESP32
 	// 基于esp_random的真随机数生成器
@@ -487,6 +488,5 @@ namespace std
 			return esp_random();
 		}
 	};
-#endif
 #endif
 }

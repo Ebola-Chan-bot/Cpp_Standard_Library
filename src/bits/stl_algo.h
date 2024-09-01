@@ -59,6 +59,7 @@
 #define _STL_ALGO_H 1
 
 #include <bits/stl_algobase.h>
+#include <algorithm>
 
 #if __cplusplus >= 201103L
 #include <bits/uniform_int_dist.h>
