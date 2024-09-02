@@ -541,7 +541,7 @@ namespace std
 #include <bits/std_function.h> // std::function
 #endif
 #if _GLIBCXX_HOSTED
-# include <bits/move_only_function.h>
+#include <bits/move_only_function.h>
 #endif
 // These are SGI extensions which are checked for by some conformance checks.  They
 //  are *NOT* part of the C++ standard, however
@@ -600,3 +600,37 @@ compose2(const Op1 &fn1, const Op2 &fn2, const Op3 &fn3)
 #ifndef ARDUINO_ARCH_ESP32
 #include <bits/move_only_function.h>
 #endif
+namespace std
+{
+	// 主模板，同时也是针对可调用对象（包括lambda）的特化
+	template <typename T>
+	struct _FunctionSignature : _FunctionSignature<decltype(&T::operator())>
+	{
+	};
+	// 针对函数指针的特化
+	template <typename ReturnType, typename... Args>
+	struct _FunctionSignature<ReturnType (*)(Args...)>
+	{
+		using type = ReturnType(Args...);
+	};
+	// 针对成员函数指针的特化
+	template <typename ReturnType, typename ClassType, typename... Args>
+	struct _FunctionSignature<ReturnType (ClassType::*)(Args...)>
+	{
+		using type = ReturnType(Args...);
+	};
+	// 针对const成员函数指针的特化
+	template <typename ReturnType, typename ClassType, typename... Args>
+	struct _FunctionSignature<ReturnType (ClassType::*)(Args...) const>
+	{
+		using type = ReturnType(Args...);
+	};
+
+	//非标准扩展，为function和move_only_function提供推断指引
+	template <typename T>
+	function(T)->function<typename _FunctionSignature<T>::type>;
+	template <typename T>
+	move_only_function(T)->move_only_function<typename _FunctionSignature<T>::type>;
+	template <typename T>
+	move_only_function(const T)->move_only_function<const typename _FunctionSignature<T>::type>;
+}
