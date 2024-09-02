@@ -22,6 +22,7 @@
 #define __glibcxx_want_is_null_pointer
 #define __glibcxx_want_is_swappable
 #define __glibcxx_want_logical_traits
+#define __glibcxx_want_remove_cvref
 #define __glibcxx_want_transformation_trait_aliases
 #define __glibcxx_want_type_trait_variable_templates
 #include <bits/version.h>
@@ -3933,6 +3934,35 @@ namespace std
 #endif
 #endif // __cpp_lib_bounded_array_traits
 // 3681
+//3696
+  /** * Remove references and cv-qualifiers.
+   * @since C++20
+   * @{
+   */
+#ifdef __cpp_lib_remove_cvref // C++ >= 20
+# if _GLIBCXX_USE_BUILTIN_TRAIT(__remove_cvref)
+  template<typename _Tp>
+    struct remove_cvref
+    { using type = __remove_cvref(_Tp); };
+# else
+  template<typename _Tp>
+    struct remove_cvref
+    { using type = typename remove_cv<_Tp>::type; };
+
+  template<typename _Tp>
+    struct remove_cvref<_Tp&>
+    { using type = typename remove_cv<_Tp>::type; };
+
+  template<typename _Tp>
+    struct remove_cvref<_Tp&&>
+    { using type = typename remove_cv<_Tp>::type; };
+# endif
+
+  template<typename _Tp>
+    using remove_cvref_t = typename remove_cvref<_Tp>::type;
+  /// @}
+#endif // __cpp_lib_remove_cvref
+//3724
 #endif
 }
 #pragma GCC visibility pop

@@ -1058,7 +1058,7 @@
 #undef __glibcxx_want_make_obj_using_allocator
 
 #if !defined(__cpp_lib_remove_cvref)
-#if (__cplusplus >= 202002L)
+#if __cplusplus >= 202002L || !defined ARDUINO_ARCH_ESP32
 #define __glibcxx_remove_cvref 201711L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_remove_cvref)
 #define __cpp_lib_remove_cvref 201711L
