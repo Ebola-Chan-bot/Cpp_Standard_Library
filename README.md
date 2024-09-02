@@ -1,5 +1,3 @@
-*此README为v3.0.0将采用的文档，因为种种原因提前发出来了。在v3发布之前请查看 v2 Tag 中的README*
-
 因[原版ArduinoSTL](https://github.com/mike-matera/ArduinoSTL)作者长期不更新（202203~202212），本人将此分支发布到Arduino公开库，改名为Cpp_Standard_Library以示区分。
 
 本库试图在Arduino上实现C++11~17标准库（STL）的大部分功能。除了ArduinoSTL以外，本库部分功能实现还参考了MSVC、LLVM、boost和GCC。因为是按照STL做的接口，所以不需要另外撰写文档，你可以参考任何一个权威的STL文档。除非另有说明，否则本库的使用方法应该是一样的，如果不一样那应该就是个bug，欢迎提交Issue。
@@ -19,7 +17,7 @@
 - `<chrono> chrono::duration`
 - `<cmath> log2`
 - `<dynarray>` 曾经有望进入C++标准的废案。虽然最终没能进入，但作为`array`和`vector`的中间类型非常有用。
-- `<functional> std::function` 非标准行为：调用空对象时不做任何事。这是因为标准行为是应当抛出异常，但Arduino不支持异常。如果希望调用空对象时不做任何事，则可无需判断对象是否为空而直接调用。
+- `<functional>` 非标准行为：调用空对象时不做任何事。这是因为标准行为是应当抛出异常，但Arduino不支持异常。如果希望调用空对象时不做任何事，则可无需判断对象是否为空而直接调用。
 - `<iostream> cin cout endl` 使用`Serial`实现标准输入输出流。但是，使用前仍必须手动`Serial.begin`以设置波特率。不应在`setup`函数之前的全局变量初始化阶段使用`Serial`，因为在`setup`被调用之前无法保证`Serial`已完成初始化，此时使用`Serial`是未定义行为。此外测试发现，对于SAM架构，串口刚完成初始化后可能会发送一些随机字节，这似乎是硬件设计缺陷使然，软件层面无法解决，接收端必须要考虑到这个问题。
 - `<map>`
 - `<memory> unique_ptr make_unique`
