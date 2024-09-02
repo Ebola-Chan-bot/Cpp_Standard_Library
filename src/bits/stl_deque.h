@@ -1,5 +1,7 @@
 #pragma once
 #ifdef ARDUINO_ARCH_AVR
+#undef min
+#undef max
 // Deque implementation -*- C++ -*-
 
 // Copyright (C) 2001-2024 Free Software Foundation, Inc.
