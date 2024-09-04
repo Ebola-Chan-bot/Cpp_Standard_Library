@@ -40,6 +40,9 @@ void setup() {
     throw 0;
   } catch (int E) {}
 #endif
+#ifdef __cpp_deduction_guides
+  std::move_only_function DeductionTest([]() {});
+#endif
 }
 void loop() {
   FF();
