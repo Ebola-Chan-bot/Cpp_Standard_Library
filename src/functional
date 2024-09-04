@@ -627,11 +627,11 @@ namespace std
 	};
 	template <typename T>
 	using _FunctionSignature_t = typename _FunctionSignature<T>::type;
-	
+
 #ifdef __cpp_deduction_guides
 	// 非标准扩展，为function和move_only_function提供推断指引
 	template <typename T>
-	function(T) -> function<typename _FunctionSignature<T>::type>;
+	function(T) -> function<_FunctionSignature_t<T>::type>;
 	template <typename T>
 	move_only_function(T) -> move_only_function<_FunctionSignature_t<T> const>;
 #endif
