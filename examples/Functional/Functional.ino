@@ -11,10 +11,12 @@
 #include <map>
 #include <queue>
 #include <unordered_set>
+#include <set>
 std::map<uint8_t, std::move_only_function<void(std::dynarray<char> &&) const>> ListeningPorts;
 std::unordered_map<uint8_t, std::move_only_function<void(std::dynarray<char> &&) const>> UListeningPorts;
 std::queue<std::dynarray<char>> MessageQueue;
 std::unordered_set<const std::function<void()> *> IdleTasks;
+std::set<void *> PointerSet;
 void Translate(std::chrono::hours H) {
   std::cout << std::chrono::duration_cast<std::chrono::seconds>(H + H).count() << std::endl;
 }
@@ -43,6 +45,7 @@ void setup() {
 #ifdef __cpp_deduction_guides
   std::move_only_function DeductionTest([]() {});
 #endif
+  PointerSet.contains(nullptr);
 }
 void loop() {
   FF();
