@@ -1,7 +1,7 @@
 //此示例需要使用串口监视器呈现。先生成一个原始数组0123456789，然后根据用户输入的随机种子，不断产生随机排序。
 #include <Cpp_Standard_Library.h>
-#include <iostream>
 #include <random>
+#include <iostream>
 #include <algorithm>
 #include <utility>
 template<typename T>

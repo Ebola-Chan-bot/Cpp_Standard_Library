@@ -407,8 +407,8 @@ namespace std
 #else
 #include_next <random>
 #include <type_traits>
-#include <Arduino.h>
 #endif
+#include <Arduino.h>
 namespace std
 {
 	// 使用Arduino标准random函数的随机生成器

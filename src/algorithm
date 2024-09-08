@@ -451,14 +451,6 @@ namespace std
 		return result;
 	}
 
-	template <class T>
-	_UCXXEXPORT void swap(T &a, T &b)
-	{
-		T temp(a);
-		a = b;
-		b = temp;
-	}
-
 	template <class ForwardIterator1, class ForwardIterator2>
 	_UCXXEXPORT void
 	iter_swap(ForwardIterator1 a, ForwardIterator2 b)

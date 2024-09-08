@@ -1,6 +1,4 @@
-#ifdef ARDUINO_ARCH_ESP32
-#include_next <bits/stl_tree.h>
-#else
+#pragma once
 // RB tree implementation -*- C++ -*-
 
 // Copyright (C) 2001-2024 Free Software Foundation, Inc.
@@ -58,16 +56,21 @@
  *  Do not attempt to use it directly. @headername{map,set}
  */
 
-#ifndef _STL_TREE_H
-#define _STL_TREE_H 1
-
 #pragma GCC system_header
+#ifdef ARDUINO_ARCH_AVR
+#include <bits/exception_defines.h>
+#endif
+#ifdef ARDUINO_ARCH_SAM
+#include <bits/cpp_type_traits.h>
+#endif
+#ifdef ARDUINO_ARCH_ESP32
+#include_next <bits/stl_tree.h>
+#else
 
 #include <bits/stl_algobase.h>
 #include <algorithm>
 #include <bits/allocator.h>
 #include <bits/stl_function.h>
-#include <bits/cpp_type_traits.h>
 #include <ext/alloc_traits.h>
 #if __cplusplus >= 201103L
 #include <ext/aligned_buffer.h>
@@ -2737,6 +2740,4 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
   _GLIBCXX_END_NAMESPACE_VERSION
 } // namespace
-
-#endif
 #endif
