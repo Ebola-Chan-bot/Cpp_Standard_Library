@@ -125,14 +125,12 @@
 #define _GLIBCXX_USE_BUILTIN_TRAIT(BT) 0
 #endif
 
-#if __cplusplus >= 201402L
-#define CSL_GLIBCXX14_CONSTEXPR(Alternative) constexpr
+#if __cplusplus > 201400L
 #define _STRUCT14VALUE(StructValue, Arguments...) StructValue<Arguments>
 #define _STRUCT14VALUEV(StructValue, Arguments...) StructValue##v<Arguments>
 #define _STRUCT14VALUE_V(StructValue, Arguments...) StructValue##_v<Arguments>
 #else
 #define _GLIBCXX14_CONSTEXPR
-#define CSL_GLIBCXX14_CONSTEXPR(Alternative) Alternative
 #define _STRUCT14VALUE(StructValue, Arguments...) StructValue<Arguments>::value
 #define _STRUCT14VALUEV(StructValue, Arguments...) StructValue<Arguments>::value
 #define _STRUCT14VALUE_V(StructValue, Arguments...) StructValue<Arguments>::value

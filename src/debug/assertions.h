@@ -1,5 +1,7 @@
 #pragma once
-#ifdef ARDUINO_ARCH_AVR
+#ifdef ARDUINO_ARCH_ESP32
+#include_next <debug/assertions.h>
+#else
 // Debugging support implementation -*- C++ -*-
 
 // Copyright (C) 2003-2024 Free Software Foundation, Inc.
@@ -68,6 +70,4 @@
 #endif
 
 #endif // _GLIBCXX_DEBUG_ASSERTIONS
-#else
-#include_next <debug/assertions.h>
 #endif

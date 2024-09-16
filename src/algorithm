@@ -18,7 +18,6 @@
 */
 #include <iterator>
 #include <functional>
-#include <xutility>
 // Elliminate any previously defined macro
 #undef min
 #undef max

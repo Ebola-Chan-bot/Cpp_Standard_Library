@@ -319,7 +319,7 @@
 #undef __glibcxx_want_generic_associative_lookup
 
 #if !defined(__cpp_lib_make_unique)
-#if (__cplusplus >= 201402L) && _GLIBCXX_HOSTED
+#if (__cplusplus >= 201402L) && _GLIBCXX_HOSTED || defined ARDUINO_ARCH_SAM
 #define __glibcxx_make_unique 201304L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_make_unique)
 #define __cpp_lib_make_unique 201304L

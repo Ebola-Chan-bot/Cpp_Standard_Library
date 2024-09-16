@@ -213,26 +213,6 @@ namespace std
 			return const_reverse_iterator(begin());
 		}
 
-		_NODISCARD _CONSTEXPR20 const_iterator cbegin() const noexcept
-		{
-			return begin();
-		}
-
-		_NODISCARD _CONSTEXPR20 const_iterator cend() const noexcept
-		{
-			return end();
-		}
-
-		_NODISCARD _CONSTEXPR20 const_reverse_iterator crbegin() const noexcept
-		{
-			return rbegin();
-		}
-
-		_NODISCARD _CONSTEXPR20 const_reverse_iterator crend() const noexcept
-		{
-			return rend();
-		}
-
 		inline size_type size() const
 		{
 			return elements;

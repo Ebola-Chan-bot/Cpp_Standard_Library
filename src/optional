@@ -133,7 +133,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		~_Optional_payload_base() = default;
 
 		template <typename... _Args>
-		_CONSTEXPR14()
+		_GLIBCXX14_CONSTEXPR
 		_Optional_payload_base(in_place_t __tag, _Args &&...__args)
 			: _M_payload(__tag, std::forward<_Args>(__args)...),
 			  _M_engaged(true)
@@ -141,7 +141,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		}
 
 		template <typename _Up, typename... _Args>
-		_CONSTEXPR14()
+		_GLIBCXX14_CONSTEXPR
 		_Optional_payload_base(std::initializer_list<_Up> __il,
 							   _Args &&...__args)
 			: _M_payload(__il, std::forward<_Args>(__args)...),
@@ -151,7 +151,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 		// Constructor used by _Optional_base copy constructor when the
 		// contained value is not trivially copy constructible.
-		_CONSTEXPR14()
+		_GLIBCXX14_CONSTEXPR
 		_Optional_payload_base(bool /* __engaged */,
 							   const _Optional_payload_base &__other)
 		{
@@ -161,7 +161,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 		// Constructor used by _Optional_base move constructor when the
 		// contained value is not trivially move constructible.
-		_CONSTEXPR14()
+		_GLIBCXX14_CONSTEXPR
 		_Optional_payload_base(bool /* __engaged */,
 							   _Optional_payload_base &&__other)
 		{
@@ -184,7 +184,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		operator=(_Optional_payload_base &&) = default;
 
 		// used to perform non-trivial copy assignment.
-		_CONSTEXPR14()
+		_GLIBCXX14_CONSTEXPR
 		void _M_copy_assign(const _Optional_payload_base &__other)
 		{
 			if (this->_M_engaged && __other._M_engaged)
@@ -309,7 +309,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		bool _M_engaged = false;
 
 		template <typename... _Args>
-		_CONSTEXPR14() void
+		_GLIBCXX14_CONSTEXPR void
 		_M_construct(_Args &&...__args) noexcept(_STRUCT14VALUE_V(is_nothrow_constructible, _Stored_type, _Args...))
 		{
 			std::_Construct(std::__addressof(this->_M_payload._M_value),
@@ -317,7 +317,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 			this->_M_engaged = true;
 		}
 
-		_CONSTEXPR14() void
+		_GLIBCXX14_CONSTEXPR void
 		_M_destroy() noexcept
 		{
 			_M_engaged = false;
@@ -339,20 +339,20 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		// They exist to access the contained value with the appropriate
 		// const-qualification, because _M_payload has had the const removed.
 
-		_CONSTEXPR14()
+		_GLIBCXX14_CONSTEXPR
 		_Tp &_M_get() noexcept
 		{
 			return this->_M_payload._M_value;
 		}
 
-		_CONSTEXPR14()
+		_GLIBCXX14_CONSTEXPR
 		const _Tp &_M_get() const noexcept
 		{
 			return this->_M_payload._M_value;
 		}
 
 		// _M_reset is a 'safe' operation with no precondition.
-		_CONSTEXPR14()
+		_GLIBCXX14_CONSTEXPR
 		void _M_reset() noexcept
 		{
 			if (this->_M_engaged)
@@ -557,7 +557,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		// The _M_construct operation has !_M_engaged as a precondition
 		// while _M_destruct has _M_engaged as a precondition.
 		template <typename... _Args>
-		_CONSTEXPR14() void
+		_GLIBCXX14_CONSTEXPR void
 		_M_construct(_Args &&...__args) noexcept(_STRUCT14VALUE_V(is_nothrow_constructible, _Stored_type, _Args...))
 		{
 			_M_payload._M_construct(std::forward<_Args>(__args)...);
@@ -582,13 +582,13 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		}
 
 		// The _M_get operations have _M_engaged as a precondition.
-		_CONSTEXPR14()
+		_GLIBCXX14_CONSTEXPR
 		_Tp &_M_get() noexcept
 		{
 			return _M_payload._M_get();
 		}
 
-		_CONSTEXPR14()
+		_GLIBCXX14_CONSTEXPR
 		const _Tp &_M_get() const noexcept
 		{
 			return _M_payload._M_get();
@@ -641,13 +641,13 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		}
 
 		// The _M_get operations have _M_engaged as a precondition.
-		_CONSTEXPR14()
+		_GLIBCXX14_CONSTEXPR
 		_Tp &_M_get() noexcept
 		{
 			return static_cast<_Dp *>(this)->_M_payload._M_get();
 		}
 
-		_CONSTEXPR14()
+		_GLIBCXX14_CONSTEXPR
 		const _Tp &_M_get() const noexcept
 		{
 			return static_cast<const _Dp *>(this)->_M_payload._M_get();
@@ -973,7 +973,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 							is_constructible<_Tp, const _Up &>,
 							is_convertible<const _Up &, _Tp>,
 							__construct_from_contained_value<_Up>> = true>
-		_CONSTEXPR14()
+		_GLIBCXX14_CONSTEXPR
 		optional(const optional<_Up> &__t) noexcept(_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, const _Up &))
 		{
 			if (__t)
@@ -985,7 +985,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 							is_constructible<_Tp, const _Up &>,
 							__not_<is_convertible<const _Up &, _Tp>>,
 							__construct_from_contained_value<_Up>> = false>
-		explicit _CONSTEXPR14() optional(const optional<_Up> &__t) noexcept(_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, const _Up &))
+		explicit _GLIBCXX14_CONSTEXPR optional(const optional<_Up> &__t) noexcept(_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, const _Up &))
 		{
 			if (__t)
 				emplace(__t._M_get());
@@ -996,7 +996,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 							is_constructible<_Tp, _Up>,
 							is_convertible<_Up, _Tp>,
 							__construct_from_contained_value<_Up>> = true>
-		_CONSTEXPR14()
+		_GLIBCXX14_CONSTEXPR
 		optional(optional<_Up> &&__t) noexcept(_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, _Up))
 		{
 			if (__t)
@@ -1008,7 +1008,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 							is_constructible<_Tp, _Up>,
 							__not_<is_convertible<_Up, _Tp>>,
 							__construct_from_contained_value<_Up>> = false>
-		explicit _CONSTEXPR14() optional(optional<_Up> &&__t) noexcept(_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, _Up))
+		explicit _GLIBCXX14_CONSTEXPR optional(optional<_Up> &&__t) noexcept(_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, _Up))
 		{
 			if (__t)
 				emplace(std::move(__t._M_get()));
@@ -1160,7 +1160,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		}
 
 		// Observers.
-		_CONSTEXPR14()
+		_GLIBCXX14_CONSTEXPR
 		const _Tp *
 		operator->() const noexcept
 		{
@@ -1168,7 +1168,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 			return std::__addressof(this->_M_get());
 		}
 
-		_CONSTEXPR14()
+		_GLIBCXX14_CONSTEXPR
 		_Tp *
 		operator->() noexcept
 		{
@@ -1176,7 +1176,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 			return std::__addressof(this->_M_get());
 		}
 
-		_CONSTEXPR14()
+		_GLIBCXX14_CONSTEXPR
 		const _Tp &
 		operator*() const & noexcept
 		{
@@ -1184,7 +1184,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 			return this->_M_get();
 		}
 
-		_CONSTEXPR14()
+		_GLIBCXX14_CONSTEXPR
 		_Tp &
 		operator*() & noexcept
 		{
@@ -1192,7 +1192,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 			return this->_M_get();
 		}
 
-		_CONSTEXPR14()
+		_GLIBCXX14_CONSTEXPR
 		_Tp &&
 		operator*() && noexcept
 		{
@@ -1200,7 +1200,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 			return std::move(this->_M_get());
 		}
 
-		_CONSTEXPR14()
+		_GLIBCXX14_CONSTEXPR
 		const _Tp &&
 		operator*() const && noexcept
 		{
@@ -1218,7 +1218,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 			return this->_M_is_engaged();
 		}
 
-		_CONSTEXPR14()
+		_GLIBCXX14_CONSTEXPR
 		const _Tp &value() const &
 		{
 			if (this->_M_is_engaged())
@@ -1226,7 +1226,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 			__throw_bad_optional_access();
 		}
 
-		_CONSTEXPR14()
+		_GLIBCXX14_CONSTEXPR
 		_Tp &value() &
 		{
 			if (this->_M_is_engaged())
@@ -1234,7 +1234,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 			__throw_bad_optional_access();
 		}
 
-		_CONSTEXPR14()
+		_GLIBCXX14_CONSTEXPR
 		_Tp &&value() &&
 		{
 			if (this->_M_is_engaged())
@@ -1242,7 +1242,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 			__throw_bad_optional_access();
 		}
 
-		_CONSTEXPR14()
+		_GLIBCXX14_CONSTEXPR
 		const _Tp &&value() const &&
 		{
 			if (this->_M_is_engaged())

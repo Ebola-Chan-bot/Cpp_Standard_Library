@@ -52,13 +52,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #pragma once
-#include "new"
-#include "initializer_list"
+#include <new>
+#include <initializer_list>
 #include <stdexcept>
 #include <cstdlib>
 #include <memory>
 #include <limits>
-#include <yvals_core.h> //ESP32在上述头文件中未包含此头文件
 #ifdef ARDUINO_ARCH_AVR
 #include <bits/stl_algobase.h>
 #endif
@@ -471,7 +470,7 @@ namespace std
 		 */
 		CPP20_DYNARRAY_CONSTEXPR internal_pointer_type data() noexcept
 		{
-			if _CONSTEXPR14 ()
+			if _GLIBCXX14_CONSTEXPR
 				(_STRUCT14VALUE_V(is_same, T, internal_value_type)) return current_dimension_array_data.get();
 			else
 				return current_dimension_array_data[0].data();
@@ -487,7 +486,7 @@ namespace std
 		 */
 		CPP20_DYNARRAY_CONSTEXPR const internal_pointer_type data() const noexcept
 		{
-			if _CONSTEXPR14 ()
+			if _GLIBCXX14_CONSTEXPR
 				(_STRUCT14VALUE_V(is_same, T, internal_value_type)) return current_dimension_array_data.get();
 			else
 				return current_dimension_array_data[0].data();
@@ -750,7 +749,7 @@ namespace std
 	inline CPP20_DYNARRAY_CONSTEXPR typename dynarray<T>::size_type
 	dynarray<T>::expand_list(std::initializer_list<Ty> init)
 	{
-		if _CONSTEXPR14 ()
+		if _GLIBCXX14_CONSTEXPR
 			(_STRUCT14VALUE_V(is_same, T, internal_value_type))
 			{
 				return init.size();
@@ -769,7 +768,7 @@ namespace std
 	inline CPP20_DYNARRAY_CONSTEXPR typename dynarray<T>::size_type
 	dynarray<T>::expand_counts(size_type count, Args &&...args)
 	{
-		if _CONSTEXPR14 ()
+		if _GLIBCXX14_CONSTEXPR
 			(_STRUCT14VALUE_V(is_same, T, internal_value_type) || sizeof...(args) == 0) return count;
 		else
 			return T::expand_counts(std::forward<Args>(args)...) * count;
@@ -813,7 +812,7 @@ namespace std
 	{
 		verify_size(count);
 		size_type each_block_size = 1;
-		if _CONSTEXPR14 ()
+		if _GLIBCXX14_CONSTEXPR
 			(!_STRUCT14VALUE_V(is_same, T, internal_value_type))
 				each_block_size = T::expand_counts(std::forward<Args>(args)...);
 
@@ -833,11 +832,11 @@ namespace std
 		current_dimension_array_data = std::make_unique<T[]>(current_dimension_array_size);
 		for (size_type i = 0; i < current_dimension_array_size; ++i)
 		{
-			if _CONSTEXPR14 ()
+			if _GLIBCXX14_CONSTEXPR
 				(!_STRUCT14VALUE_V(is_same, T, internal_value_type))
 					current_dimension_array_data[i]
 						.allocate_array(std::forward<Args>(args)...);
-			else if _CONSTEXPR14 ()
+			else if _GLIBCXX14_CONSTEXPR
 				(sizeof...(args) > 0)
 					current_dimension_array_data[i] = T{std::forward<Args>(args)...};
 		}
@@ -966,7 +965,7 @@ namespace std
 		current_dimension_array_data = std::make_unique<T[]>(current_dimension_array_size);
 		for (size_type i = 0; i < current_dimension_array_size; ++i)
 		{
-			if _CONSTEXPR14 ()
+			if _GLIBCXX14_CONSTEXPR
 				(_STRUCT14VALUE_V(is_same, T, internal_value_type))
 					current_dimension_array_data[i] = std::move(other.current_dimension_array_data[i]);
 			else
@@ -1039,7 +1038,7 @@ namespace std
 	inline CPP20_DYNARRAY_CONSTEXPR void
 	dynarray<T>::swap(dynarray &other) noexcept
 	{
-		if _CONSTEXPR14 ()
+		if _GLIBCXX14_CONSTEXPR
 			(_STRUCT14VALUE_V(is_same, T, internal_value_type))
 			{
 				difference_type length = std::min<difference_type>(current_dimension_array_size, other.current_dimension_array_size);
@@ -1059,7 +1058,7 @@ namespace std
 	{
 		for (size_type i = 0; i < current_dimension_array_size; ++i)
 		{
-			if _CONSTEXPR14 ()
+			if _GLIBCXX14_CONSTEXPR
 				(_STRUCT14VALUE_V(is_same, T, internal_value_type))
 					current_dimension_array_data[i] = value;
 			else

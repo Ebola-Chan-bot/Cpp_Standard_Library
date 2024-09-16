@@ -62,9 +62,6 @@
 #undef __result_of_memobj_ref
 #include <tr1/type_traits>
 #endif
-#ifndef ARDUINO_ARCH_ESP32
-#include "xtr1common"
-#endif
 #pragma GCC visibility push(default)
 
 namespace std
@@ -284,44 +281,7 @@ namespace std
     // __enable_if_t (std::enable_if_t for C++11)
     template <bool _Cond, typename _Tp = void>
     using __enable_if_t = typename enable_if<_Cond, _Tp>::type;
-#endif //! ARDUINO_ARCH_ESP32
-#ifdef ARDUINO_ARCH_AVR
-    // 105
-    template <class _Ty, class = void>
-    struct _Add_reference
-    { // add reference (non-referenceable type)
-        using _Lvalue = _Ty;
-        using _Rvalue = _Ty;
-    };
 
-    template <class _Ty>
-    struct _Add_reference<_Ty, void_t<_Ty &>>
-    { // (referenceable type)
-        using _Lvalue = _Ty &;
-        using _Rvalue = _Ty &&;
-    };
-
-    template <class _Ty>
-    struct add_lvalue_reference
-    {
-        using type = typename _Add_reference<_Ty>::_Lvalue;
-    };
-
-    template <class _Ty>
-    using add_lvalue_reference_t = typename _Add_reference<_Ty>::_Lvalue;
-
-    template <class _Ty>
-    struct add_rvalue_reference
-    {
-        using type = typename _Add_reference<_Ty>::_Rvalue;
-    };
-
-    template <class _Ty>
-    using add_rvalue_reference_t = typename _Add_reference<_Ty>::_Rvalue;
-// 156
-#endif // ARUDINO_ARCH_AVR
-#ifndef ARDUINO_ARCH_ESP32
-    // 139
     template <bool>
     struct __conditional
     {
@@ -512,27 +472,6 @@ namespace std
     using remove_pointer_t = typename remove_pointer<_Ty>::type;
 #endif
 #ifdef ARDUINO_ARCH_AVR
-    template <class _Ty, class = void>
-    struct _Add_pointer
-    { // add pointer (pointer type cannot be formed)
-        using type = _Ty;
-    };
-
-    template <class _Ty>
-    struct _Add_pointer<_Ty, void_t<remove_reference_t<_Ty> *>>
-    { // (pointer type can be formed)
-        using type = remove_reference_t<_Ty> *;
-    };
-
-    template <class _Ty>
-    struct add_pointer
-    {
-        using type = typename _Add_pointer<_Ty>::type;
-    };
-
-    template <class _Ty>
-    using add_pointer_t = typename _Add_pointer<_Ty>::type;
-
     template <class>
     struct is_array
     {
@@ -578,22 +517,7 @@ namespace std
     {
         static constexpr bool value = true;
     };
-#if _HAS_CXX14
-    template <class>
-    _INLINE_VAR constexpr bool is_pointer_v = false; // determin_INLINE_VARise whether _Ty is a pointer
 
-    template <class _Ty>
-    _INLINE_VAR constexpr bool is_pointer_v<_Ty *> = true;
-
-    template <class _Ty>
-    _INLINE_VAR constexpr bool is_pointer_v<_Ty *const> = true;
-
-    template <class _Ty>
-    _INLINE_VAR constexpr bool is_pointer_v<_Ty *volatile> = true;
-
-    template <class _Ty>
-    _INLINE_VAR constexpr bool is_pointer_v<_Ty *const volatile> = true;
-#endif
     template <class>
     struct is_pointer
     {
@@ -649,13 +573,14 @@ namespace std
     {
         return {};
     }
-#endif
-#ifdef ARDUINO_ARCH_AVR
+
     // __remove_cv_t (std::remove_cv_t for C++11).
     template <typename _Tp>
     using __remove_cv_t = typename remove_cv<_Tp>::type;
-    /// @endcond
-    // 313
+/// @endcond
+// 313
+#endif
+#ifdef ARDUINO_ARCH_AVR
     // 315
     /// is_void
     template <typename _Tp>
@@ -700,34 +625,27 @@ namespace std
         static constexpr bool value = true;
     };
     // 581
-    // 590 故意放在前面，因为要被is_convertible使用
-    template <class _Ty>
-    struct is_function : bool_constant<!is_const<const _Ty>::value && !is_reference<_Ty>::value>
+    // 583
+    /// is_rvalue_reference
+    template <typename>
+    struct is_rvalue_reference
+        : public false_type
     {
     };
 
-    template <typename _TypeIdentity,
-              typename _NestedType = typename _TypeIdentity::type>
-    constexpr typename __or_<
-        is_reference<_NestedType>,
-        is_function<_NestedType>,
-        is_void<_NestedType>,
-        __is_array_unknown_bounds<_NestedType>>::type
-    __is_complete_or_unbounded(_TypeIdentity)
+    template <typename _Tp>
+    struct is_rvalue_reference<_Tp &&>
+        : public true_type
     {
-        return {};
-    }
-    // 597
+    };
+    // 592
     // 321
 
     template <class _Ty>
     struct is_enum : bool_constant<__is_enum(_Ty)>
     {
     }; // determine whether _Ty is an enumerated type
-#if _HAS_CXX14
-    template <class _Ty>
-    _INLINE_VAR constexpr bool is_enum_v = __is_enum(_Ty);
-#endif
+
     // 361
     // 336
     /// @cond undocumented
@@ -1043,10 +961,6 @@ namespace std
     struct is_empty : bool_constant<__is_empty(_Ty)>
     {
     }; // determine whether _Ty is an empty class
-#if _HAS_CXX14
-    template <class _Ty>
-    _INLINE_VAR constexpr bool is_empty_v = __is_empty(_Ty);
-#endif
 // 656
 // 658
 #ifdef __cpp_lib_is_null_pointer // C++ >= 11
@@ -1094,10 +1008,7 @@ namespace std
     struct is_final : bool_constant<__is_final(_Ty)>
     {
     }; // determine whether _Ty is a final class
-#if _HAS_CXX14
-    template <class _Ty>
-    _INLINE_VAR constexpr bool is_final_v = __is_final(_Ty);
-#endif
+
     // 674
     // 713
     /// is_arithmetic
@@ -1186,14 +1097,57 @@ namespace std
     template <typename _Tp>
     auto declval() noexcept -> decltype(__declval<_Tp>(0));
 
+    // is_constructible依赖remove_reference，前置声明
+    //  Reference transformations.
+
+    /// remove_reference
+#if _GLIBCXX_USE_BUILTIN_TRAIT(__remove_reference)
+    template <typename _Tp>
+    struct remove_reference
+    {
+        using type = __remove_reference(_Tp);
+    };
+#else
+    template <typename _Tp>
+    struct remove_reference
+    {
+        using type = _Tp;
+    };
+
+    template <typename _Tp>
+    struct remove_reference<_Tp &>
+    {
+        using type = _Tp;
+    };
+
+    template <typename _Tp>
+    struct remove_reference<_Tp &&>
+    {
+        using type = _Tp;
+    };
+#endif
+
+    // 故意放在前面，因为要被is_convertible使用
+    template <class _Ty>
+    struct is_function : bool_constant<!is_const<const _Ty>::value && !is_reference<_Ty>::value>
+    {
+    };
+
+    template <typename _TypeIdentity,
+              typename _NestedType = typename _TypeIdentity::type>
+    constexpr typename __or_<
+        is_reference<_NestedType>,
+        is_function<_NestedType>,
+        is_void<_NestedType>,
+        __is_array_unknown_bounds<_NestedType>>::type
+    __is_complete_or_unbounded(_TypeIdentity)
+    {
+        return {};
+    }
+
 //  765
 //  VC not well implemented, switch to boost implementation
 #include "__type_traits/is_constructible.hpp"
-#if _HAS_CXX14
-    // VC not well implemented, switch to EbolaChan's personal implementation based on boost is_default_constructible
-    template <class _Ty>
-    _INLINE_VAR constexpr bool is_default_constructible_v = is_default_constructible<_Ty>::value;
-#endif
 #endif // ARDUINO_ARCH_AVR
 #ifndef ARDUINO_ARCH_ESP32
     // __void_t (std::void_t for C++11)
@@ -1267,40 +1221,14 @@ namespace std
 
 //  VC not well implemented, switch to LLVM, which relies on is_function
 #include "__type_traits/is_convertible.h"
-#if _HAS_CXX14
-    // VC not well implemented, switch to EbolaChan's personal implementation based on boost is_constructible
-    template <class _Ty, class... _Args>
-    _INLINE_VAR constexpr bool is_constructible_v = is_constructible<_Ty, _Args...>::value;
-#endif
     //  VC not well implemented, switch to EbolaChan's personal implementation based on boost is_constructible
     template <class _Ty>
     struct is_move_constructible : is_constructible<_Ty, _Ty>
     {
         // determine whether _Ty can be direct-initialized from an rvalue _Ty
     };
-#if _HAS_CXX14
-    // VC not well implemented, switch to EbolaChan's personal implementation based on EbolaChan's is_constructible_v
-    template <class _Ty>
-    _INLINE_VAR constexpr bool is_move_constructible_v = is_constructible_v<_Ty, _Ty>;
-#endif
 // VC not well implemented, switch to boost implementation
 #include "__type_traits/is_assignable.hpp"
-#if _HAS_CXX14
-    // VC not well implemented, switch to EbolaChan's personal implementation based on boost is_assignable
-    template <class _To, class _From>
-    _INLINE_VAR constexpr bool is_assignable_v = is_assignable<_To, _From>::value;
-#endif
-    // VC not well implemented, switch to EbolaChan's personal implementation based on boost is_assignable
-    template <class _Ty>
-    struct is_move_assignable : is_assignable<add_lvalue_reference_t<_Ty>, _Ty>
-    {
-        // determine whether an rvalue _Ty can be assigned to an lvalue _Ty
-    };
-#if _HAS_CXX14
-    // VC not well implemented, switch to EbolaChan's personal implementation based on EbolaChan's is_assignable_v
-    template <class _Ty>
-    _INLINE_VAR constexpr bool is_move_assignable_v = is_assignable_v<add_lvalue_reference_t<_Ty>, _Ty>;
-#endif
 // VC not well implemented, switch to LLVM implementation
 #include "__type_traits/is_nothrow_constructible.h"
     //   VC not well implemented, switch to EbolaChan's personal implementation based on LLVM is_nothrow_constructible
@@ -1309,30 +1237,14 @@ namespace std
     {
         // determine whether value-initialization of _Ty is both valid and not potentially-throwing
     };
-#if _HAS_CXX14
-    // VC not well implemented, switch to EbolaChan's personal implementation based on LLVM is_nothrow_constructible_v
-    template <class _Ty>
-    _INLINE_VAR constexpr bool is_nothrow_default_constructible_v = is_nothrow_constructible_v<_Ty>;
-#endif
     // Can't be implemented without compiler builtins. Fallback to is_assginable as an approximate.
     template <class _To, class _From>
     struct is_nothrow_assignable : is_assignable<_To, _From>
     {
         // determine whether assignment of _From to _To is both valid and not potentially-throwing
     };
-#if _HAS_CXX14
-    // Can't be implemented without compiler builtins. Fallback to is_assginable_v as an approximate.
-    template <class _To, class _From>
-    _INLINE_VAR constexpr bool is_nothrow_assignable_v = is_assignable_v<_To, _From>;
-#endif
 // VC not well implemented, switch to boost implementation
 #include "__type_traits/is_nothrow_move_assignable.hpp"
-#if _HAS_CXX14
-    // VC not well implemented, switch to EbolaChan's personal implementation based on boost is_nothrow_move_assignable
-    template <class _Ty>
-    _INLINE_VAR constexpr bool is_nothrow_move_assignable_v = is_nothrow_move_assignable<_Ty>::value;
-#endif
-
     template <typename>
     struct remove_all_extents;
 
@@ -1562,7 +1474,17 @@ namespace std
         static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
                       "template argument must be a complete class or an unbounded array");
     };
-// 1278
+    // 1278
+    // 1280
+    /// is_move_assignable
+    template <typename _Tp>
+    struct is_move_assignable
+        : public __is_assignable_impl<__add_lval_ref_t<_Tp>, __add_rval_ref_t<_Tp>>
+    {
+        static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
+                      "template argument must be a complete class or an unbounded array");
+    };
+    // 1289
 #endif // ARDUINO_ARCH_AVR
 #ifdef ARDUINO_ARCH_SAM
 #define __is_trivially_constructible(_Tp, ...) tr1::has_trivial_constructor<_Tp>::value &&is_constructible<_Tp, __VA_ARGS__>::value
@@ -1670,282 +1592,8 @@ namespace std
     /// @cond undocumented
     template <typename _Tp, typename _Up>
     using __is_trivially_assignable_impl = __bool_constant<__is_trivially_assignable(_Tp, _Up)>;
-/// @endcond
-// 1413
-#endif
-#ifdef ARDUINO_ARCH_AVR
-    // 1276
-    template <class _Ty, unsigned int _Ix = 0>
-    struct extent
-    {
-        static constexpr size_t value = 0; // determine extent of dimension _Ix of array _Ty
-    };
-    template <class _Ty, size_t _Nx>
-    struct extent<_Ty[_Nx], 0>
-    {
-        static constexpr size_t value = _Nx;
-    };
-    template <class _Ty, unsigned int _Ix, size_t _Nx>
-    struct extent<_Ty[_Nx], _Ix> : extent<_Ty, _Ix - 1>
-    {
-    };
-
-    template <class _Ty, unsigned int _Ix>
-    struct extent<_Ty[], _Ix> : extent<_Ty, _Ix - 1>
-    {
-    };
-
-    template <class _Base, class _Derived>
-    struct is_base_of : bool_constant<__is_base_of(_Base, _Derived)>
-    {
-        // determine whether _Base is a base of or the same as _Derived
-    };
-#if _HAS_CXX14
-    template <class _Base, class _Derived>
-    _INLINE_VAR constexpr bool is_base_of_v = __is_base_of(_Base, _Derived);
-#endif
-
-    template <class _Ty>
-    _Ty _Returns_exactly() noexcept; // not defined
-
-#if _HAS_CXX20
-    _EXPORT_STD template <class, class, template <class> class, template <class> class>
-    struct basic_common_reference
-    {
-    };
-
-    template <class _From>
-    struct _Copy_cv_impl
-    {
-        template <class _To>
-        using _Apply = _To;
-    };
-    template <class _From>
-    struct _Copy_cv_impl<const _From>
-    {
-        template <class _To>
-        using _Apply = const _To;
-    };
-    template <class _From>
-    struct _Copy_cv_impl<volatile _From>
-    {
-        template <class _To>
-        using _Apply = volatile _To;
-    };
-    template <class _From>
-    struct _Copy_cv_impl<const volatile _From>
-    {
-        template <class _To>
-        using _Apply = const volatile _To;
-    };
-    template <class _From, class _To>
-    using _Copy_cv = // N4950 [meta.trans.other]/2.3
-        _Copy_cv_impl<_From>::template _Apply<_To>;
-
-    template <class _Ty1>
-    struct _Add_qualifiers
-    { // _Add_qualifiers<A>::template _Apply is XREF(A) from N4950 [meta.trans.other]/2.2
-        template <class _Ty2>
-        using _Apply = _Copy_cv<_Ty1, _Ty2>;
-    };
-    template <class _Ty1>
-    struct _Add_qualifiers<_Ty1 &>
-    {
-        template <class _Ty2>
-        using _Apply = add_lvalue_reference_t<_Copy_cv<_Ty1, _Ty2>>;
-    };
-    template <class _Ty1>
-    struct _Add_qualifiers<_Ty1 &&>
-    {
-        template <class _Ty2>
-        using _Apply = add_rvalue_reference_t<_Copy_cv<_Ty1, _Ty2>>;
-    };
-
-#if !defined(__EDG__) && !defined(__clang__) // TRANSITION, DevCom-10095944
-    template <class _Ty1, class _Ty2>
-    using _Cond_res_if_right = // N4950 [meta.trans.other]/2.4
-        decltype(false ? _Returns_exactly<_Ty1>() : _Returns_exactly<_Ty2>());
-
-    template <class _Ty>
-    using _Is_scalar_or_array = disjunction<is_scalar<_Ty>, is_array<_Ty>>;
-
-    template <class _Ty1, class _Ty2, class = void>
-    struct _Cond_res_workaround
-    {
-    };
-
-    template <class _Ty1, class _Ty2>
-    struct _Cond_res_workaround<_Ty1, _Ty2, void_t<_Cond_res_if_right<_Ty1, _Ty2>>>
-    {
-        using _Uty = remove_cvref_t<_Ty1>;
-        using type = conditional_t<conjunction_v<is_same<_Uty, remove_cvref_t<_Ty2>>, _Is_scalar_or_array<_Uty>,
-                                                 disjunction<conjunction<is_lvalue_reference<_Ty1>, is_rvalue_reference<_Ty2>>,
-                                                             conjunction<is_rvalue_reference<_Ty1>, is_lvalue_reference<_Ty2>>>>,
-                                   decay_t<_Copy_cv<remove_reference_t<_Ty1>, remove_reference_t<_Ty2>>>, _Cond_res_if_right<_Ty1, _Ty2>>;
-    };
-
-    template <class _Ty1, class _Ty2>
-    using _Cond_res = _Cond_res_workaround<_Ty1, _Ty2>::type;
-#else  // ^^^ workaround / no workaround vvv
-    template <class _Ty1, class _Ty2>
-    using _Cond_res = // N4950 [meta.trans.other]/2.4
-        decltype(false ? _Returns_exactly<_Ty1>() : _Returns_exactly<_Ty2>());
-#endif // ^^^ no workaround ^^^
-
-    _EXPORT_STD template <class...>
-    struct common_reference;
-
-    _EXPORT_STD template <class... _Types>
-    using common_reference_t = common_reference<_Types...>::type;
-
-    // N4950 [meta.trans.other]/5.1: "If sizeof...(T) is zero ..."
-    template <>
-    struct common_reference<>
-    {
-    };
-
-    // N4950 [meta.trans.other]/5.2: "...if sizeof...(T) is one ..."
-    template <class _Ty>
-    struct common_reference<_Ty>
-    {
-        using type = _Ty;
-    };
-
-    // N4950 [meta.trans.other]/5.3: "...if sizeof...(T) is two..."
-
-    // N4950 [meta.trans.other]/5.3.4: "if common_type_t<T1, T2> is well-formed..."
-    // N4950 [meta.trans.other]/5.3.5: "Otherwise, there shall be no member type."
-    template <class _Ty1, class _Ty2, class = void>
-    struct _Common_reference2C : common_type<_Ty1, _Ty2>
-    {
-    };
-
-    // N4950 [meta.trans.other]/5.3.3: "if COND_RES(T1, T2) is well-formed..."
-    template <class _Ty1, class _Ty2>
-    struct _Common_reference2C<_Ty1, _Ty2, void_t<_Cond_res<_Ty1, _Ty2>>>
-    {
-        using type = _Cond_res<_Ty1, _Ty2>;
-    };
-
-    // N4950 [meta.trans.other]/5.3.2: "if basic_common_reference<[...]>::type is well-formed..."
-    template <class _Ty1, class _Ty2>
-    using _Basic_specialization = basic_common_reference<remove_cvref_t<_Ty1>, remove_cvref_t<_Ty2>,
-                                                         _Add_qualifiers<_Ty1>::template _Apply, _Add_qualifiers<_Ty2>::template _Apply>::type;
-
-    template <class _Ty1, class _Ty2, class = void>
-    struct _Common_reference2B : _Common_reference2C<_Ty1, _Ty2>
-    {
-    };
-
-    template <class _Ty1, class _Ty2>
-    struct _Common_reference2B<_Ty1, _Ty2, void_t<_Basic_specialization<_Ty1, _Ty2>>>
-    {
-        using type = _Basic_specialization<_Ty1, _Ty2>;
-    };
-
-    // N4950 [meta.trans.other]/5.3.1: "Let R be COMMON-REF(T1, T2). If T1 and T2 are reference types, R is well-formed, and
-    // is_convertible_v<add_pointer_t<T1>, add_pointer_t<R>> && is_convertible_v<add_pointer_t<T2>, add_pointer_t<R>> is
-    // true, then the member typedef type denotes R."
-    template <class _Ty1, class _Ty2, class = void>
-    struct _Common_reference2A : _Common_reference2B<_Ty1, _Ty2>
-    {
-    };
-
-    template <class _Ty1, class _Ty2, class _Result = _Cond_res<_Copy_cv<_Ty1, _Ty2> &, _Copy_cv<_Ty2, _Ty1> &>,
-              enable_if_t<is_lvalue_reference_v<_Result>, int> = 0>
-    using _LL_common_ref = _Result;
-
-    template <class _Ty1, class _Ty2, class = void>
-    struct _Common_reference2AX
-    {
-    };
-
-    template <class _Ty1, class _Ty2>
-    struct _Common_reference2AX<_Ty1 &, _Ty2 &, void_t<_LL_common_ref<_Ty1, _Ty2>>>
-    {
-        using type = _LL_common_ref<_Ty1, _Ty2>; // "both lvalues" case from N4950 [meta.trans.other]/2.5
-    };
-
-    template <class _Ty1, class _Ty2>
-    struct _Common_reference2AX<_Ty1 &&, _Ty2 &, enable_if_t<is_convertible_v<_Ty1 &&, _LL_common_ref<const _Ty1, _Ty2>>>>
-    {
-        using type = _LL_common_ref<const _Ty1, _Ty2>; // "rvalue and lvalue" case from N4950 [meta.trans.other]/2.7
-    };
-
-    template <class _Ty1, class _Ty2>
-    struct _Common_reference2AX<_Ty1 &, _Ty2 &&, enable_if_t<is_convertible_v<_Ty2 &&, _LL_common_ref<const _Ty2, _Ty1>>>>
-    {
-        using type = _LL_common_ref<const _Ty2, _Ty1>; // "lvalue and rvalue" case from N4950 [meta.trans.other]/2.8
-    };
-
-    template <class _Ty1, class _Ty2>
-    using _RR_common_ref = remove_reference_t<_LL_common_ref<_Ty1, _Ty2>> &&;
-
-    template <class _Ty1, class _Ty2>
-    struct _Common_reference2AX<_Ty1 &&, _Ty2 &&,
-                                enable_if_t<is_convertible_v<_Ty1 &&, _RR_common_ref<_Ty1, _Ty2>> && is_convertible_v<_Ty2 &&, _RR_common_ref<_Ty1, _Ty2>>>>
-    {
-        using type = _RR_common_ref<_Ty1, _Ty2>; // "both rvalues" case from N4950 [meta.trans.other]/2.6
-    };
-
-    template <class _Ty1, class _Ty2>
-    using _Common_ref_2AX_t = _Common_reference2AX<_Ty1, _Ty2>::type;
-
-    template <class _Ty1, class _Ty2>
-    struct _Common_reference2A<_Ty1, _Ty2,
-                               enable_if_t<is_convertible_v<add_pointer_t<_Ty1>, add_pointer_t<_Common_ref_2AX_t<_Ty1, _Ty2>>> && is_convertible_v<add_pointer_t<_Ty2>, add_pointer_t<_Common_ref_2AX_t<_Ty1, _Ty2>>>>>
-    {
-        using type = _Common_ref_2AX_t<_Ty1, _Ty2>;
-    };
-
-    template <class _Ty1, class _Ty2>
-    struct common_reference<_Ty1, _Ty2> : _Common_reference2A<_Ty1, _Ty2>
-    {
-    };
-
-    // N4950 [meta.trans.other]/5.4: "if sizeof...(T) is greater than two..."
-    template <class _Void, class _Ty1, class _Ty2, class... _Types>
-    struct _Fold_common_reference
-    {
-    };
-    template <class _Ty1, class _Ty2, class... _Types>
-    struct _Fold_common_reference<void_t<common_reference_t<_Ty1, _Ty2>>, _Ty1, _Ty2, _Types...>
-        : common_reference<common_reference_t<_Ty1, _Ty2>, _Types...>
-    {
-    };
-
-    template <class _Ty1, class _Ty2, class _Ty3, class... _Rest>
-    struct common_reference<_Ty1, _Ty2, _Ty3, _Rest...> : _Fold_common_reference<void, _Ty1, _Ty2, _Ty3, _Rest...>
-    {
-    };
-
-    _EXPORT_STD template <class _Ty>
-    struct type_identity
-    {
-        using type = _Ty;
-    };
-    _EXPORT_STD template <class _Ty>
-    using type_identity_t = type_identity<_Ty>::type;
-#endif // _HAS_CXX20
-#if _HAS_CXX14
-    template <class _Type, template <class...> class _Template>
-    _INLINE_VAR constexpr bool _Is_specialization_v = false; // true if and only if _Type is a specialization of _Template
-    template <template <class...> class _Template, class... _Types>
-    _INLINE_VAR constexpr bool _Is_specialization_v<_Template<_Types...>, _Template> = true;
-#endif
-    template <class _Type, template <class...> class _Template>
-    struct _Is_specialization
-    {
-        static constexpr bool value = false; // true if and only if _Type is a specialization of _Template
-    };
-    template <template <class...> class _Template, class... _Types>
-    struct _Is_specialization<_Template<_Types...>, _Template>
-    {
-        static constexpr bool value = true;
-    };
-#endif
-// 2693
-#ifndef ARDUINO_ARCH_ESP32
+    /// @endcond
+    // 1413
     // 1422
     /// is_trivially_copy_assignable
     template <typename _Tp>
@@ -1979,8 +1627,70 @@ namespace std
     {
     };
     // 1474
-    // 1599
-    // Const-volatile modifications.
+    // 1493
+    /// extent
+    template <typename, unsigned _Uint = 0>
+    struct extent
+        : public integral_constant<size_t, 0>
+    {
+    };
+
+    template <typename _Tp, size_t _Size>
+    struct extent<_Tp[_Size], 0>
+        : public integral_constant<size_t, _Size>
+    {
+    };
+
+    template <typename _Tp, unsigned _Uint, size_t _Size>
+    struct extent<_Tp[_Size], _Uint>
+        : public extent<_Tp, _Uint - 1>::type
+    {
+    };
+
+    template <typename _Tp>
+    struct extent<_Tp[], 0>
+        : public integral_constant<size_t, 0>
+    {
+    };
+
+    template <typename _Tp, unsigned _Uint>
+    struct extent<_Tp[], _Uint>
+        : public extent<_Tp, _Uint - 1>::type
+    {
+    };
+
+    // Type relations.
+
+    /// is_same
+#if _GLIBCXX_USE_BUILTIN_TRAIT(__is_same)
+    template <typename _Tp, typename _Up>
+    struct is_same
+        : public __bool_constant<__is_same(_Tp, _Up)>
+    {
+    };
+#else
+    template <typename _Tp, typename _Up>
+    struct is_same
+        : public false_type
+    {
+    };
+
+    template <typename _Tp>
+    struct is_same<_Tp, _Tp>
+        : public true_type
+    {
+    };
+#endif
+
+    /// is_base_of
+    template <typename _Base, typename _Derived>
+    struct is_base_of
+        : public __bool_constant<__is_base_of(_Base, _Derived)>
+    {
+    };
+    // 1541
+    //   1599
+    //   Const-volatile modifications.
 
     /// remove_const
     template <typename _Tp>
@@ -2089,10 +1799,37 @@ namespace std
     using add_cv_t = typename add_cv<_Tp>::type;
 #endif
 #endif //! defined ARDUINO_ARCH_ESP32
+// 1765
 #ifdef ARDUINO_ARCH_AVR
-    // 1683
-    // 1728
-    // Sign modifications.
+    /// add_lvalue_reference
+    template <typename _Tp>
+    struct add_lvalue_reference
+    {
+        using type = __add_lval_ref_t<_Tp>;
+    };
+
+    /// add_rvalue_reference
+    template <typename _Tp>
+    struct add_rvalue_reference
+    {
+        using type = __add_rval_ref_t<_Tp>;
+    };
+
+#if __cplusplus > 201103L
+    /// Alias template for remove_reference
+    template <typename _Tp>
+    using remove_reference_t = typename remove_reference<_Tp>::type;
+
+    /// Alias template for add_lvalue_reference
+    template <typename _Tp>
+    using add_lvalue_reference_t = typename add_lvalue_reference<_Tp>::type;
+
+    /// Alias template for add_rvalue_reference
+    template <typename _Tp>
+    using add_rvalue_reference_t = typename add_rvalue_reference<_Tp>::type;
+#endif
+
+    //  Sign modifications.
 
     /// @cond undocumented
 
@@ -2529,7 +2266,47 @@ namespace std
 // 2101
 #endif //! defined ARDUINO_ARCH_ESP32
 #ifdef ARDUINO_ARCH_AVR
-    //   2155
+// 2196
+/// add_pointer
+#if _GLIBCXX_USE_BUILTIN_TRAIT(__add_pointer)
+    template <typename _Tp>
+    struct add_pointer
+    {
+        using type = __add_pointer(_Tp);
+    };
+#else
+    template <typename _Tp, typename = void>
+    struct __add_pointer_helper
+    {
+        using type = _Tp;
+    };
+
+    template <typename _Tp>
+    struct __add_pointer_helper<_Tp, __void_t<_Tp *>>
+    {
+        using type = _Tp *;
+    };
+
+    template <typename _Tp>
+    struct add_pointer
+        : public __add_pointer_helper<_Tp>
+    {
+    };
+
+    template <typename _Tp>
+    struct add_pointer<_Tp &>
+    {
+        using type = _Tp *;
+    };
+
+    template <typename _Tp>
+    struct add_pointer<_Tp &&>
+    {
+        using type = _Tp *;
+    };
+#endif
+    // 2224
+    //    2234
     template <std::size_t _Len>
     struct __aligned_storage_msa
     {
@@ -2589,8 +2366,10 @@ namespace std
                 ? sizeof(_Tp)
                 : __strictest_alignment<_Types...>::_S_size;
     };
-    // 2209
-    //  2212
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
     /**
      *  @brief Provide aligned storage for types.
      *
@@ -2711,9 +2490,21 @@ namespace std
     using __remove_cvref_t = typename remove_cv<typename remove_reference<_Tp>::type>::type;
 #endif
 #ifdef ARDUINO_ARCH_AVR
-    /// @endcond
-    // 2315
-    // 2326
+    // Primary template.
+    /// Define a member typedef @c type to one of two argument types.
+    template <bool _Cond, typename _Iftrue, typename _Iffalse>
+    struct conditional
+    {
+        using type = _Iftrue;
+    };
+
+    // Partial specialization for false.
+    template <typename _Iftrue, typename _Iffalse>
+    struct conditional<false, _Iftrue, _Iffalse>
+    {
+        using type = _Iffalse;
+    };
+
     /// common_type
     template <typename... _Tp>
     struct common_type;
@@ -3933,36 +3724,44 @@ namespace std
     inline constexpr bool is_unbounded_array_v = is_unbounded_array<_Tp>::value;
 #endif
 #endif // __cpp_lib_bounded_array_traits
-// 3681
-//3696
-  /** * Remove references and cv-qualifiers.
-   * @since C++20
-   * @{
-   */
+    // 3681
+    // 3696
+    /** * Remove references and cv-qualifiers.
+     * @since C++20
+     * @{
+     */
 #ifdef __cpp_lib_remove_cvref // C++ >= 20
-# if _GLIBCXX_USE_BUILTIN_TRAIT(__remove_cvref)
-  template<typename _Tp>
+#if _GLIBCXX_USE_BUILTIN_TRAIT(__remove_cvref)
+    template <typename _Tp>
     struct remove_cvref
-    { using type = __remove_cvref(_Tp); };
-# else
-  template<typename _Tp>
+    {
+        using type = __remove_cvref(_Tp);
+    };
+#else
+    template <typename _Tp>
     struct remove_cvref
-    { using type = typename remove_cv<_Tp>::type; };
+    {
+        using type = typename remove_cv<_Tp>::type;
+    };
 
-  template<typename _Tp>
-    struct remove_cvref<_Tp&>
-    { using type = typename remove_cv<_Tp>::type; };
+    template <typename _Tp>
+    struct remove_cvref<_Tp &>
+    {
+        using type = typename remove_cv<_Tp>::type;
+    };
 
-  template<typename _Tp>
-    struct remove_cvref<_Tp&&>
-    { using type = typename remove_cv<_Tp>::type; };
-# endif
+    template <typename _Tp>
+    struct remove_cvref<_Tp &&>
+    {
+        using type = typename remove_cv<_Tp>::type;
+    };
+#endif
 
-  template<typename _Tp>
+    template <typename _Tp>
     using remove_cvref_t = typename remove_cvref<_Tp>::type;
-  /// @}
+    /// @}
 #endif // __cpp_lib_remove_cvref
-//3724
+// 3724
 #endif
 }
 #pragma GCC visibility pop

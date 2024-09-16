@@ -244,7 +244,7 @@ namespace std
 			constexpr size_t _Wrap_bound_one = _Nx - _One_mod_n;
 			constexpr size_t _Wrap_bound_m = _Nx - _M_mod_n;
 
-			if _CONSTEXPR14 ()
+			if _GLIBCXX14_CONSTEXPR
 				(_M_mod_n == 0)
 				{
 					for (size_t _Ix = 0; _Ix < _Wrap_bound_one; ++_Ix)
@@ -253,7 +253,7 @@ namespace std
 						this->_Ax[_Ix] = (_Tmp >> 1) ^ (_Tmp & 1 ? _Px : 0) ^ this->_Ax[_Ix + _Nx + _M_mod_n];
 					}
 
-					if _CONSTEXPR14 ()
+					if _GLIBCXX14_CONSTEXPR
 						(_One_mod_n == 1)
 						{ // fill in _Ax[_Nx - 1]
 							constexpr size_t _Ix = _Wrap_bound_one;
@@ -277,7 +277,7 @@ namespace std
 					this->_Ax[_Ix] = (_Tmp >> 1) ^ (_Tmp & 1 ? _Px : 0) ^ this->_Ax[_Ix - _Nx + _M_mod_n];
 				}
 
-				if _CONSTEXPR14 ()
+				if _GLIBCXX14_CONSTEXPR
 					(_One_mod_n == 1)
 					{ // fill in _Ax[_Nx - 1]
 						constexpr size_t _Ix = _Wrap_bound_one;
