@@ -177,12 +177,12 @@ namespace std
 #if !defined(__STRICT_ANSI__) || (__cplusplus >= 201103L)
 	extern "C"
 	{
-		size_t CSL_u64_dec(uint64_t u64, char *OutChar);
-		size_t CSL_u64_oct(uint64_t u64, char *OutChar);
-		size_t CSL_u64_hex(uint64_t u64, char *OutChar, const char *Hex);
+		size_t _CSL_u64_dec(uint64_t u64, char *OutChar);
+		size_t _CSL_u64_oct(uint64_t u64, char *OutChar);
+		size_t _CSL_u64_hex(uint64_t u64, char *OutChar, const char *Hex);
 	}
-	static constexpr char CSL_Hex_Upper[] = "0123456789ABCDEF";
-	static constexpr char CSL_Hex_Lower[] = "0123456789abcdef";
+	static constexpr char _CSL_Hex_Upper[] = "0123456789ABCDEF";
+	static constexpr char _CSL_Hex_Lower[] = "0123456789abcdef";
 	template <class traits>
 	class _UCXXEXPORT __ostream_printout<traits, char, signed long long int>
 	{
@@ -195,18 +195,18 @@ namespace std
 				if (n < 0)
 				{
 					buffer[0] = '-';
-					stream.printout(buffer, CSL_u64_dec(-n, buffer + 1) + 1);
+					stream.printout(buffer, _CSL_u64_dec(-n, buffer + 1) + 1);
 				}
 				else
-					stream.printout(buffer, CSL_u64_dec(n, buffer));
+					stream.printout(buffer, _CSL_u64_dec(n, buffer));
 			else if (stream.flags() & ios_base::oct)
 				if (stream.flags() & ios_base::showbase)
 				{
 					buffer[0] = '0';
-					stream.printout(buffer, CSL_u64_oct(n, buffer + 1) + 1);
+					stream.printout(buffer, _CSL_u64_oct(n, buffer + 1) + 1);
 				}
 				else
-					stream.printout(buffer, CSL_u64_oct(n, buffer));
+					stream.printout(buffer, _CSL_u64_oct(n, buffer));
 			else if (stream.flags() & ios_base::hex)
 				if (stream.flags() & ios_base::showbase)
 				{
@@ -214,18 +214,18 @@ namespace std
 					if (stream.flags() & ios_base::uppercase)
 					{
 						buffer[1] = 'X';
-						stream.printout(buffer, CSL_u64_hex(n, buffer + 2, CSL_Hex_Upper) + 2);
+						stream.printout(buffer, _CSL_u64_hex(n, buffer + 2, _CSL_Hex_Upper) + 2);
 					}
 					else
 					{
 						buffer[1] = 'x';
-						stream.printout(buffer, CSL_u64_hex(n, buffer + 2, CSL_Hex_Lower) + 2);
+						stream.printout(buffer, _CSL_u64_hex(n, buffer + 2, _CSL_Hex_Lower) + 2);
 					}
 				}
 				else if (stream.flags() & ios_base::uppercase)
-					stream.printout(buffer, CSL_u64_hex(n, buffer, CSL_Hex_Upper));
+					stream.printout(buffer, _CSL_u64_hex(n, buffer, _CSL_Hex_Upper));
 				else
-					stream.printout(buffer, CSL_u64_hex(n, buffer, CSL_Hex_Lower));
+					stream.printout(buffer, _CSL_u64_hex(n, buffer, _CSL_Hex_Lower));
 			if (stream.flags() & ios_base::unitbuf)
 				stream.flush();
 		}
@@ -240,15 +240,15 @@ namespace std
 			char buffer[28];
 
 			if (stream.flags() & ios_base::dec)
-				stream.printout(buffer, CSL_u64_dec(n, buffer));
+				stream.printout(buffer, _CSL_u64_dec(n, buffer));
 			else if (stream.flags() & ios_base::oct)
 				if (stream.flags() & ios_base::showbase)
 				{
 					buffer[0] = '0';
-					stream.printout(buffer, CSL_u64_oct(n, buffer + 1) + 1);
+					stream.printout(buffer, _CSL_u64_oct(n, buffer + 1) + 1);
 				}
 				else
-					stream.printout(buffer, CSL_u64_oct(n, buffer));
+					stream.printout(buffer, _CSL_u64_oct(n, buffer));
 			else if (stream.flags() & ios_base::hex)
 				if (stream.flags() & ios_base::showbase)
 				{
@@ -256,18 +256,18 @@ namespace std
 					if (stream.flags() & ios_base::uppercase)
 					{
 						buffer[1] = 'X';
-						stream.printout(buffer, CSL_u64_hex(n, buffer + 2, CSL_Hex_Upper) + 2);
+						stream.printout(buffer, _CSL_u64_hex(n, buffer + 2, _CSL_Hex_Upper) + 2);
 					}
 					else
 					{
 						buffer[1] = 'x';
-						stream.printout(buffer, CSL_u64_hex(n, buffer + 2, CSL_Hex_Lower) + 2);
+						stream.printout(buffer, _CSL_u64_hex(n, buffer + 2, _CSL_Hex_Lower) + 2);
 					}
 				}
 				else if (stream.flags() & ios_base::uppercase)
-					stream.printout(buffer, CSL_u64_hex(n, buffer, CSL_Hex_Upper));
+					stream.printout(buffer, _CSL_u64_hex(n, buffer, _CSL_Hex_Upper));
 				else
-					stream.printout(buffer, CSL_u64_hex(n, buffer, CSL_Hex_Lower));
+					stream.printout(buffer, _CSL_u64_hex(n, buffer, _CSL_Hex_Lower));
 
 			if (stream.flags() & ios_base::unitbuf)
 				stream.flush();

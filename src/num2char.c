@@ -2,7 +2,7 @@
 // 埃博拉酱实现
 #include <stdint.h>
 #include <stddef.h>
-size_t CSL_u64_dec(uint64_t u64, char *OutChar)
+size_t _CSL_u64_dec(uint64_t u64, char *OutChar)
 {
 	if (u64)
 	{
@@ -25,7 +25,7 @@ size_t CSL_u64_dec(uint64_t u64, char *OutChar)
 		return 1;
 	}
 }
-size_t CSL_u64_oct(uint64_t u64, char *OutChar)
+size_t _CSL_u64_oct(uint64_t u64, char *OutChar)
 {
 	if (u64)
 	{
@@ -48,7 +48,7 @@ size_t CSL_u64_oct(uint64_t u64, char *OutChar)
 		return 1;
 	}
 }
-size_t CSL_u64_hex(uint64_t u64, char *OutChar, const char *Hex)
+size_t _CSL_u64_hex(uint64_t u64, char *OutChar, const char *Hex)
 {
 	if (u64)
 	{

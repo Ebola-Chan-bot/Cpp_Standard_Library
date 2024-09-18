@@ -1,7 +1,7 @@
 #pragma once
 #ifdef ARDUINO_ARCH_ESP32
 #include "../Cpp_Standard_Library.h"
-#include CSL_Official(bits/cxxabi_init_exception.h)
+#include _CSL_Official(bits/cxxabi_init_exception.h)
 #else
 // ABI Support -*- C++ -*-
 

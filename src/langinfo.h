@@ -12,5 +12,5 @@ libc_hidden_proto (__nl_langinfo_l)
 #endif
 #else
 #include "Cpp_Standard_Library.h"
-#include CSL_OfficialC(langinfo.h)
+#include _CSL_OfficialC(langinfo.h)
 #endif

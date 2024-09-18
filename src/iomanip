@@ -166,6 +166,6 @@ template<class Ch, class Tr> _UCXXEXPORT basic_ostream<Ch, Tr>&
 #pragma GCC visibility pop
 #else
 #include "Cpp_Standard_Library.h"
-#include CSL_Official(iomanip)
+#include _CSL_Official(iomanip)
 #endif
 

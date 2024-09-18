@@ -1,4 +1,16 @@
 #pragma once
+#ifdef ARDUINO_ARCH_AVR
+#define _CSL_using_uniq_ptr_impl using __uniq_ptr_impl<_Tp, _Dp>::__uniq_ptr_impl;
+#endif
+#ifdef ARDUINO_ARCH_SAM
+// SAM编译器bug，不能继承构造，只能手动列出
+#define _CSL_using_uniq_ptr_impl                                                                                                                                            \
+  __uniq_ptr_data() = default;                                                                                                                                              \
+  __uniq_ptr_data(typename __uniq_ptr_impl<_Tp, _Dp>::pointer __p) : __uniq_ptr_impl<_Tp, _Dp>(__p) {}                                                                      \
+  template <typename _Del>                                                                                                                                                  \
+  __uniq_ptr_data(typename __uniq_ptr_impl<_Tp, _Dp>::pointer __p, _Del &&__d) : __uniq_ptr_impl<_Tp, _Dp>::template __uniq_ptr_impl<_Del>(__p, std::forward<_Del>(__d)) {} \
+  __uniq_ptr_data(__uniq_ptr_impl<_Tp, _Dp> &&__u) noexcept : __uniq_ptr_impl<_Tp, _Dp>(std::move(__u)) {}
+#endif
 #ifdef ARDUINO_ARCH_ESP32
 #include_next <bits/unique_ptr.h>
 #else
@@ -237,7 +249,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
             bool = is_move_assignable<_Dp>::value>
   struct __uniq_ptr_data : __uniq_ptr_impl<_Tp, _Dp>
   {
-    using __uniq_ptr_impl<_Tp, _Dp>::__uniq_ptr_impl;
+    _CSL_using_uniq_ptr_impl;
     __uniq_ptr_data(__uniq_ptr_data &&) = default;
     __uniq_ptr_data &operator=(__uniq_ptr_data &&) = default;
   };
@@ -245,7 +257,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   template <typename _Tp, typename _Dp>
   struct __uniq_ptr_data<_Tp, _Dp, true, false> : __uniq_ptr_impl<_Tp, _Dp>
   {
-    using __uniq_ptr_impl<_Tp, _Dp>::__uniq_ptr_impl;
+    _CSL_using_uniq_ptr_impl;
     __uniq_ptr_data(__uniq_ptr_data &&) = default;
     __uniq_ptr_data &operator=(__uniq_ptr_data &&) = delete;
   };
@@ -253,7 +265,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   template <typename _Tp, typename _Dp>
   struct __uniq_ptr_data<_Tp, _Dp, false, true> : __uniq_ptr_impl<_Tp, _Dp>
   {
-    using __uniq_ptr_impl<_Tp, _Dp>::__uniq_ptr_impl;
+    _CSL_using_uniq_ptr_impl;
     __uniq_ptr_data(__uniq_ptr_data &&) = delete;
     __uniq_ptr_data &operator=(__uniq_ptr_data &&) = default;
   };
@@ -261,7 +273,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   template <typename _Tp, typename _Dp>
   struct __uniq_ptr_data<_Tp, _Dp, false, false> : __uniq_ptr_impl<_Tp, _Dp>
   {
-    using __uniq_ptr_impl<_Tp, _Dp>::__uniq_ptr_impl;
+    _CSL_using_uniq_ptr_impl;
     __uniq_ptr_data(__uniq_ptr_data &&) = delete;
     __uniq_ptr_data &operator=(__uniq_ptr_data &&) = delete;
   };

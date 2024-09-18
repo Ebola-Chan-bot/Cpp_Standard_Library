@@ -7,12 +7,12 @@
 
 //Arduino不支持#include_next，只能用这种魔法实现包含官方标准库
 #ifdef ARDUINO_ARCH_AVR
-#define CSL_Official(Header) <Arduino.h/../../arduino/Header>
-#define CSL_OfficialC(Header) <alloca.h/../../include/Header>
+#define _CSL_Official(Header) <Arduino.h/../../arduino/Header>
+#define _CSL_OfficialC(Header) <alloca.h/../../include/Header>
 #else
-#define CSL_Official(Header) <c++/__GNUC__.__GNUC_MINOR__.__GNUC_PATCHLEVEL__/Header>
-#define CSL_OfficialC(Header) <_ansi.h/../../include/Header>
-#define CSL_OfficialB(Header) <bits/basic_file.h/../../Header>
+#define _CSL_Official(Header) <c++/__GNUC__.__GNUC_MINOR__.__GNUC_PATCHLEVEL__/Header>
+#define _CSL_OfficialC(Header) <_ansi.h/../../include/Header>
+#define _CSL_OfficialB(Header) <bits/basic_file.h/../../Header>
 #endif
 #define __GLIBC__ 2
 #define __GLIBC_MINOR__ 39

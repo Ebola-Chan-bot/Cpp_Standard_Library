@@ -20,7 +20,7 @@
 
 #ifndef ARDUINO_ARCH_AVR
 #include "Cpp_Standard_Library.h"
-#include CSL_Official(climits)
+#include _CSL_Official(climits)
 #else
 #include <limits.h>
 

@@ -17,7 +17,7 @@
 */
 #ifndef ARDUINO_ARCH_AVR
 #include "Cpp_Standard_Library.h"
-#include CSL_Official(cerrno)
+#include _CSL_Official(cerrno)
 #else
 #include <errno.h>
 #endif

@@ -65,5 +65,5 @@ public:
 }
 #else
 #include "Cpp_Standard_Library.h"
-#include CSL_Official(array)
+#include _CSL_Official(array)
 #endif

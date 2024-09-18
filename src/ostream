@@ -606,5 +606,5 @@ namespace std
 #pragma GCC visibility pop
 #else
 #include "Cpp_Standard_Library.h"
-#include CSL_Official(ostream)
+#include _CSL_Official(ostream)
 #endif

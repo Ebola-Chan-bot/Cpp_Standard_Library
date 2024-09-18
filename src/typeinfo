@@ -240,5 +240,5 @@ namespace std
 #endif
 #else
 #include "Cpp_Standard_Library.h"
-#include CSL_Official(typeinfo)
+#include _CSL_Official(typeinfo)
 #endif

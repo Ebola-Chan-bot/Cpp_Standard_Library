@@ -186,18 +186,13 @@ namespace std
 #endif
 #ifdef ARDUINO_ARCH_SAM
     // Workaround SAM 平台的 void_t bug
-    template <class... _Types>
-    struct void_s
+    template <typename... Ts>
+    struct _make_void
     {
-        using type = void;
-    };
-    template <class T, class... _Types>
-    struct void_s<T, _Types...>
-    {
-        using type = T;
+        typedef void type;
     };
     template <typename... _Types>
-    using void_t = typename void_s<_Types...>::type;
+    using void_t = typename _make_void<_Types...>::type;
 #else
     template <class... _Types>
     using void_t = void;
@@ -1151,8 +1146,8 @@ namespace std
 #endif // ARDUINO_ARCH_AVR
 #ifndef ARDUINO_ARCH_ESP32
     // __void_t (std::void_t for C++11)
-    template <typename...>
-    using __void_t = void;
+    template <typename... T>
+    using __void_t = void_t<T...>;
     /// @endcond
 #endif
 #ifdef ARDUINO_ARCH_AVR

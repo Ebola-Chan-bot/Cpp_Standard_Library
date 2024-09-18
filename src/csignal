@@ -43,7 +43,7 @@
 #pragma once
 #ifndef ARDUINO_ARCH_AVR
 #include "Cpp_Standard_Library.h"
-#include CSL_Official(csignal)
+#include _CSL_Official(csignal)
 #else
 #pragma GCC system_header
 #include <signal.h>
