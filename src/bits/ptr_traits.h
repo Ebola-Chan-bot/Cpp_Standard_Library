@@ -126,11 +126,6 @@ namespace std _GLIBCXX_VISIBILITY(default)
      */
     static pointer
     pointer_to(element_type &__r)
-#if __cpp_lib_concepts
-      requires requires {
-        { pointer::pointer_to(__r) } -> convertible_to<pointer>;
-      }
-#endif
     {
       return pointer::pointer_to(__r);
     }

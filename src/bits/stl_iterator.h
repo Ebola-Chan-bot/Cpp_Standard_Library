@@ -88,17 +88,6 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
    * @{
    */
 
-#if __glibcxx_concepts
-  namespace __detail
-  {
-    // Weaken iterator_category _Cat to _Limit if it is derived from that,
-    // otherwise use _Otherwise.
-    template<typename _Cat, typename _Limit, typename _Otherwise = _Cat>
-      using __clamp_iter_cat
-	= __conditional_t<derived_from<_Cat, _Limit>, _Limit, _Otherwise>;
-  }
-#endif
-
 // Ignore warnings about std::iterator.
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
@@ -523,14 +512,6 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
       template<typename _Iter2>
 	friend class move_iterator;
 
-#if __glibcxx_concepts // C++20 && concepts
-      // _GLIBCXX_RESOLVE_LIB_DEFECTS
-      // 3435. three_way_comparable_with<reverse_iterator<int*>, [...]>
-      template<typename _Iter2>
-	static constexpr bool __convertible = !is_same_v<_Iter2, _Iterator>
-	    && convertible_to<const _Iter2&, _Iterator>;
-#endif
-
 #if __cplusplus > 201703L && __glibcxx_concepts
       static auto
       _S_iter_concept()
@@ -580,18 +561,11 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
       : _M_current(std::move(__i)) { }
 
       template<typename _Iter>
-#if __glibcxx_concepts
-	requires __convertible<_Iter>
-#endif
 	_GLIBCXX17_CONSTEXPR
 	move_iterator(const move_iterator<_Iter>& __i)
 	: _M_current(__i._M_current) { }
 
       template<typename _Iter>
-#if __glibcxx_concepts
-	requires __convertible<_Iter>
-	  && assignable_from<_Iterator&, const _Iter&>
-#endif
 	_GLIBCXX17_CONSTEXPR
 	move_iterator& operator=(const move_iterator<_Iter>& __i)
 	{
@@ -644,12 +618,6 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 	++_M_current;
 	return __tmp;
       }
-
-#if __glibcxx_concepts
-      constexpr void
-      operator++(int) requires (!forward_iterator<_Iterator>)
-      { ++_M_current; }
-#endif
 
       _GLIBCXX17_CONSTEXPR move_iterator&
       operator--()

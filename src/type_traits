@@ -1684,6 +1684,11 @@ namespace std
     {
     };
     // 1541
+    // 1586
+    // helper trait for unique_ptr<T[]>, shared_ptr<T[]>, and span<T, N>
+    template <typename _ToElementType, typename _FromElementType>
+    using __is_array_convertible = is_convertible<_FromElementType (*)[], _ToElementType (*)[]>;
+    // 1591
     //   1599
     //   Const-volatile modifications.
 

@@ -905,7 +905,7 @@
 #undef __glibcxx_want_bounded_array_traits
 
 #if !defined(__cpp_lib_concepts)
-#if (__cplusplus >= 202002L) && (__cpp_concepts >= 201907L)
+#if (__cplusplus >= 202002L) && (__cpp_concepts >= 201907L) || !defined ARDUINO_ARCH_ESP32
 #define __glibcxx_concepts 202002L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_concepts)
 #define __cpp_lib_concepts 202002L
@@ -1083,7 +1083,7 @@
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_span)
 #define __cpp_lib_span 202311L
 #endif
-#elif (__cplusplus >= 202002L) && (__glibcxx_concepts)
+#elif (__cplusplus >= 202002L) && (__glibcxx_concepts) || !defined ARDUINO_ARCH_ESP32
 #define __glibcxx_span 202002L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_span)
 #define __cpp_lib_span 202002L
