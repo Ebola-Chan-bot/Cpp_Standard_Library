@@ -224,9 +224,19 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		// ITER_CONCEPT
 		template <typename _Iter>
 		using __iter_concept = typename __iter_concept_impl<_Iter>::type;
+		// 535
+		template <typename T>
+		concept _CSL_RequiresTypename = same_as<void, std::void_t<T>>;
+		template <typename _In>
+		concept __indirectly_readable_impl =
+			_CSL_RequiresTypename<iter_value_t<_In>> && _CSL_RequiresTypename<iter_reference_t<_In>> && _CSL_RequiresTypename<iter_rvalue_reference_t<_In>> && same_as<iter_reference_t<const _In>, iter_reference_t<_In>> && same_as<iter_rvalue_reference_t<const _In>, iter_rvalue_reference_t<_In>> && common_reference_with<iter_reference_t<_In> &&, iter_value_t<_In> &> && common_reference_with<iter_reference_t<_In> &&, iter_rvalue_reference_t<_In> &&> && common_reference_with<iter_rvalue_reference_t<_In> &&, const iter_value_t<_In> &>;
 
 	} // namespace __detail
 
+	/// Requirements for types that are readable by applying operator*.
+	template <typename _In>
+	concept indirectly_readable = __detail::__indirectly_readable_impl<remove_cvref_t<_In>>;
+	// 559
 	namespace __detail
 	{
 		template <typename _Tp>
@@ -240,7 +250,15 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 	template <typename _Tp>
 	using __indirect_value_t = typename __detail::__indirect_value<_Tp>::type;
-
+	// 575
+	/// Requirements for writing a value into an iterator's referenced object.
+	template <typename _Out, typename _Tp>
+	concept indirectly_writable =
+#define __o std::declval<_Out &&>()
+#define __t std::declval<_Tp &&>()
+#define _CSL_RequiresExpression(Expr) same_as<void, std::void_t<decltype(Expr)>>
+		_CSL_RequiresExpression(*__o = std::forward<_Tp>(__t)) && _CSL_RequiresExpression(*std::forward<_Out>(__o) = std::forward<_Tp>(__t)) && _CSL_RequiresExpression(const_cast<const iter_reference_t<_Out> &&>(*__o) = std::forward<_Tp>(__t)) && _CSL_RequiresExpression(const_cast<const iter_reference_t<_Out> &&>(*std::forward<_Out>(__o)) = std::forward<_Tp>(__t));
+	// 587
 	namespace ranges::__detail
 	{
 		class __max_diff_type;
@@ -283,48 +301,49 @@ namespace std _GLIBCXX_VISIBILITY(default)
 	{
 		using ranges::__detail::__is_signed_integer_like;
 	}
+#define _CSL_RequiresExpressionType(Expr, Type) same_as<Type, decltype(Expr)>
 	// 633
 	/// Requirements on types that can be incremented with ++.
 	template <typename _Iter>
-	concept weakly_incrementable = movable<_Iter> && requires(_Iter __i) {
-		typename iter_difference_t<_Iter>;
-		requires __detail::__is_signed_integer_like<iter_difference_t<_Iter>>;
-		{ ++__i } -> same_as<_Iter &>;
-		__i++;
-	};
+	concept weakly_incrementable = movable<_Iter>
+#define __i std::declval<_Iter>()
+								   && _CSL_RequiresTypename<iter_difference_t<_Iter>> && _CSL_RequiresTypename<__detail::__is_signed_integer_like<iter_difference_t<_Iter>>> && _CSL_RequiresExpressionType(++__i, _Iter &) && _CSL_RequiresExpression(__i++);
 
 	template <typename _Iter>
-	concept incrementable = regular<_Iter> && weakly_incrementable<_Iter> && requires(_Iter __i) { { __i++ } -> same_as<_Iter>; };
+	concept incrementable = regular<_Iter> && weakly_incrementable<_Iter> && _CSL_RequiresExpressionType(__i++, _Iter);
 
 	template <typename _Iter>
-	concept input_or_output_iterator = requires(_Iter __i) { { *__i } -> __detail::__can_reference; } && weakly_incrementable<_Iter>;
-	// 653
+	concept input_or_output_iterator = same_as<decltype(*std::declval<_Iter>()), __detail::__can_reference>;
+
+	template <typename _Sent, typename _Iter>
+	concept sentinel_for = semiregular<_Sent> && input_or_output_iterator<_Iter> && __detail::__weakly_eq_cmp_with<_Sent, _Iter>;
+
 	template <typename _Sent, typename _Iter>
 	inline constexpr bool disable_sized_sentinel_for = false;
 	// 670
 	template <typename _Iter>
-	concept input_iterator = input_or_output_iterator<_Iter> && indirectly_readable<_Iter> && requires { typename __detail::__iter_concept<_Iter>; } && derived_from<__detail::__iter_concept<_Iter>, input_iterator_tag>;
+	concept input_iterator = input_or_output_iterator<_Iter> && indirectly_readable<_Iter> && same_as<void, std::void_t<__detail::__iter_concept<_Iter>>> && derived_from<__detail::__iter_concept<_Iter>, input_iterator_tag>;
 
 	template <typename _Iter, typename _Tp>
-	concept output_iterator = input_or_output_iterator<_Iter> && indirectly_writable<_Iter, _Tp> && requires(_Iter __i, _Tp &&__t) { *__i++ = std::forward<_Tp>(__t); };
+	concept output_iterator = input_or_output_iterator<_Iter> && indirectly_writable<_Iter, _Tp>
+#define __t std::declval<_Tp>()
+							  && same_as<void, std::void_t<decltype(*__i++ = std::forward<_Tp>(__t))>>;
 
 	template <typename _Iter>
 	concept forward_iterator = input_iterator<_Iter> && derived_from<__detail::__iter_concept<_Iter>, forward_iterator_tag> && incrementable<_Iter> && sentinel_for<_Iter, _Iter>;
 
 	template <typename _Iter>
-	concept bidirectional_iterator = forward_iterator<_Iter> && derived_from<__detail::__iter_concept<_Iter>, bidirectional_iterator_tag>
-#define __i std::declval<_Iter>()
-									 && same_as<_Iter &, decltype(--__i)> && same_as<_Iter, decltype(__i--)>;
+	concept bidirectional_iterator = forward_iterator<_Iter> && derived_from<__detail::__iter_concept<_Iter>, bidirectional_iterator_tag> && same_as<_Iter &, decltype(--__i)> && same_as<_Iter, decltype(__i--)>;
 
 	template <typename _Iter>
 	concept random_access_iterator = bidirectional_iterator<_Iter> && derived_from<__detail::__iter_concept<_Iter>, random_access_iterator_tag> && totally_ordered<_Iter> && sized_sentinel_for<_Iter, _Iter>
-#define __i std::declval<_Iter>()
 #define __j std::declval<const _Iter>()
 #define __n std::declval<iter_difference_t<_Iter>>()
 									 && same_as<_Iter &, decltype(__i += __n)> && same_as<_Iter, decltype(__j + __n)> && same_as<_Iter, decltype(__n + __j)> && same_as<_Iter &, decltype(__i -= __n)> && same_as<_Iter, decltype(__j - __n)> && same_as<iter_reference_t<_Iter>, decltype(__j[__n])>;
 #undef __i
 #undef __j
 #undef __n
+#undef __t
 
 	template <typename _Iter>
 	concept contiguous_iterator = random_access_iterator<_Iter> && derived_from<__detail::__iter_concept<_Iter>, contiguous_iterator_tag> && is_lvalue_reference_v<iter_reference_t<_Iter>> && same_as<iter_value_t<_Iter>, remove_cvref_t<iter_reference_t<_Iter>>> && same_as<decltype(std::to_address(std::declval<const _Iter &>())), add_pointer_t<iter_reference_t<_Iter>>>;
@@ -343,13 +362,6 @@ namespace std _GLIBCXX_VISIBILITY(default)
 				using __projected_Iter = _Iter;
 				using __projected_Proj = _Proj;
 			};
-		};
-
-		// Optimize the common case of the projection being std::identity.
-		template <typename _Iter>
-		struct __projected<_Iter, identity>
-		{
-			using __type = _Iter;
 		};
 	} // namespace __detail
 
@@ -385,20 +397,9 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 	} // namespace ranges
 
-	/// [alg.req.ind.cmp], concept `indirectly_comparable`
-	template <typename _I1, typename _I2, typename _Rel, typename _P1 = identity,
-			  typename _P2 = identity>
-	concept indirectly_comparable = indirect_binary_predicate<_Rel, projected<_I1, _P1>,
-															  projected<_I2, _P2>>;
-
 	/// [alg.req.permutable], concept `permutable`
 	template <typename _Iter>
 	concept permutable = forward_iterator<_Iter> && indirectly_movable_storable<_Iter, _Iter> && indirectly_swappable<_Iter, _Iter>;
-
-	/// [alg.req.sortable], concept `sortable`
-	template <typename _Iter, typename _Rel = ranges::less,
-			  typename _Proj = identity>
-	concept sortable = permutable<_Iter> && indirect_strict_weak_order<_Rel, projected<_Iter, _Proj>>;
 
 	struct unreachable_sentinel_t
 	{

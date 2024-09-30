@@ -124,8 +124,12 @@ namespace std _GLIBCXX_VISIBILITY(default)
 	/// [concept.constructible], concept constructible_from
 	template <typename _Tp, typename... _Args>
 	concept constructible_from = destructible<_Tp> && is_constructible_v<_Tp, _Args...>;
-
-	// [concept.swappable], concept swappable
+	// 172
+	/// [concept.moveconstructible], concept move_constructible
+	template <typename _Tp>
+	concept move_constructible = constructible_from<_Tp, _Tp> && convertible_to<_Tp, _Tp>;
+	// 177
+	//  [concept.swappable], concept swappable
 
 	namespace ranges
 	{
@@ -148,8 +152,17 @@ namespace std _GLIBCXX_VISIBILITY(default)
 			inline constexpr __swap::_Swap swap{};
 		}
 	} // namespace ranges
+	// 269
+	//  [concepts.object], Object concepts
 
-	// [concepts.callable], callable concepts
+	template <typename _Tp>
+	concept movable = is_object_v<_Tp> && move_constructible<_Tp> && assignable_from<_Tp &, _Tp> && swappable<_Tp>;
+	// 275
+	// 354
+	template <typename _Tp>
+	concept regular = semiregular<_Tp> && equality_comparable<_Tp>;
+	// 357
+	//  [concepts.callable], callable concepts
 
 	/// [concept.invocable], concept invocable
 	template <typename _Fn, typename... _Args>
