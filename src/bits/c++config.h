@@ -126,14 +126,14 @@
 #endif
 
 #if __cplusplus > 201400L
-#define _STRUCT14VALUE(StructValue, Arguments...) StructValue<Arguments>
+#define _CSL_STRUCT14VALUE(StructValue, Arguments...) StructValue<Arguments>
 #define _STRUCT14VALUEV(StructValue, Arguments...) StructValue##v<Arguments>
-#define _STRUCT14VALUE_V(StructValue, Arguments...) StructValue##_v<Arguments>
+#define _CSL_STRUCT14VALUE_V(StructValue, Arguments...) StructValue##_v<Arguments>
 #else
 #define _GLIBCXX14_CONSTEXPR
-#define _STRUCT14VALUE(StructValue, Arguments...) StructValue<Arguments>::value
+#define _CSL_STRUCT14VALUE(StructValue, Arguments...) StructValue<Arguments>::value
 #define _STRUCT14VALUEV(StructValue, Arguments...) StructValue<Arguments>::value
-#define _STRUCT14VALUE_V(StructValue, Arguments...) StructValue<Arguments>::value
+#define _CSL_STRUCT14VALUE_V(StructValue, Arguments...) StructValue<Arguments>::value
 #endif
 
 // 861

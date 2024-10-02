@@ -119,10 +119,10 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		}
 
 		/// Stores a target object initialized from the argument.
-		template <typename _Fn, typename _Vt = decay_t<_Fn>, typename = enable_if_t<(!_STRUCT14VALUE_V(is_same, _Vt, move_only_function)) && (!_STRUCT14VALUE_V(__is_in_place_type, _Vt)) && _STRUCT14VALUE(__is_callable_from, _Vt)>>
+		template <typename _Fn, typename _Vt = decay_t<_Fn>, typename = enable_if_t<(!_CSL_STRUCT14VALUE_V(is_same, _Vt, move_only_function)) && (!_CSL_STRUCT14VALUE_V(__is_in_place_type, _Vt)) && _CSL_STRUCT14VALUE(__is_callable_from, _Vt)>>
 		move_only_function(_Fn &&__f) noexcept(_S_nothrow_init<_Vt, _Fn>())
 		{
-			if _GLIBCXX14_CONSTEXPR (_STRUCT14VALUE_V(is_function, remove_pointer_t<_Vt>) || _STRUCT14VALUE_V(is_member_pointer, _Vt) || _STRUCT14VALUE_V(__is_move_only_function, _Vt))
+			if _GLIBCXX14_CONSTEXPR (_CSL_STRUCT14VALUE_V(is_function, remove_pointer_t<_Vt>) || _CSL_STRUCT14VALUE_V(is_member_pointer, _Vt) || _CSL_STRUCT14VALUE_V(__is_move_only_function, _Vt))
 			{
 				if (_ValidAndNull(__f))
 					return;
@@ -133,20 +133,20 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 		/// Stores a target object initialized from the arguments.
 		template <typename _Tp, typename... _Args>
-		explicit move_only_function(in_place_type_t<_Tp>, _Args &&...__args, enable_if_t<_STRUCT14VALUE_V(is_constructible, _Tp, _Args...) && _STRUCT14VALUE(__is_callable_from, _Tp), int> = 0) noexcept(_S_nothrow_init<_Tp, _Args...>())
+		explicit move_only_function(in_place_type_t<_Tp>, _Args &&...__args, enable_if_t<_CSL_STRUCT14VALUE_V(is_constructible, _Tp, _Args...) && _CSL_STRUCT14VALUE(__is_callable_from, _Tp), int> = 0) noexcept(_S_nothrow_init<_Tp, _Args...>())
 			: _M_invoke(&_S_invoke<_Tp>)
 		{
-			_GLIBCXX17_STATIC_ASSERT(_STRUCT14VALUE_V(is_same, decay_t<_Tp>, _Tp));
+			_GLIBCXX17_STATIC_ASSERT(_CSL_STRUCT14VALUE_V(is_same, decay_t<_Tp>, _Tp));
 			_M_init<_Tp>(std::forward<_Args>(__args)...);
 		}
 
 		/// Stores a target object initialized from the arguments.
 		template <typename _Tp, typename _Up, typename... _Args>
 		explicit move_only_function(in_place_type_t<_Tp>, initializer_list<_Up> __il,
-									_Args &&...__args, enable_if_t<_STRUCT14VALUE_V(is_constructible, _Tp, initializer_list<_Up> &, _Args...) && _STRUCT14VALUE(__is_callable_from, _Tp), int> = 0) noexcept(_S_nothrow_init<_Tp, initializer_list<_Up> &, _Args...>())
+									_Args &&...__args, enable_if_t<_CSL_STRUCT14VALUE_V(is_constructible, _Tp, initializer_list<_Up> &, _Args...) && _CSL_STRUCT14VALUE(__is_callable_from, _Tp), int> = 0) noexcept(_S_nothrow_init<_Tp, initializer_list<_Up> &, _Args...>())
 			: _M_invoke(&_S_invoke<_Tp>)
 		{
-			_GLIBCXX17_STATIC_ASSERT(_STRUCT14VALUE_V(is_same, decay_t<_Tp>, _Tp));
+			_GLIBCXX17_STATIC_ASSERT(_CSL_STRUCT14VALUE_V(is_same, decay_t<_Tp>, _Tp));
 			_M_init<_Tp>(__il, std::forward<_Args>(__args)...);
 		}
 
@@ -170,8 +170,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 		/// Stores a new target object, initialized from the argument.
 		template <typename _Fn>
-		enable_if_t<_STRUCT14VALUE_V(is_constructible, move_only_function, _Fn), move_only_function &>
-		operator=(_Fn &&__f) noexcept(_STRUCT14VALUE_V(is_nothrow_constructible, move_only_function, _Fn))
+		enable_if_t<_CSL_STRUCT14VALUE_V(is_constructible, move_only_function, _Fn), move_only_function &>
+		operator=(_Fn &&__f) noexcept(_CSL_STRUCT14VALUE_V(is_nothrow_constructible, move_only_function, _Fn))
 		{
 			move_only_function(std::forward<_Fn>(__f)).swap(*this);
 			return *this;
@@ -221,7 +221,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 	private:
 		template <typename _Tp>
-		using __param_t = __conditional_t<_STRUCT14VALUE_V(is_scalar, _Tp), _Tp, _Tp &&>;
+		using __param_t = __conditional_t<_CSL_STRUCT14VALUE_V(is_scalar, _Tp), _Tp, _Tp &&>;
 
 		using _Invoker = _Res (*)(_Mofunc_base _GLIBCXX_MOF_CV *,
 								  __param_t<_ArgTypes>...) noexcept(_Noex);

@@ -27,25 +27,18 @@
  *  This is an internal header file, included by other library headers.
  *  Do not attempt to use it directly. @headername{memory}
  */
-
-#if __cplusplus >= 201103L
-#ifdef ARDUINO_ARCH_AVR
-#include <bits/move.h>
-
-#if __cplusplus > 201703L
+#ifndef ARDUINO_ARCH_ESP32
+#include <bits/move.h>//SAM的ptr_traits未包含move会导致编译错误，所以必须前置
+#endif
+#ifndef ARDUINO_ARCH_AVR
+#include_next <bits/ptr_traits.h>
+#endif
+#ifndef ARDUINO_ARCH_ESP32
 #include <concepts>
 namespace __gnu_debug
 {
   struct _Safe_iterator_base;
 }
-#endif
-#else
-#include_next <bits/ptr_traits.h>
-#endif
-#ifdef ARDUINO_ARCH_SAM
-#include <bits/c++config.h>
-#endif
-#ifndef ARDUINO_ARCH_ESP32
 namespace std _GLIBCXX_VISIBILITY(default)
 {
   _GLIBCXX_BEGIN_NAMESPACE_VERSION
@@ -270,9 +263,9 @@ namespace std _GLIBCXX_VISIBILITY(default)
   constexpr auto
   to_address(const _Ptr &__ptr) noexcept
   {
-    if constexpr (requires { pointer_traits<_Ptr>::to_address(__ptr); })
+    if _GLIBCXX17_CONSTEXPR (_CSL_RequiresExpression(pointer_traits<_Ptr>::to_address(__ptr)))
       return pointer_traits<_Ptr>::to_address(__ptr);
-    else if constexpr (is_base_of_v<__gnu_debug::_Safe_iterator_base, _Ptr>)
+    else if _GLIBCXX17_CONSTEXPR (is_base_of_v<__gnu_debug::_Safe_iterator_base, _Ptr>)
       return std::to_address(__ptr.base().operator->());
     else
       return std::to_address(__ptr.operator->());
@@ -292,5 +285,4 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
   _GLIBCXX_END_NAMESPACE_VERSION
 } // namespace std
-#endif
 #endif

@@ -519,7 +519,7 @@
 #undef __glibcxx_want_not_fn
 
 #if !defined(__cpp_lib_type_trait_variable_templates)
-#if (__cplusplus >= 201703L)
+#if (__cplusplus >= 201703L) || !defined ARDUINO_ARCH_ESP32
 #define __glibcxx_type_trait_variable_templates 201510L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_type_trait_variable_templates)
 #define __cpp_lib_type_trait_variable_templates 201510L
@@ -1018,7 +1018,7 @@
 #undef __glibcxx_want_is_layout_compatible
 
 #if !defined(__cpp_lib_is_nothrow_convertible)
-#if (__cplusplus >= 202002L)
+#if (__cplusplus >= 202002L) || !defined ARDUINO_ARCH_ESP32
 #define __glibcxx_is_nothrow_convertible 201806L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_is_nothrow_convertible)
 #define __cpp_lib_is_nothrow_convertible 201806L
@@ -1113,7 +1113,7 @@
 #undef __glibcxx_want_three_way_comparison
 
 #if !defined(__cpp_lib_to_address)
-#if (__cplusplus >= 202002L)
+#if (__cplusplus >= 202002L) || !defined ARDUINO_ARCH_ESP32
 #define __glibcxx_to_address 201711L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_to_address)
 #define __cpp_lib_to_address 201711L
@@ -1133,7 +1133,7 @@
 #undef __glibcxx_want_to_array
 
 #if !defined(__cpp_lib_type_identity)
-#if (__cplusplus >= 202002L)
+#if (__cplusplus >= 202002L) || !defined ARDUINO_ARCH_ESP32
 #define __glibcxx_type_identity 201806L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_type_identity)
 #define __cpp_lib_type_identity 201806L

@@ -38,7 +38,6 @@
 #pragma GCC system_header
 #endif
 
-#include <concepts>
 #include <bits/ptr_traits.h> // to_address
 
 #pragma GCC diagnostic push
@@ -67,7 +66,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 	};
 
 	/// A default sentinel value.
-	inline constexpr default_sentinel_t default_sentinel{};
+	_GLIBCXX17_INLINE constexpr default_sentinel_t default_sentinel{};
 
 #if __cpp_lib_concepts
 	struct input_iterator_tag;
@@ -81,7 +80,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 	struct iterator_traits;
 
 	template <typename _Iterator, typename>
-	struct __iterator_traits;
+	struct _CSL__iterator_traits; // GCC原文中没有CSL前缀，但是会跟SAM标准库冲突
 
 	namespace __detail
 	{
@@ -89,10 +88,10 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		using __with_ref = _Tp &;
 
 		template <typename _Tp>
-		concept __can_reference = is_same_v<void_t<__with_ref<_Tp>>, void>;
+		_CSL_Concept(__can_reference, is_same_v<void_t<__with_ref<_Tp>>, void>);
 
 		template <typename _Tp>
-		concept __dereferenceable = is_same_v<decltype(*declval<_Tp &>()), __can_reference>;
+		_CSL_Concept(__dereferenceable, is_same_v<decltype(*declval<_Tp &>()), __can_reference>);
 	} // namespace __detail
 
 	template <typename _Tp, typename = enable_if_t<__detail::__dereferenceable<_Tp>>>
@@ -115,15 +114,24 @@ namespace std _GLIBCXX_VISIBILITY(default)
 				};
 
 			public:
+
+#define _CSL_TemplateConcept(Concept, Type) typename Type, typename = enable_if_t<Concept<Type>>
+
+				// The result type of iter_move(std::declval<_Tp>())
+				template <_CSL_TemplateConcept(std::__detail::__dereferenceable, _Tp)>
+				using __type = typename __result<_Tp>::type;
 			};
 		} // namespace __imove
 		/// @endcond
 
 		inline namespace _Cpo
 		{
-			inline constexpr __imove::_IterMove iter_move{};
+			_GLIBCXX17_INLINE constexpr __imove::_IterMove iter_move{};
 		}
 	} // namespace ranges
+
+	template <typename _Tp, typename = enable_if_t<__detail::__dereferenceable<_Tp> && __detail::__can_reference<ranges::__imove::_IterMove::__type<_Tp &>>>>
+	using iter_rvalue_reference_t = ranges::__imove::_IterMove::__type<_Tp &>;
 
 	template <typename>
 	struct incrementable_traits
@@ -156,7 +164,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		// An iterator such that iterator_traits<_Iter> names a specialization
 		// generated from the primary template.
 		template <typename _Iter>
-		concept __primary_traits_iter = __is_base_of(__iterator_traits<_Iter, void>, iterator_traits<_Iter>);
+		_CSL_Concept(__primary_traits_iter, __is_base_of(_CSL__iterator_traits<_Iter, void>, iterator_traits<_Iter>));
 
 		template <typename _Iter, typename _Tp>
 		struct __iter_traits_impl
@@ -210,6 +218,9 @@ namespace std _GLIBCXX_VISIBILITY(default)
 	template <typename _Tp>
 	using iter_value_t = __detail::__iter_value_t<remove_cvref_t<_Tp>>;
 
+	template <typename T>
+	_CSL_Concept(_CSL_RequiresTypename, same_as<void, std::void_t<T>>);
+
 	namespace __detail
 	{
 		template <typename _Iter>
@@ -225,17 +236,14 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		template <typename _Iter>
 		using __iter_concept = typename __iter_concept_impl<_Iter>::type;
 		// 535
-		template <typename T>
-		concept _CSL_RequiresTypename = same_as<void, std::void_t<T>>;
 		template <typename _In>
-		concept __indirectly_readable_impl =
-			_CSL_RequiresTypename<iter_value_t<_In>> && _CSL_RequiresTypename<iter_reference_t<_In>> && _CSL_RequiresTypename<iter_rvalue_reference_t<_In>> && same_as<iter_reference_t<const _In>, iter_reference_t<_In>> && same_as<iter_rvalue_reference_t<const _In>, iter_rvalue_reference_t<_In>> && common_reference_with<iter_reference_t<_In> &&, iter_value_t<_In> &> && common_reference_with<iter_reference_t<_In> &&, iter_rvalue_reference_t<_In> &&> && common_reference_with<iter_rvalue_reference_t<_In> &&, const iter_value_t<_In> &>;
+		_CSL_Concept(__indirectly_readable_impl, _CSL_RequiresTypename<iter_value_t<_In>> &&_CSL_RequiresTypename<iter_reference_t<_In>> &&_CSL_RequiresTypename<iter_rvalue_reference_t<_In>> &&same_as<iter_reference_t<const _In>, iter_reference_t<_In>> _CSL_Parentheses11 &&same_as<iter_rvalue_reference_t<const _In>, iter_rvalue_reference_t<_In>> _CSL_Parentheses11 &&common_reference_with<iter_reference_t<_In> &&, iter_value_t<_In> &> _CSL_Parentheses11 &&common_reference_with<iter_reference_t<_In> &&, iter_rvalue_reference_t<_In> &&> _CSL_Parentheses11 &&common_reference_with<iter_rvalue_reference_t<_In> &&, const iter_value_t<_In> &> _CSL_Parentheses11);
 
 	} // namespace __detail
 
 	/// Requirements for types that are readable by applying operator*.
 	template <typename _In>
-	concept indirectly_readable = __detail::__indirectly_readable_impl<remove_cvref_t<_In>>;
+	_CSL_Concept(indirectly_readable, __detail::__indirectly_readable_impl<remove_cvref_t<_In>> _CSL_Parentheses11);
 	// 559
 	namespace __detail
 	{
@@ -252,179 +260,145 @@ namespace std _GLIBCXX_VISIBILITY(default)
 	using __indirect_value_t = typename __detail::__indirect_value<_Tp>::type;
 	// 575
 	/// Requirements for writing a value into an iterator's referenced object.
-	template <typename _Out, typename _Tp>
-	concept indirectly_writable =
 #define __o std::declval<_Out &&>()
 #define __t std::declval<_Tp &&>()
-#define _CSL_RequiresExpression(Expr) same_as<void, std::void_t<decltype(Expr)>>
-		_CSL_RequiresExpression(*__o = std::forward<_Tp>(__t)) && _CSL_RequiresExpression(*std::forward<_Out>(__o) = std::forward<_Tp>(__t)) && _CSL_RequiresExpression(const_cast<const iter_reference_t<_Out> &&>(*__o) = std::forward<_Tp>(__t)) && _CSL_RequiresExpression(const_cast<const iter_reference_t<_Out> &&>(*std::forward<_Out>(__o)) = std::forward<_Tp>(__t));
+	template <typename _Out, typename _Tp>
+	_CSL_Concept(indirectly_writable, _CSL_RequiresExpression(*__o = std::forward<_Tp>(__t)) && _CSL_RequiresExpression(*std::forward<_Out>(__o) = std::forward<_Tp>(__t)) && _CSL_RequiresExpression(const_cast<const iter_reference_t<_Out> &&>(*__o) = std::forward<_Tp>(__t)) && _CSL_RequiresExpression(const_cast<const iter_reference_t<_Out> &&>(*std::forward<_Out>(__o)) = std::forward<_Tp>(__t)));
 	// 587
-	namespace ranges::__detail
+	namespace ranges
 	{
-		class __max_diff_type;
-		class __max_size_type;
+		namespace __detail
+		{
+			class __max_diff_type;
+			class __max_size_type;
 
-		__extension__ template <typename _Tp>
-		concept __is_signed_int128
+			__extension__ template <typename _Tp>
+			constexpr bool __is_signed_int128
 #if __SIZEOF_INT128__
-			= same_as<_Tp, __int128>;
+				_CSL_Function17Variable(same_as<_Tp, __int128>);
 #else
-			= false;
+				_CSL_Function17Variable(false);
 #endif
 
-		__extension__ template <typename _Tp>
-		concept __is_unsigned_int128
+			__extension__ template <typename _Tp>
+			constexpr bool __is_unsigned_int128
 #if __SIZEOF_INT128__
-			= same_as<_Tp, unsigned __int128>;
+				_CSL_Function17Variable(same_as<_Tp, unsigned __int128>);
 #else
-			= false;
+				_CSL_Function17Variable(false);
 #endif
 
-		template <typename _Tp>
-		concept __cv_bool = same_as<const volatile _Tp, const volatile bool>;
+			template <typename _Tp>
+			_CSL_Concept(__cv_bool, same_as<const volatile _Tp, const volatile bool> _CSL_Parentheses11);
 
-		template <typename _Tp>
-		concept __integral_nonbool = integral<_Tp> && !__cv_bool<_Tp>;
+			template <typename _Tp>
+			_CSL_Concept(__integral_nonbool, integral<_Tp> _CSL_Parentheses11 && !__cv_bool<_Tp> _CSL_Parentheses11);
 
-		template <typename _Tp>
-		concept __is_int128 = __is_signed_int128<_Tp> || __is_unsigned_int128<_Tp>;
+			template <typename _Tp>
+			_CSL_Concept(__is_int128, __is_signed_int128<_Tp> _CSL_Parentheses11 || __is_unsigned_int128<_Tp> _CSL_Parentheses11);
 
-		template <typename _Tp>
-		concept __is_integer_like = __integral_nonbool<_Tp> || __is_int128<_Tp> || same_as<_Tp, __max_diff_type> || same_as<_Tp, __max_size_type>;
+			template <typename _Tp>
+			_CSL_Concept(__is_integer_like, __integral_nonbool<_Tp> _CSL_Parentheses11 || __is_int128<_Tp> _CSL_Parentheses11 || same_as<_Tp, __max_diff_type> _CSL_Parentheses11 || same_as<_Tp, __max_size_type> _CSL_Parentheses11);
 
-		template <typename _Tp>
-		concept __is_signed_integer_like = signed_integral<_Tp> || __is_signed_int128<_Tp> || same_as<_Tp, __max_diff_type>;
+			template <typename _Tp>
+			_CSL_Concept(__is_signed_integer_like, signed_integral<_Tp> _CSL_Parentheses11 || __is_signed_int128<_Tp> _CSL_Parentheses11 || same_as<_Tp, __max_diff_type> _CSL_Parentheses11);
 
+		}
 	} // namespace ranges::__detail
 
 	namespace __detail
 	{
 		using ranges::__detail::__is_signed_integer_like;
 	}
-#define _CSL_RequiresExpressionType(Expr, Type) same_as<Type, decltype(Expr)>
 	// 633
 	/// Requirements on types that can be incremented with ++.
-	template <typename _Iter>
-	concept weakly_incrementable = movable<_Iter>
 #define __i std::declval<_Iter>()
-								   && _CSL_RequiresTypename<iter_difference_t<_Iter>> && _CSL_RequiresTypename<__detail::__is_signed_integer_like<iter_difference_t<_Iter>>> && _CSL_RequiresExpressionType(++__i, _Iter &) && _CSL_RequiresExpression(__i++);
+	template <typename _Iter>
+	_CSL_Concept(weakly_incrementable, movable<_Iter> _CSL_Parentheses11 &&_CSL_RequiresTypename<iter_difference_t<_Iter>> &&_CSL_RequiresTypename<__detail::__is_signed_integer_like<iter_difference_t<_Iter>>> &&_CSL_RequiresExpressionType(++__i, _Iter &) && _CSL_RequiresExpression(__i++));
 
 	template <typename _Iter>
-	concept incrementable = regular<_Iter> && weakly_incrementable<_Iter> && _CSL_RequiresExpressionType(__i++, _Iter);
+	_CSL_Concept(incrementable, regular<_Iter> _CSL_Parentheses11 &&weakly_incrementable<_Iter> _CSL_Parentheses11 &&_CSL_RequiresExpressionType(__i++, _Iter));
 
 	template <typename _Iter>
-	concept input_or_output_iterator = same_as<decltype(*std::declval<_Iter>()), __detail::__can_reference>;
+	_CSL_Concept(input_or_output_iterator, same_as<decltype(*std::declval<_Iter>()), __detail::__can_reference> _CSL_Parentheses11);
 
 	template <typename _Sent, typename _Iter>
-	concept sentinel_for = semiregular<_Sent> && input_or_output_iterator<_Iter> && __detail::__weakly_eq_cmp_with<_Sent, _Iter>;
+	_CSL_Concept(sentinel_for, semiregular<_Sent> _CSL_Parentheses11 &&input_or_output_iterator<_Iter> _CSL_Parentheses11 &&__detail::__weakly_eq_cmp_with<_Sent, _Iter> _CSL_Parentheses11);
 
 	template <typename _Sent, typename _Iter>
-	inline constexpr bool disable_sized_sentinel_for = false;
-	// 670
-	template <typename _Iter>
-	concept input_iterator = input_or_output_iterator<_Iter> && indirectly_readable<_Iter> && same_as<void, std::void_t<__detail::__iter_concept<_Iter>>> && derived_from<__detail::__iter_concept<_Iter>, input_iterator_tag>;
+	_GLIBCXX17_INLINE _CSL_Concept(disable_sized_sentinel_for, false);
 
-	template <typename _Iter, typename _Tp>
-	concept output_iterator = input_or_output_iterator<_Iter> && indirectly_writable<_Iter, _Tp>
+#define __i std::declval<const _Iter &>()
+#define __s std::declval<const _Sent &>()
+	template <typename _Sent, typename _Iter>
+	_CSL_Concept(sized_sentinel_for, sentinel_for<_Sent, _Iter> _CSL_Parentheses11 && !disable_sized_sentinel_for<remove_cv_t<_Sent>, remove_cv_t<_Iter>> _CSL_Parentheses11 && _CSL_RequiresExpressionType(__i - __s, iter_difference_t<_Iter>) && _CSL_RequiresExpressionType(__s - __i, iter_difference_t<_Iter>));
+
+	template <typename _Iter>
+	_CSL_Concept(input_iterator, input_or_output_iterator<_Iter> _CSL_Parentheses11 &&indirectly_readable<_Iter> _CSL_Parentheses11 &&same_as<void, std::void_t<__detail::__iter_concept<_Iter>>> _CSL_Parentheses11 &&derived_from<__detail::__iter_concept<_Iter>, input_iterator_tag> _CSL_Parentheses11);
+
 #define __t std::declval<_Tp>()
-							  && same_as<void, std::void_t<decltype(*__i++ = std::forward<_Tp>(__t))>>;
+	template <typename _Iter, typename _Tp>
+	_CSL_Concept(output_iterator, input_or_output_iterator<_Iter> _CSL_Parentheses11 &&indirectly_writable<_Iter, _Tp> _CSL_Parentheses11 &&same_as<void, std::void_t<decltype(*__i++ = std::forward<_Tp>(__t))>> _CSL_Parentheses11);
 
 	template <typename _Iter>
-	concept forward_iterator = input_iterator<_Iter> && derived_from<__detail::__iter_concept<_Iter>, forward_iterator_tag> && incrementable<_Iter> && sentinel_for<_Iter, _Iter>;
+	_CSL_Concept(forward_iterator, input_iterator<_Iter> _CSL_Parentheses11 &&derived_from<__detail::__iter_concept<_Iter>, forward_iterator_tag> _CSL_Parentheses11 &&incrementable<_Iter> _CSL_Parentheses11 &&sentinel_for<_Iter, _Iter> _CSL_Parentheses11);
 
 	template <typename _Iter>
-	concept bidirectional_iterator = forward_iterator<_Iter> && derived_from<__detail::__iter_concept<_Iter>, bidirectional_iterator_tag> && same_as<_Iter &, decltype(--__i)> && same_as<_Iter, decltype(__i--)>;
+	_CSL_Concept(bidirectional_iterator, forward_iterator<_Iter> _CSL_Parentheses11 &&derived_from<__detail::__iter_concept<_Iter>, bidirectional_iterator_tag> _CSL_Parentheses11 &&same_as<_Iter &, decltype(--__i)> _CSL_Parentheses11 &&same_as<_Iter, decltype(__i--)> _CSL_Parentheses11);
 
-	template <typename _Iter>
-	concept random_access_iterator = bidirectional_iterator<_Iter> && derived_from<__detail::__iter_concept<_Iter>, random_access_iterator_tag> && totally_ordered<_Iter> && sized_sentinel_for<_Iter, _Iter>
 #define __j std::declval<const _Iter>()
 #define __n std::declval<iter_difference_t<_Iter>>()
-									 && same_as<_Iter &, decltype(__i += __n)> && same_as<_Iter, decltype(__j + __n)> && same_as<_Iter, decltype(__n + __j)> && same_as<_Iter &, decltype(__i -= __n)> && same_as<_Iter, decltype(__j - __n)> && same_as<iter_reference_t<_Iter>, decltype(__j[__n])>;
-#undef __i
-#undef __j
-#undef __n
-#undef __t
+	template <typename _Iter>
+	_CSL_Concept(random_access_iterator, bidirectional_iterator<_Iter> _CSL_Parentheses11 &&derived_from<__detail::__iter_concept<_Iter>, random_access_iterator_tag> _CSL_Parentheses11 &&totally_ordered<_Iter> _CSL_Parentheses11 &&sized_sentinel_for<_Iter, _Iter> _CSL_Parentheses11 &&same_as<_Iter &, decltype(__i += __n)> _CSL_Parentheses11 &&same_as<_Iter, decltype(__j + __n)> _CSL_Parentheses11 &&same_as<_Iter, decltype(__n + __j)> _CSL_Parentheses11 &&same_as<_Iter &, decltype(__i -= __n)> _CSL_Parentheses11 &&same_as<_Iter, decltype(__j - __n)> _CSL_Parentheses11 &&same_as<iter_reference_t<_Iter>, decltype(__j[__n])> _CSL_Parentheses11);
 
 	template <typename _Iter>
-	concept contiguous_iterator = random_access_iterator<_Iter> && derived_from<__detail::__iter_concept<_Iter>, contiguous_iterator_tag> && is_lvalue_reference_v<iter_reference_t<_Iter>> && same_as<iter_value_t<_Iter>, remove_cvref_t<iter_reference_t<_Iter>>> && same_as<decltype(std::to_address(std::declval<const _Iter &>())), add_pointer_t<iter_reference_t<_Iter>>>;
+	_CSL_Concept(contiguous_iterator, random_access_iterator<_Iter> _CSL_Parentheses11 &&derived_from<__detail::__iter_concept<_Iter>, contiguous_iterator_tag> _CSL_Parentheses11 &&is_lvalue_reference_v<iter_reference_t<_Iter>> _CSL_Parentheses11 &&same_as<iter_value_t<_Iter>, remove_cvref_t<iter_reference_t<_Iter>>> _CSL_Parentheses11 &&same_as<decltype(std::to_address(std::declval<const _Iter &>())), add_pointer_t<iter_reference_t<_Iter>>> _CSL_Parentheses11);
 	// 723
-
-	namespace __detail
-	{
-		template <typename _Iter, typename _Proj>
-		struct __projected
-		{
-			struct __type
-			{
-
-				// These are used to identify and obtain the template arguments of a
-				// specialization of the 'projected' alias template below.
-				using __projected_Iter = _Iter;
-				using __projected_Proj = _Proj;
-			};
-		};
-	} // namespace __detail
-
+	// 1000
+	// This is the namespace for [range.access] CPOs.
 	namespace ranges
 	{
-		/// @cond undocumented
-		namespace __iswap
+		namespace __access
 		{
-			template <typename _It1, typename _It2>
-			void iter_swap(_It1, _It2) = delete;
+			using std::__detail::__class_or_enum;
 
-			template <typename _Xp, typename _Yp>
-			constexpr iter_value_t<_Xp>
-			__iter_exchange_move(_Xp &&__x, _Yp &&__y) noexcept(noexcept(iter_value_t<_Xp>(iter_move(__x))) && noexcept(*__x = iter_move(__y)))
+#undef __t
+			struct _Decay_copy final
 			{
-				iter_value_t<_Xp> __old_value(iter_move(__x));
-				*__x = iter_move(__y);
-				return __old_value;
-			}
+				template <typename _Tp>
+				constexpr decay_t<_Tp>
+				operator()(_Tp &&__t) const
+					noexcept(is_nothrow_convertible_v<_Tp, decay_t<_Tp>> _CSL_Parentheses11)
+				{
+					return std::forward<_Tp>(__t);
+				}
+			} _GLIBCXX17_INLINE constexpr __decay_copy{};
 
-			struct _IterSwap
-			{
-			private:
-			public:
-			};
-		} // namespace __iswap
-		/// @endcond
-
-		inline namespace _Cpo
-		{
-			inline constexpr __iswap::_IterSwap iter_swap{};
-		}
-
-	} // namespace ranges
-
-	/// [alg.req.permutable], concept `permutable`
-	template <typename _Iter>
-	concept permutable = forward_iterator<_Iter> && indirectly_movable_storable<_Iter, _Iter> && indirectly_swappable<_Iter, _Iter>;
-
-	struct unreachable_sentinel_t
-	{
-	};
-
-	inline constexpr unreachable_sentinel_t unreachable_sentinel{};
-
-	// This is the namespace for [range.access] CPOs.
-	namespace ranges::__access
-	{
-		using std::__detail::__class_or_enum;
-
-		struct _Decay_copy final
-		{
+#define __t std::declval<_Tp &>()
 			template <typename _Tp>
-			constexpr decay_t<_Tp>
-			operator()(_Tp &&__t) const
-				noexcept(is_nothrow_convertible_v<_Tp, decay_t<_Tp>>)
-			{
-				return std::forward<_Tp>(__t);
-			}
-		} inline constexpr __decay_copy{};
+			_CSL_Concept(__member_begin, input_or_output_iterator<decltype(__decay_copy(__t.begin()))> _CSL_Parentheses11);
+#if __cplusplus > 201103L
+			// Poison pill so that unqualified lookup doesn't find std::begin.
+			void begin() = delete;
+#endif
+			template <typename _Tp>
+			_CSL_Concept(__adl_begin, __class_or_enum<remove_reference_t<_Tp>> _CSL_Parentheses11 &&input_or_output_iterator<decltype(__decay_copy(begin(__t)))> _CSL_Parentheses11);
 
-		// Poison pill so that unqualified lookup doesn't find std::begin.
-		void begin() = delete;
+#undef __t
+			// Simplified version of std::ranges::begin that only supports lvalues,
+			// for use by __range_iter_t below.
+			template <typename _Tp, typename = enable_if_t<is_array_v<_Tp> _CSL_Parentheses11 || __member_begin<_Tp &> _CSL_Parentheses11 || __adl_begin<_Tp &> _CSL_Parentheses11>>
+			auto
+			__begin(_Tp &__t)
+			{
+				if _GLIBCXX17_CONSTEXPR (is_array_v<_Tp> _CSL_Parentheses11)
+					return __t + 0;
+				else if _GLIBCXX17_CONSTEXPR (__member_begin<_Tp &> _CSL_Parentheses11)
+					return __t.begin();
+				else
+					return begin(__t);
+			}
+		}
 	} // namespace ranges::__access
 
 	namespace __detail
@@ -434,6 +408,11 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		using __range_iter_t = decltype(ranges::__access::__begin(std::declval<_Tp &>()));
 
 	} // namespace __detail
+#undef __i
+#undef __j
+#undef __n
+#undef __o
+#undef __s
 #endif // C++20 library concepts
 	_GLIBCXX_END_NAMESPACE_VERSION
 } // namespace std

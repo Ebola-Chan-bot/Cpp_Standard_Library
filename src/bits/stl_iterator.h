@@ -71,9 +71,9 @@
 # include <compare>
 # include <new>
 # include <bits/exception_defines.h>
-# include <bits/iterator_concepts.h>
 # include <bits/stl_construct.h>
 #endif
+# include <bits/iterator_concepts.h>
 
 #if __glibcxx_tuple_like // >= C++23
 # include <bits/utility.h> // for tuple_element_t

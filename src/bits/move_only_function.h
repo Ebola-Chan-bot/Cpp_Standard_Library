@@ -70,14 +70,14 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		static constexpr bool
 		_S_nothrow_init() noexcept
 		{
-			return _STRUCT14VALUE(__stored_locally, _Tp) && _STRUCT14VALUE_V(is_nothrow_constructible, _Tp, _Args...);
+			return _CSL_STRUCT14VALUE(__stored_locally, _Tp) && _CSL_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, _Args...);
 		}
 
 		template <typename _Tp, typename... _Args>
 		void
 		_M_init(_Args &&...__args) noexcept(_S_nothrow_init<_Tp, _Args...>())
 		{
-			if _GLIBCXX14_CONSTEXPR (_STRUCT14VALUE(__stored_locally, _Tp))
+			if _GLIBCXX14_CONSTEXPR (_CSL_STRUCT14VALUE(__stored_locally, _Tp))
 				::new (_M_storage._M_addr()) _Tp(std::forward<_Args>(__args)...);
 			else
 				_M_storage._M_p = new _Tp(std::forward<_Args>(__args)...);
@@ -119,7 +119,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		static _Tp *
 		_S_access(_Self *__self) noexcept
 		{
-			if _GLIBCXX14_CONSTEXPR (_STRUCT14VALUE(__stored_locally, remove_const_t<_Tp>))
+			if _GLIBCXX14_CONSTEXPR (_CSL_STRUCT14VALUE(__stored_locally, remove_const_t<_Tp>))
 				return static_cast<_Tp *>(__self->_M_storage._M_addr());
 			else
 				return static_cast<_Tp *>(__self->_M_storage._M_p);
@@ -167,7 +167,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		static void
 		_S_manage(_Storage &__target, _Storage *__src) noexcept
 		{
-			if _GLIBCXX14_CONSTEXPR (_STRUCT14VALUE(__stored_locally, _Tp))
+			if _GLIBCXX14_CONSTEXPR (_CSL_STRUCT14VALUE(__stored_locally, _Tp))
 			{
 				if (__src)
 				{
