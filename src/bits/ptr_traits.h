@@ -28,7 +28,7 @@
  *  Do not attempt to use it directly. @headername{memory}
  */
 #ifndef ARDUINO_ARCH_ESP32
-#include <bits/move.h>//SAM的ptr_traits未包含move会导致编译错误，所以必须前置
+#include <bits/move.h> //SAM的ptr_traits未包含move会导致编译错误，所以必须前置
 #endif
 #ifndef ARDUINO_ARCH_AVR
 #include_next <bits/ptr_traits.h>
@@ -247,7 +247,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   constexpr _Tp *
   to_address(_Tp *__ptr) noexcept
   {
-    static_assert(!is_function_v<_Tp>, "std::to_address argument "
+    static_assert(!is_function_v<_Tp>_CSL_Parentheses11, "std::to_address argument "
                                        "must not be a function pointer");
     return __ptr;
   }
@@ -261,14 +261,21 @@ namespace std _GLIBCXX_VISIBILITY(default)
   */
   template <typename _Ptr>
   constexpr auto
+  to_address(const _Ptr &__ptr) noexcept -> decltype(pointer_traits<_Ptr>::to_address(__ptr))
+  {
+    return pointer_traits<_Ptr>::to_address(__ptr);
+  }
+  template <typename _Ptr>
+  constexpr auto
+  to_address(const _Ptr &__ptr) noexcept -> enable_if_t<is_base_of_v<__gnu_debug::_Safe_iterator_base, _Ptr> _CSL_Parentheses11, decltype(std::to_address(__ptr.base().operator->()))>
+  {
+    return std::to_address(__ptr.base().operator->());
+  }
+  template <typename _Ptr>
+  constexpr auto
   to_address(const _Ptr &__ptr) noexcept
   {
-    if _GLIBCXX17_CONSTEXPR (_CSL_RequiresExpression(pointer_traits<_Ptr>::to_address(__ptr)))
-      return pointer_traits<_Ptr>::to_address(__ptr);
-    else if _GLIBCXX17_CONSTEXPR (is_base_of_v<__gnu_debug::_Safe_iterator_base, _Ptr>)
-      return std::to_address(__ptr.base().operator->());
-    else
-      return std::to_address(__ptr.operator->());
+    return std::to_address(__ptr.operator->());
   }
 
   /// @cond undocumented

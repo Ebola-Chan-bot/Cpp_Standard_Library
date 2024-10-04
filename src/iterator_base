@@ -1,3 +1,4 @@
+#pragma once
 /*	Copyright (C) 2004 Garrett A. Kajmowicz
 
 	This file is part of the uClibc++ Library.
@@ -17,15 +18,15 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#pragma once
-#ifdef ARDUINO_ARCH_AVR
-#include "basic_definitions"
+#ifndef ARDUINO_ARCH_ESP32
+#include <basic_definitions>
 #include <stddef.h>
-
+#endif
 #pragma GCC visibility push(default)
 
 namespace std
 {
+#ifndef ARDUINO_ARCH_ESP32 // SAM中也有这部分内容，但缺少contiguous_iterator_tag，所以弃用了那个文件
 	template <class Iterator>
 	struct iterator_traits;
 	template <class T>
@@ -49,7 +50,8 @@ namespace std
 	struct _UCXXEXPORT random_access_iterator_tag : public bidirectional_iterator_tag
 	{
 	};
-
+#endif //! ARDUINO_ARCH_ESP32
+#ifdef ARDUINO_ARCH_AVR
 	template <class InputIterator, class Distance>
 	_UCXXEXPORT void advance(InputIterator &i, Distance n)
 	{
@@ -105,52 +107,8 @@ namespace std
 	class insert_iterator;
 	template <class Container, class Iterator>
 	insert_iterator<Container> inserter(Container &x, Iterator i);
-
-	// Actual Template definitions
-
-	template <class Iterator>
-	struct _UCXXEXPORT iterator_traits
-	{
-		typedef typename Iterator::difference_type difference_type;
-		typedef typename Iterator::value_type value_type;
-		typedef typename Iterator::pointer pointer;
-		typedef typename Iterator::reference reference;
-		typedef typename Iterator::iterator_category iterator_category;
-	};
-
-	// Pointer specialization - required by standard
-	template <class T>
-	struct _UCXXEXPORT iterator_traits<T *>
-	{
-		typedef ptrdiff_t difference_type;
-		typedef T value_type;
-		typedef T *pointer;
-		typedef T &reference;
-		typedef random_access_iterator_tag iterator_category;
-	};
-
-	// Specialization recomended by standard
-	/*	template<class T> struct _UCXXEXPORT iterator_traits<T __far*> {
-			typedef long difference_type;
-			typedef T value_type;
-			typedef T __far* pointer;
-			typedef T __far& reference;
-			typedef random_access_iterator_tag iterator_category;
-		};*/
-
-	/*	template <class BidirectionalIterator> _UCXXEXPORT void
-			reverse(BidirectionalIterator first, BidirectionalIterator last)
-		{
-			typename iterator_traits<BidirectionalIterator>::difference_type n = distance(first, last);
-			--n;
-			while(n > 0){
-				typename iterator_traits<BidirectionalIterator>::value_type tmp = *first;
-				*first++ = * --last;
-				*last = tmp;
-				n -= 2;
-			}
-		};*/
-
+#endif // ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
 	template <class Category, class T, class Distance, class Pointer, class Reference>
 	struct _UCXXEXPORT iterator
 	{
@@ -160,7 +118,8 @@ namespace std
 		typedef Reference reference;
 		typedef Category iterator_category;
 	};
-
+#endif
+#ifdef ARDUINO_ARCH_AVR
 	template <class Iterator>
 	class _UCXXEXPORT reverse_iterator
 		: public iterator<typename iterator_traits<Iterator>::iterator_category,
@@ -380,9 +339,7 @@ namespace std
 	{
 		return insert_iterator<Container>(x, typename Container::iterator(i));
 	}
-
+#endif // ARDUINO_ARCH_AVR
 }
 
 #pragma GCC visibility pop
-
-#endif

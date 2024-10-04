@@ -2,25 +2,24 @@
 #ifndef ARDUINO_ARCH_ESP32
 #define _CSL_Concept(Name, ...) constexpr bool Name _CSL_Function17Variable(__VA_ARGS__)
 #define _CSL_RemoveComma(...) __VA_ARGS__
+#define _CSL_DelayedExpand(...) _CSL_DelayedExpandImpl(__VA_ARGS__)
+#define _CSL_DelayedExpandImpl(...) __VA_ARGS__
 #endif
 #ifdef ARDUINO_ARCH_ESP32
 #include_next __FILE__
 #else
 #ifdef __cpp_variable_templates
-#define _CSL_Parentheses11
 #define _CSL_Struct17Concept(Name, Inline, Value, ...) Inline constexpr bool Name _CSL_RemoveComma(__VA_ARGS__) = Value;
 #else
-// C++11不支持变量模板，实现为函数模板，引用时需要括号
-#define _CSL_Parentheses11 ()
 // C++11只能用结构体模板进行偏特化
 #define _CSL_Struct17Concept(Name, Inline, Value, ...) \
-	struct Name _CSL_RemoveComma(__VA_ARGS__)        \
+	struct Name _CSL_RemoveComma(__VA_ARGS__)          \
 	{                                                  \
 		Inline static constexpr bool value = Value;    \
 	};
 #endif
 // AVR和SAM并不真正支持concepts。C++17实现为 constexpr bool 变量模板，C++11实现为结构体模板中的 static constexpr bool 成员。
-//  <concepts> -*- C++ -*-
+//   <concepts> -*- C++ -*-
 
 // Copyright (C) 2019-2024 Free Software Foundation, Inc.
 //
@@ -95,11 +94,18 @@ namespace std _GLIBCXX_VISIBILITY(default)
 	template <typename _Derived, typename _Base>
 	_CSL_Concept(derived_from, __is_base_of(_Base, _Derived) && is_convertible_v<const volatile _Derived *, const volatile _Base *> _CSL_Parentheses11);
 
-#define _CSL_RequiresExpression(Expr) same_as<void, std::void_t<decltype(Expr)>> _CSL_Parentheses11
+	template <typename _From, typename _To, typename = _To>
+	struct _CSL_convertible_to : false_type
+	{
+	};
+	template <typename _From, typename _To>
+	struct _CSL_convertible_to<_From, _To, decltype(static_cast<_To>(declval<_From>()))> : is_convertible<_From, _To>
+	{
+	};
 
 	/// [concept.convertible], concept convertible_to
 	template <typename _From, typename _To>
-	_CSL_Concept(convertible_to, is_convertible_v<_From, _To> _CSL_Parentheses11 &&_CSL_RequiresExpression(static_cast<_To>(std::declval<_From>())));
+	_CSL_Concept(convertible_to, _CSL_convertible_to<_From, _To>::value);
 
 	/// [concept.commonref], concept common_reference_with
 	template <typename _Tp, typename _Up>
@@ -127,11 +133,18 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		template <typename _Tp>
 		_CSL_Concept(__class_or_enum, is_class_v<_Tp> _CSL_Parentheses11 || is_union_v<_Tp> _CSL_Parentheses11 || is_enum_v<_Tp> _CSL_Parentheses11);
 
+		template <typename _Tp, typename = void>
+		struct __destructible_impl : false_type
+		{
+		};
+#define __t declval<_Tp &>()
 		template <typename _Tp>
-		constexpr bool __destructible_impl _CSL_Function17Variable(false);
+		struct __destructible_impl<_Tp, void_t<decltype(__t.~_Tp()), enable_if_t<noexcept(__t.~_Tp())>>> : true_type
+		{
+		};
 
 		template <typename _Tp>
-		_CSL_Struct17Concept(__destructible, , __destructible_impl<_Tp> _CSL_Parentheses11);
+		_CSL_Struct17Concept(__destructible, , __destructible_impl<_Tp>::value);
 		template <typename _Tp>
 		_CSL_Struct17Concept(__destructible, , true, <_Tp &>);
 		template <typename _Tp>
@@ -141,25 +154,39 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 	} // namespace __detail
 
-#define _CSL_RequiresExpressionType(Expr, Type) same_as<Type, decltype(Expr)> _CSL_Parentheses11
-
-#define __lhs std::declval<_Lhs>()
-#define __rhs std::declval<_Rhs &&>()
+	template <typename _Lhs, typename _Rhs, typename = _Lhs>
+	struct _CSL_assignable_from : false_type
+	{
+	};
+	template <typename _Lhs, typename _Rhs>
+	struct _CSL_assignable_from<_Lhs, _Rhs, decltype(declval<_Lhs>() = static_cast<_Rhs &&>(declval<_Rhs &&>()))>
+	{
+		static constexpr bool value = is_lvalue_reference_v<_Lhs> _CSL_Parentheses11 && common_reference_with<__detail::__cref<_Lhs>, __detail::__cref<_Rhs>> _CSL_Parentheses11;
+	};
 	/// [concept.assignable], concept assignable_from
 	template <typename _Lhs, typename _Rhs>
-	_CSL_Concept(assignable_from, is_lvalue_reference_v<_Lhs> &&common_reference_with<__detail::__cref<_Lhs>, __detail::__cref<_Rhs>> &&_CSL_RequiresExpressionType(__lhs = static_cast<_Rhs &&>(__rhs), _Lhs));
+	_CSL_Concept(assignable_from, _CSL_assignable_from<_Lhs, _Rhs>::value);
 
 	/// [concept.destructible], concept destructible
 	template <typename _Tp>
-	_CSL_Concept(destructible, __detail::__destructible<_Tp> _CSL_Parentheses11);
+	_CSL_Concept(destructible, _CSL_Struct14Value(__detail::__destructible, _Tp));
 
 	/// [concept.constructible], concept constructible_from
 	template <typename _Tp, typename... _Args>
 	_CSL_Concept(constructible_from, destructible<_Tp> _CSL_Parentheses11 &&is_constructible_v<_Tp, _Args...> _CSL_Parentheses11);
 
+	template <typename _Tp, typename = void>
+	struct _CSL_default_initializable : false_type
+	{
+	};
+	template <typename _Tp>
+	struct _CSL_default_initializable<_Tp, decltype(_Tp{}, (void)::new _Tp)>
+	{
+		static constexpr bool value = constructible_from<_Tp> _CSL_Parentheses11;
+	};
 	/// [concept.defaultinitializable], concept default_initializable
 	template <typename _Tp>
-	_CSL_Concept(default_initializable, constructible_from<_Tp> _CSL_Parentheses11 &&_CSL_RequiresExpression(_Tp{}) && _CSL_RequiresExpression((void)::new _Tp));
+	_CSL_Concept(default_initializable, _CSL_default_initializable<_Tp>::value);
 
 	/// [concept.moveconstructible], concept move_constructible
 	template <typename _Tp>
@@ -179,10 +206,58 @@ namespace std _GLIBCXX_VISIBILITY(default)
 			template <typename _Tp>
 			void swap(_Tp &, _Tp &) = delete;
 
+			template <typename _Tp, typename _Up, typename = void>
+			struct _CSL_adl_swap : false_type
+			{
+			};
+			template <typename _Tp, typename _Up>
+			struct _CSL_adl_swap<_Tp, _Up, void_t<decltype(swap(static_cast<_Tp &&>(declval<_Tp &&>()), static_cast<_Up &&>(declval<_Up &&>())))>>
+			{
+				static constexpr bool value = std::__detail::__class_or_enum<remove_reference_t<_Tp>> _CSL_Parentheses11 || std::__detail::__class_or_enum<remove_reference_t<_Up>> _CSL_Parentheses11;
+			};
+			template <typename _Tp, typename _Up>
+			_CSL_Concept(__adl_swap, _CSL_adl_swap<_Tp, _Up>::value);
 			struct _Swap
 			{
 			private:
+				template <typename _Tp, typename _Up>
+				static constexpr enable_if_t<__adl_swap<_Tp, _Up> _CSL_Parentheses11, bool> _S_noexcept()
+				{
+					return noexcept(swap(std::declval<_Tp>(), std::declval<_Up>()));
+				}
+				template <typename _Tp, typename _Up>
+				static constexpr enable_if_t<!__adl_swap<_Tp, _Up> _CSL_Parentheses11, bool> _S_noexcept()
+				{
+					return is_nothrow_move_constructible_v<remove_reference_t<_Tp>> _CSL_Parentheses11 && is_nothrow_move_assignable_v<remove_reference_t<_Tp>> _CSL_Parentheses11;
+				}
+
 			public:
+#undef __t
+				template <typename _Tp, typename _Up>
+				_GLIBCXX17_CONSTEXPR enable_if_t<__adl_swap<_Tp, _Up> _CSL_Parentheses11>
+				operator()(_Tp &&__t, _Up &&__u) const
+					noexcept(_S_noexcept<_Tp, _Up>())
+				{
+					swap(static_cast<_Tp &&>(__t), static_cast<_Up &&>(__u));
+				}
+				template <typename _Tp, typename _Up>
+				_GLIBCXX17_CONSTEXPR enable_if_t<!__adl_swap<_Tp, _Up> _CSL_Parentheses11 && same_as<_Tp, _Up> _CSL_Parentheses11 && is_lvalue_reference_v<_Tp> _CSL_Parentheses11 && move_constructible<remove_reference_t<_Tp>> _CSL_Parentheses11 && assignable_from<_Tp, remove_reference_t<_Tp>> _CSL_Parentheses11>
+				operator()(_Tp &&__t, _Up &&__u) const
+					noexcept(_S_noexcept<_Tp, _Up>())
+				{
+					auto __tmp = static_cast<remove_reference_t<_Tp> &&>(__t);
+					__t = static_cast<remove_reference_t<_Tp> &&>(__u);
+					__u = static_cast<remove_reference_t<_Tp> &&>(__tmp);
+				}
+
+				template <typename _Tp, typename _Up, size_t _Num>
+				constexpr void_t<decltype(declval<const _Swap &>()(declval<_Tp &>(), declval<_Up &>()))>
+				operator()(_Tp (&__e1)[_Num], _Up (&__e2)[_Num]) const
+					noexcept(noexcept(std::declval<const _Swap &>()(*__e1, *__e2)))
+				{
+					for (size_t __n = 0; __n < _Num; ++__n)
+						(*this)(__e1[__n], __e2[__n]);
+				}
 			};
 		} // namespace __swap
 		/// @endcond
@@ -193,8 +268,16 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		}
 	} // namespace ranges
 
+	template <typename _Tp, typename = void>
+	struct _CSL_swappable : false_type
+	{
+	};
 	template <typename _Tp>
-	_CSL_Concept(swappable, _CSL_RequiresExpression(ranges::swap(declval<_Tp &>(), declval<_Tp &>())));
+	struct _CSL_swappable<_Tp, void_t<decltype(ranges::swap(declval<_Tp &>(), declval<_Tp &>()))>> : true_type
+	{
+	};
+	template <typename _Tp>
+	_CSL_Concept(swappable, _CSL_swappable<_Tp>::value);
 	// 260
 	// 269
 	//  [concepts.object], Object concepts

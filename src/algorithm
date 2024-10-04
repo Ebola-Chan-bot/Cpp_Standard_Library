@@ -1,5 +1,4 @@
 #pragma once
-#ifdef ARDUINO_ARCH_AVR
 /*	Copyright (C) 2004 Garrett A. Kajmowicz
 	This file is part of the uClibc++ Library.
 	This library is free software; you can redistribute it and/or
@@ -16,17 +15,20 @@
 	License along with this library; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+#ifdef ARDUINO_ARCH_AVR
 #include <iterator>
 #include <functional>
 // Elliminate any previously defined macro
 #undef min
 #undef max
-
+#else
+#include_next <algorithm>
+#endif
 #pragma GCC visibility push(default)
 
 namespace std
 {
-
+#ifdef ARDUINO_ARCH_AVR
 	// subclause _lib.alg.nonmodifying_, non-modifying sequence operations:
 	template <class InputIterator, class Function>
 	_UCXXEXPORT
@@ -458,7 +460,8 @@ namespace std
 		*a = *b;
 		*b = temp;
 	}
-
+#endif // ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
 	template <class ForwardIterator1, class ForwardIterator2>
 	_UCXXEXPORT
 		ForwardIterator2
@@ -472,7 +475,8 @@ namespace std
 		}
 		return first2;
 	}
-
+#endif
+#ifdef ARDUINO_ARCH_AVR
 	template <class InputIterator, class OutputIterator, class UnaryOperation>
 	_UCXXEXPORT
 		OutputIterator
@@ -1915,9 +1919,7 @@ namespace std
 			}
 		}
 	}
+#endif // ARDUINO_ARCH_AVR
 }
 #include <bits/stl_algo.h>
 #pragma GCC visibility pop
-#else
-#include_next <algorithm>
-#endif

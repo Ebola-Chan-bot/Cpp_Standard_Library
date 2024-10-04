@@ -218,7 +218,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		{
 		};
 
-		template <typename _Up, bool = _CSL_STRUCT14VALUE_V(is_trivially_destructible, _Up)>
+		template <typename _Up, bool = _CSL_Struct14Value_V(is_trivially_destructible, _Up)>
 		union _Storage
 		{
 			constexpr _Storage() noexcept : _M_empty() {}
@@ -250,7 +250,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 			// User-provided destructor is needed when _Up has non-trivial dtor.
 			_GLIBCXX20_CONSTEXPR
 			~_Storage()
-				requires(!_CSL_STRUCT14VALUE_V(is_trivially_destructible, _Up))
+				requires(!_CSL_Struct14Value_V(is_trivially_destructible, _Up))
 			{
 			}
 
@@ -310,7 +310,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 		template <typename... _Args>
 		_GLIBCXX14_CONSTEXPR void
-		_M_construct(_Args &&...__args) noexcept(_CSL_STRUCT14VALUE_V(is_nothrow_constructible, _Stored_type, _Args...))
+		_M_construct(_Args &&...__args) noexcept(_CSL_Struct14Value_V(is_nothrow_constructible, _Stored_type, _Args...))
 		{
 			std::_Construct(std::__addressof(this->_M_payload._M_value),
 							std::forward<_Args>(__args)...);
@@ -365,11 +365,11 @@ namespace std _GLIBCXX_VISIBILITY(default)
 	// Class template that manages the payload for optionals.
 	template <typename _Tp,
 			  bool /*_HasTrivialDestructor*/ =
-				  _CSL_STRUCT14VALUE_V(is_trivially_destructible, _Tp),
+				  _CSL_Struct14Value_V(is_trivially_destructible, _Tp),
 			  bool /*_HasTrivialCopy */ =
-				  _CSL_STRUCT14VALUE_V(is_trivially_copy_assignable, _Tp) && _CSL_STRUCT14VALUE_V(is_trivially_copy_constructible, _Tp),
+				  _CSL_Struct14Value_V(is_trivially_copy_assignable, _Tp) && _CSL_Struct14Value_V(is_trivially_copy_constructible, _Tp),
 			  bool /*_HasTrivialMove */ =
-				  _CSL_STRUCT14VALUE_V(is_trivially_move_assignable, _Tp) && _CSL_STRUCT14VALUE_V(is_trivially_move_constructible, _Tp)>
+				  _CSL_Struct14Value_V(is_trivially_move_assignable, _Tp) && _CSL_Struct14Value_V(is_trivially_move_constructible, _Tp)>
 	struct _Optional_payload;
 
 	// Payload for potentially-constexpr optionals (trivial copy/move/destroy).
@@ -493,8 +493,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
 	 * @see optional, _Enable_special_members
 	 */
 	template <typename _Tp,
-			  bool = _CSL_STRUCT14VALUE_V(is_trivially_copy_constructible, _Tp),
-			  bool = _CSL_STRUCT14VALUE_V(is_trivially_move_constructible, _Tp)>
+			  bool = _CSL_Struct14Value_V(is_trivially_copy_constructible, _Tp),
+			  bool = _CSL_Struct14Value_V(is_trivially_move_constructible, _Tp)>
 	struct _Optional_base
 	{
 		// Constructors for disengaged optionals.
@@ -502,14 +502,14 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 		// Constructors for engaged optionals.
 		template <typename... _Args,
-				  enable_if_t<_CSL_STRUCT14VALUE_V(is_constructible, _Tp, _Args...), bool> = false>
+				  enable_if_t<_CSL_Struct14Value_V(is_constructible, _Tp, _Args...), bool> = false>
 		constexpr explicit _Optional_base(in_place_t, _Args &&...__args)
 			: _M_payload(in_place, std::forward<_Args>(__args)...)
 		{
 		}
 
 		template <typename _Up, typename... _Args,
-				  enable_if_t<_CSL_STRUCT14VALUE_V(is_constructible, _Tp,
+				  enable_if_t<_CSL_Struct14Value_V(is_constructible, _Tp,
 											   initializer_list<_Up> &,
 											   _Args...),
 							  bool> = false>
@@ -521,12 +521,12 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		}
 
 		// Copy and move constructors.
-		constexpr _Optional_base(const _Optional_base &__other) noexcept(_CSL_STRUCT14VALUE_V(is_nothrow_copy_constructible, _Tp))
+		constexpr _Optional_base(const _Optional_base &__other) noexcept(_CSL_Struct14Value_V(is_nothrow_copy_constructible, _Tp))
 			: _M_payload(__other._M_payload._M_engaged, __other._M_payload)
 		{
 		}
 
-		constexpr _Optional_base(_Optional_base &&__other) noexcept(_CSL_STRUCT14VALUE_V(is_nothrow_move_constructible, _Tp))
+		constexpr _Optional_base(_Optional_base &&__other) noexcept(_CSL_Struct14Value_V(is_nothrow_move_constructible, _Tp))
 			: _M_payload(__other._M_payload._M_engaged,
 						 std::move(__other._M_payload))
 		{
@@ -536,11 +536,11 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		// Define these in the primary template if possible, so that we don't
 		// need to use partial specializations of this class template.
 		constexpr _Optional_base(const _Optional_base &)
-			requires _CSL_STRUCT14VALUE_V
+			requires _CSL_Struct14Value_V
 		(is_trivially_copy_constructible, _Tp) = default;
 
 		constexpr _Optional_base(_Optional_base &&)
-			requires _CSL_STRUCT14VALUE_V
+			requires _CSL_Struct14Value_V
 		(is_trivially_move_constructible, _Tp) = default;
 #endif
 
@@ -558,7 +558,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		// while _M_destruct has _M_engaged as a precondition.
 		template <typename... _Args>
 		_GLIBCXX14_CONSTEXPR void
-		_M_construct(_Args &&...__args) noexcept(_CSL_STRUCT14VALUE_V(is_nothrow_constructible, _Stored_type, _Args...))
+		_M_construct(_Args &&...__args) noexcept(_CSL_Struct14Value_V(is_nothrow_constructible, _Stored_type, _Args...))
 		{
 			_M_payload._M_construct(std::forward<_Args>(__args)...);
 		}
@@ -616,7 +616,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		// while _M_destruct has _M_engaged as a precondition.
 		template <typename... _Args>
 		constexpr void
-		_M_construct(_Args &&...__args) noexcept(_CSL_STRUCT14VALUE_V(is_nothrow_constructible, _Stored_type, _Args...))
+		_M_construct(_Args &&...__args) noexcept(_CSL_Struct14Value_V(is_nothrow_constructible, _Stored_type, _Args...))
 		{
 			static_cast<_Dp *>(this)->_M_payload._M_construct(
 				std::forward<_Args>(__args)...);
@@ -663,14 +663,14 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 		// Constructors for engaged optionals.
 		template <typename... _Args,
-				  enable_if_t<_CSL_STRUCT14VALUE_V(is_constructible, _Tp, _Args...), bool> = false>
+				  enable_if_t<_CSL_Struct14Value_V(is_constructible, _Tp, _Args...), bool> = false>
 		constexpr explicit _Optional_base(in_place_t, _Args &&...__args)
 			: _M_payload(in_place, std::forward<_Args>(__args)...)
 		{
 		}
 
 		template <typename _Up, typename... _Args,
-				  enable_if_t<_CSL_STRUCT14VALUE_V(is_constructible, _Tp,
+				  enable_if_t<_CSL_Struct14Value_V(is_constructible, _Tp,
 											   initializer_list<_Up> &,
 											   _Args...),
 							  bool> = false>
@@ -705,14 +705,14 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 		// Constructors for engaged optionals.
 		template <typename... _Args,
-				  enable_if_t<_CSL_STRUCT14VALUE_V(is_constructible, _Tp, _Args...), bool> = false>
+				  enable_if_t<_CSL_Struct14Value_V(is_constructible, _Tp, _Args...), bool> = false>
 		constexpr explicit _Optional_base(in_place_t, _Args &&...__args)
 			: _M_payload(in_place, std::forward<_Args>(__args)...)
 		{
 		}
 
 		template <typename _Up, typename... _Args,
-				  enable_if_t<_CSL_STRUCT14VALUE_V(is_constructible, _Tp,
+				  enable_if_t<_CSL_Struct14Value_V(is_constructible, _Tp,
 											   initializer_list<_Up> &,
 											   _Args...),
 							  bool> = false>
@@ -726,7 +726,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		// Copy and move constructors.
 		constexpr _Optional_base(const _Optional_base &__other) = default;
 
-		constexpr _Optional_base(_Optional_base &&__other) noexcept(_CSL_STRUCT14VALUE_V(is_nothrow_move_constructible, _Tp))
+		constexpr _Optional_base(_Optional_base &&__other) noexcept(_CSL_Struct14Value_V(is_nothrow_move_constructible, _Tp))
 			: _M_payload(__other._M_payload._M_engaged,
 						 std::move(__other._M_payload))
 		{
@@ -748,14 +748,14 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 		// Constructors for engaged optionals.
 		template <typename... _Args,
-				  enable_if_t<_CSL_STRUCT14VALUE_V(is_constructible, _Tp, _Args...), bool> = false>
+				  enable_if_t<_CSL_Struct14Value_V(is_constructible, _Tp, _Args...), bool> = false>
 		constexpr explicit _Optional_base(in_place_t, _Args &&...__args)
 			: _M_payload(in_place, std::forward<_Args>(__args)...)
 		{
 		}
 
 		template <typename _Up, typename... _Args,
-				  enable_if_t<_CSL_STRUCT14VALUE_V(is_constructible, _Tp,
+				  enable_if_t<_CSL_Struct14Value_V(is_constructible, _Tp,
 											   initializer_list<_Up> &,
 											   _Args...),
 							  bool> = false>
@@ -826,19 +826,19 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		: private _Optional_base<_Tp>,
 		  private _Enable_copy_move<
 			  // Copy constructor.
-			  _CSL_STRUCT14VALUE_V(is_copy_constructible, _Tp),
+			  _CSL_Struct14Value_V(is_copy_constructible, _Tp),
 			  // Copy assignment.
 			  _STRUCT14VALUEV(__and_, is_copy_constructible<_Tp>, is_copy_assignable<_Tp>),
 			  // Move constructor.
-			  _CSL_STRUCT14VALUE_V(is_move_constructible, _Tp),
+			  _CSL_Struct14Value_V(is_move_constructible, _Tp),
 			  // Move assignment.
 			  _STRUCT14VALUEV(__and_, is_move_constructible<_Tp>, is_move_assignable<_Tp>),
 			  // Unique tag type.
 			  optional<_Tp>>
 	{
-		_STATICASSERT17(!_CSL_STRUCT14VALUE_V(is_same, remove_cv_t<_Tp>, nullopt_t));
-		_STATICASSERT17(!_CSL_STRUCT14VALUE_V(is_same, remove_cv_t<_Tp>, in_place_t));
-		_STATICASSERT17(_CSL_STRUCT14VALUE_V(is_object, _Tp) && !_CSL_STRUCT14VALUE_V(is_array, _Tp));
+		_STATICASSERT17(!_CSL_Struct14Value_V(is_same, remove_cv_t<_Tp>, nullopt_t));
+		_STATICASSERT17(!_CSL_Struct14Value_V(is_same, remove_cv_t<_Tp>, in_place_t));
+		_STATICASSERT17(_CSL_Struct14Value_V(is_object, _Tp) && !_CSL_Struct14Value_V(is_array, _Tp));
 
 	private:
 		using _Base = _Optional_base<_Tp>;
@@ -857,7 +857,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		// i.e. do not initialize a bool from optional<U>::operator bool().
 		template <typename _From>
 		static constexpr bool
-			__not_constructing_bool_from_optional<_From, bool> = !_CSL_STRUCT14VALUE_V(__is_optional, remove_cvref_t<_From>);
+			__not_constructing_bool_from_optional<_From, bool> = !_CSL_Struct14Value_V(__is_optional, remove_cvref_t<_From>);
 
 		// If T is not cv bool, converts-from-any-cvref<T, optional<U>> is false.
 		// The constructor that converts from optional<U> is disabled if the
@@ -879,7 +879,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 		template <typename _From>
 		struct __not_constructing_bool_from_optional<_From, bool>
-			: bool_constant<!_CSL_STRUCT14VALUE_V(__is_optional, __remove_cvref_t<_From>)>
+			: bool_constant<!_CSL_Struct14Value_V(__is_optional, __remove_cvref_t<_From>)>
 		{
 		};
 
@@ -915,38 +915,38 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		// Converting constructors for engaged optionals.
 #ifdef _GLIBCXX_USE_CONSTRAINTS_FOR_OPTIONAL
 		template <typename _Up = remove_cv_t<_Tp>>
-			requires(!_CSL_STRUCT14VALUE_V(is_same, optional, remove_cvref_t < _Up) >) && (!_CSL_STRUCT14VALUE_V(is_same, in_place_t, remove_cvref_t < _Up) >) && _CSL_STRUCT14VALUE_V
-		(is_constructible, _Tp, _Up) && __not_constructing_bool_from_optional<_Up> constexpr explicit(!_CSL_STRUCT14VALUE_V(is_convertible, _Up, _Tp)) optional(_Up &&__t) noexcept(_CSL_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, _Up)) : _Base(std::in_place, std::forward<_Up>(__t))
+			requires(!_CSL_Struct14Value_V(is_same, optional, remove_cvref_t < _Up) >) && (!_CSL_Struct14Value_V(is_same, in_place_t, remove_cvref_t < _Up) >) && _CSL_Struct14Value_V
+		(is_constructible, _Tp, _Up) && __not_constructing_bool_from_optional<_Up> constexpr explicit(!_CSL_Struct14Value_V(is_convertible, _Up, _Tp)) optional(_Up &&__t) noexcept(_CSL_Struct14Value_V(is_nothrow_constructible, _Tp, _Up)) : _Base(std::in_place, std::forward<_Up>(__t))
 		{
 		}
 
 		template <typename _Up>
-			requires(!_CSL_STRUCT14VALUE_V(is_same, optional, remove_cvref_t < _Up) >) && _CSL_STRUCT14VALUE_V
-		(is_constructible, _Tp, const _Up &) && __construct_from_contained_value<_Up> constexpr explicit(!_CSL_STRUCT14VALUE_V(is_convertible, const _Up &, _Tp)) optional(const optional<_Up> &__t) noexcept(_CSL_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, const _Up &))
+			requires(!_CSL_Struct14Value_V(is_same, optional, remove_cvref_t < _Up) >) && _CSL_Struct14Value_V
+		(is_constructible, _Tp, const _Up &) && __construct_from_contained_value<_Up> constexpr explicit(!_CSL_Struct14Value_V(is_convertible, const _Up &, _Tp)) optional(const optional<_Up> &__t) noexcept(_CSL_Struct14Value_V(is_nothrow_constructible, _Tp, const _Up &))
 		{
 			if (__t)
 				emplace(__t._M_get());
 		}
 
 		template <typename _Up>
-			requires(!_CSL_STRUCT14VALUE_V(is_same, optional, remove_cvref_t < _Up) >) && _CSL_STRUCT14VALUE_V
-		(is_constructible, _Tp, _Up) && __construct_from_contained_value<_Up> constexpr explicit(!_CSL_STRUCT14VALUE_V(is_convertible, _Up, _Tp)) optional(optional<_Up> &&__t) noexcept(_CSL_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, _Up))
+			requires(!_CSL_Struct14Value_V(is_same, optional, remove_cvref_t < _Up) >) && _CSL_Struct14Value_V
+		(is_constructible, _Tp, _Up) && __construct_from_contained_value<_Up> constexpr explicit(!_CSL_Struct14Value_V(is_convertible, _Up, _Tp)) optional(optional<_Up> &&__t) noexcept(_CSL_Struct14Value_V(is_nothrow_constructible, _Tp, _Up))
 		{
 			if (__t)
 				emplace(std::move(__t._M_get()));
 		}
 
 		template <typename... _Args>
-			requires _CSL_STRUCT14VALUE_V
-		(is_constructible, _Tp, _Args...) explicit constexpr optional(in_place_t, _Args &&...__args) noexcept(_CSL_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, _Args...))
+			requires _CSL_Struct14Value_V
+		(is_constructible, _Tp, _Args...) explicit constexpr optional(in_place_t, _Args &&...__args) noexcept(_CSL_Struct14Value_V(is_nothrow_constructible, _Tp, _Args...))
 			: _Base(std::in_place, std::forward<_Args>(__args)...)
 		{
 		}
 
 		template <typename _Up, typename... _Args>
-			requires _CSL_STRUCT14VALUE_V
+			requires _CSL_Struct14Value_V
 		(is_constructible, _Tp, initializer_list < _Up) &, _Args... >
-															   explicit constexpr optional(in_place_t, initializer_list<_Up> __il, _Args &&...__args) noexcept(_CSL_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, initializer_list < _Up) &,
+															   explicit constexpr optional(in_place_t, initializer_list<_Up> __il, _Args &&...__args) noexcept(_CSL_Struct14Value_V(is_nothrow_constructible, _Tp, initializer_list < _Up) &,
 																																							   _Args... >)
 			: _Base(std::in_place, __il, std::forward<_Args>(__args)...)
 		{
@@ -957,7 +957,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 							is_constructible<_Tp, _Up>,
 							is_convertible<_Up, _Tp>,
 							__not_constructing_bool_from_optional<_Up>> = true>
-		constexpr optional(_Up &&__t) noexcept(_CSL_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, _Up))
+		constexpr optional(_Up &&__t) noexcept(_CSL_Struct14Value_V(is_nothrow_constructible, _Tp, _Up))
 			: _Base(std::in_place, std::forward<_Up>(__t)) {}
 
 		template <typename _Up = remove_cv_t<_Tp>,
@@ -965,7 +965,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 							is_constructible<_Tp, _Up>,
 							__not_<is_convertible<_Up, _Tp>>,
 							__not_constructing_bool_from_optional<_Up>> = false>
-		explicit constexpr optional(_Up &&__t) noexcept(_CSL_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, _Up))
+		explicit constexpr optional(_Up &&__t) noexcept(_CSL_Struct14Value_V(is_nothrow_constructible, _Tp, _Up))
 			: _Base(std::in_place, std::forward<_Up>(__t)) {}
 
 		template <typename _Up,
@@ -974,7 +974,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 							is_convertible<const _Up &, _Tp>,
 							__construct_from_contained_value<_Up>> = true>
 		_GLIBCXX14_CONSTEXPR
-		optional(const optional<_Up> &__t) noexcept(_CSL_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, const _Up &))
+		optional(const optional<_Up> &__t) noexcept(_CSL_Struct14Value_V(is_nothrow_constructible, _Tp, const _Up &))
 		{
 			if (__t)
 				emplace(__t._M_get());
@@ -985,7 +985,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 							is_constructible<_Tp, const _Up &>,
 							__not_<is_convertible<const _Up &, _Tp>>,
 							__construct_from_contained_value<_Up>> = false>
-		explicit _GLIBCXX14_CONSTEXPR optional(const optional<_Up> &__t) noexcept(_CSL_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, const _Up &))
+		explicit _GLIBCXX14_CONSTEXPR optional(const optional<_Up> &__t) noexcept(_CSL_Struct14Value_V(is_nothrow_constructible, _Tp, const _Up &))
 		{
 			if (__t)
 				emplace(__t._M_get());
@@ -997,7 +997,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 							is_convertible<_Up, _Tp>,
 							__construct_from_contained_value<_Up>> = true>
 		_GLIBCXX14_CONSTEXPR
-		optional(optional<_Up> &&__t) noexcept(_CSL_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, _Up))
+		optional(optional<_Up> &&__t) noexcept(_CSL_Struct14Value_V(is_nothrow_constructible, _Tp, _Up))
 		{
 			if (__t)
 				emplace(std::move(__t._M_get()));
@@ -1008,7 +1008,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 							is_constructible<_Tp, _Up>,
 							__not_<is_convertible<_Up, _Tp>>,
 							__construct_from_contained_value<_Up>> = false>
-		explicit _GLIBCXX14_CONSTEXPR optional(optional<_Up> &&__t) noexcept(_CSL_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, _Up))
+		explicit _GLIBCXX14_CONSTEXPR optional(optional<_Up> &&__t) noexcept(_CSL_Struct14Value_V(is_nothrow_constructible, _Tp, _Up))
 		{
 			if (__t)
 				emplace(std::move(__t._M_get()));
@@ -1016,14 +1016,14 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 		template <typename... _Args,
 				  _Requires<is_constructible<_Tp, _Args...>> = false>
-		explicit constexpr optional(in_place_t, _Args &&...__args) noexcept(_CSL_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, _Args...))
+		explicit constexpr optional(in_place_t, _Args &&...__args) noexcept(_CSL_Struct14Value_V(is_nothrow_constructible, _Tp, _Args...))
 			: _Base(std::in_place, std::forward<_Args>(__args)...) {}
 
 		template <typename _Up, typename... _Args,
 				  _Requires<is_constructible<_Tp,
 											 initializer_list<_Up> &,
 											 _Args...>> = false>
-		explicit constexpr optional(in_place_t, initializer_list<_Up> __il, _Args &&...__args) noexcept(_CSL_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, initializer_list<_Up> &,
+		explicit constexpr optional(in_place_t, initializer_list<_Up> __il, _Args &&...__args) noexcept(_CSL_Struct14Value_V(is_nothrow_constructible, _Tp, initializer_list<_Up> &,
 																														 _Args...))
 			: _Base(std::in_place, __il, std::forward<_Args>(__args)...) {}
 #endif
@@ -1038,8 +1038,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 		template <typename _Up = remove_cv_t<_Tp>>
 #ifdef _GLIBCXX_USE_CONSTRAINTS_FOR_OPTIONAL
-			requires(!_CSL_STRUCT14VALUE_V(is_same, optional, remove_cvref_t < _Up) >) && (!(_CSL_STRUCT14VALUE_V(is_scalar, _Tp) && _CSL_STRUCT14VALUE_V(is_same, _Tp, decay_t < _Up) >)) && _CSL_STRUCT14VALUE_V
-		(is_constructible, _Tp, _Up) && _CSL_STRUCT14VALUE_V(is_assignable, _Tp &, _Up) constexpr optional &
+			requires(!_CSL_Struct14Value_V(is_same, optional, remove_cvref_t < _Up) >) && (!(_CSL_Struct14Value_V(is_scalar, _Tp) && _CSL_Struct14Value_V(is_same, _Tp, decay_t < _Up) >)) && _CSL_Struct14Value_V
+		(is_constructible, _Tp, _Up) && _CSL_Struct14Value_V(is_assignable, _Tp &, _Up) constexpr optional &
 #else
 		enable_if_t<_STRUCT14VALUEV(__and_, __not_self<_Up>,
 									__not_<__and_<is_scalar<_Tp>,
@@ -1060,8 +1060,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 		template <typename _Up>
 #ifdef _GLIBCXX_USE_CONSTRAINTS_FOR_OPTIONAL
-			requires(!_CSL_STRUCT14VALUE_V(is_same, optional, remove_cvref_t < _Up) >) && _CSL_STRUCT14VALUE_V
-		(is_constructible, _Tp, const _Up &) && _CSL_STRUCT14VALUE_V(is_assignable, _Tp &, const _Up &) && (!__converts_from_optional<_Tp, _Up>::value) && (!__assigns_from_optional<_Tp, _Up>::value) constexpr optional &
+			requires(!_CSL_Struct14Value_V(is_same, optional, remove_cvref_t < _Up) >) && _CSL_Struct14Value_V
+		(is_constructible, _Tp, const _Up &) && _CSL_Struct14Value_V(is_assignable, _Tp &, const _Up &) && (!__converts_from_optional<_Tp, _Up>::value) && (!__assigns_from_optional<_Tp, _Up>::value) constexpr optional &
 #else
 		enable_if_t<_STRUCT14VALUEV(__and_, __not_<is_same<_Tp, _Up>>,
 									is_constructible<_Tp, const _Up &>,
@@ -1088,8 +1088,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 		template <typename _Up>
 #ifdef _GLIBCXX_USE_CONSTRAINTS_FOR_OPTIONAL
-			requires(!_CSL_STRUCT14VALUE_V(is_same, optional, remove_cvref_t < _Up) >) && _CSL_STRUCT14VALUE_V
-		(is_constructible, _Tp, _Up) && _CSL_STRUCT14VALUE_V(is_assignable, _Tp &, _Up) && (!__converts_from_optional<_Tp, _Up>::value) && (!__assigns_from_optional<_Tp, _Up>::value) constexpr optional &
+			requires(!_CSL_Struct14Value_V(is_same, optional, remove_cvref_t < _Up) >) && _CSL_Struct14Value_V
+		(is_constructible, _Tp, _Up) && _CSL_Struct14Value_V(is_assignable, _Tp &, _Up) && (!__converts_from_optional<_Tp, _Up>::value) && (!__assigns_from_optional<_Tp, _Up>::value) constexpr optional &
 #else
 		enable_if_t<_STRUCT14VALUEV(__and_, __not_<is_same<_Tp, _Up>>,
 									is_constructible<_Tp, _Up>,
@@ -1117,8 +1117,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 		template <typename... _Args>
 		_GLIBCXX20_CONSTEXPR
-			enable_if_t<_CSL_STRUCT14VALUE_V(is_constructible, _Tp, _Args...), _Tp &>
-			emplace(_Args &&...__args) noexcept(_CSL_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, _Args...))
+			enable_if_t<_CSL_Struct14Value_V(is_constructible, _Tp, _Args...), _Tp &>
+			emplace(_Args &&...__args) noexcept(_CSL_Struct14Value_V(is_nothrow_constructible, _Tp, _Args...))
 		{
 			this->_M_reset();
 			this->_M_construct(std::forward<_Args>(__args)...);
@@ -1127,9 +1127,9 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 		template <typename _Up, typename... _Args>
 		_GLIBCXX20_CONSTEXPR
-			enable_if_t<_CSL_STRUCT14VALUE_V(is_constructible, _Tp, initializer_list<_Up> &, _Args...),
+			enable_if_t<_CSL_Struct14Value_V(is_constructible, _Tp, initializer_list<_Up> &, _Args...),
 						_Tp &>
-			emplace(initializer_list<_Up> __il, _Args &&...__args) noexcept(_CSL_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, initializer_list<_Up> &,
+			emplace(initializer_list<_Up> __il, _Args &&...__args) noexcept(_CSL_Struct14Value_V(is_nothrow_constructible, _Tp, initializer_list<_Up> &,
 																							 _Args...))
 		{
 			this->_M_reset();
@@ -1141,7 +1141,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 		// Swap.
 		_GLIBCXX20_CONSTEXPR void
-		swap(optional &__other) noexcept(_CSL_STRUCT14VALUE_V(is_nothrow_move_constructible, _Tp) && _CSL_STRUCT14VALUE_V(is_nothrow_swappable, _Tp))
+		swap(optional &__other) noexcept(_CSL_Struct14Value_V(is_nothrow_move_constructible, _Tp) && _CSL_Struct14Value_V(is_nothrow_swappable, _Tp))
 		{
 			using std::swap;
 
@@ -1254,8 +1254,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		constexpr _Tp
 		value_or(_Up &&__u) const &
 		{
-			_STATICASSERT17(_CSL_STRUCT14VALUE_V(is_copy_constructible, _Tp));
-			_STATICASSERT17(_CSL_STRUCT14VALUE_V(is_convertible, _Up &&, _Tp));
+			_STATICASSERT17(_CSL_Struct14Value_V(is_copy_constructible, _Tp));
+			_STATICASSERT17(_CSL_Struct14Value_V(is_convertible, _Up &&, _Tp));
 
 			if (this->_M_is_engaged())
 				return this->_M_get();
@@ -1267,8 +1267,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		constexpr _Tp
 		value_or(_Up &&__u) &&
 		{
-			_STATICASSERT17(_CSL_STRUCT14VALUE_V(is_move_constructible, _Tp));
-			_STATICASSERT17(_CSL_STRUCT14VALUE_V(is_convertible, _Up &&, _Tp));
+			_STATICASSERT17(_CSL_Struct14Value_V(is_move_constructible, _Tp));
+			_STATICASSERT17(_CSL_Struct14Value_V(is_convertible, _Up &&, _Tp));
 
 			if (this->_M_is_engaged())
 				return std::move(this->_M_get());
@@ -1284,7 +1284,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		and_then(_Fn &&__f) &
 		{
 			using _Up = remove_cvref_t<invoke_result_t<_Fn, _Tp &>>;
-			static_assert(_CSL_STRUCT14VALUE_V(__is_optional, remove_cvref_t<_Up>),
+			static_assert(_CSL_Struct14Value_V(__is_optional, remove_cvref_t<_Up>),
 						  "the function passed to std::optional<T>::and_then "
 						  "must return a std::optional");
 			if (has_value())
@@ -1298,7 +1298,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		and_then(_Fn &&__f) const &
 		{
 			using _Up = remove_cvref_t<invoke_result_t<_Fn, const _Tp &>>;
-			static_assert(_CSL_STRUCT14VALUE_V(__is_optional, _Up),
+			static_assert(_CSL_Struct14Value_V(__is_optional, _Up),
 						  "the function passed to std::optional<T>::and_then "
 						  "must return a std::optional");
 			if (has_value())
@@ -1312,7 +1312,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		and_then(_Fn &&__f) &&
 		{
 			using _Up = remove_cvref_t<invoke_result_t<_Fn, _Tp>>;
-			static_assert(_CSL_STRUCT14VALUE_V(__is_optional, remove_cvref_t<_Up>),
+			static_assert(_CSL_Struct14Value_V(__is_optional, remove_cvref_t<_Up>),
 						  "the function passed to std::optional<T>::and_then "
 						  "must return a std::optional");
 			if (has_value())
@@ -1326,7 +1326,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		and_then(_Fn &&__f) const &&
 		{
 			using _Up = remove_cvref_t<invoke_result_t<_Fn, const _Tp>>;
-			static_assert(_CSL_STRUCT14VALUE_V(__is_optional, remove_cvref_t<_Up>),
+			static_assert(_CSL_Struct14Value_V(__is_optional, remove_cvref_t<_Up>),
 						  "the function passed to std::optional<T>::and_then "
 						  "must return a std::optional");
 			if (has_value())
@@ -1385,7 +1385,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		or_else(_Fn &&__f) const &
 		{
 			using _Up = invoke_result_t<_Fn>;
-			static_assert(_CSL_STRUCT14VALUE_V(is_same, remove_cvref_t < _Up), optional >,
+			static_assert(_CSL_Struct14Value_V(is_same, remove_cvref_t < _Up), optional >,
 						  "the function passed to std::optional<T>::or_else "
 						  "must return a std::optional<T>");
 
@@ -1401,7 +1401,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		or_else(_Fn &&__f) &&
 		{
 			using _Up = invoke_result_t<_Fn>;
-			static_assert(_CSL_STRUCT14VALUE_V(is_same, remove_cvref_t < _Up), optional >,
+			static_assert(_CSL_Struct14Value_V(is_same, remove_cvref_t < _Up), optional >,
 						  "the function passed to std::optional<T>::or_else "
 						  "must return a std::optional<T>");
 
@@ -1431,7 +1431,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 	template <typename _Tp>
 	using __optional_relop_t =
-		enable_if_t<_CSL_STRUCT14VALUE_V(is_convertible, _Tp, bool), bool>;
+		enable_if_t<_CSL_Struct14Value_V(is_convertible, _Tp, bool), bool>;
 
 	template <typename _Tp, typename _Up>
 	using __optional_eq_t = __optional_relop_t<
@@ -1615,7 +1615,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 	// _GLIBCXX_RESOLVE_LIB_DEFECTS
 	// 4072. std::optional comparisons: constrain harder
 #if __cpp_lib_concepts
-#define _REQUIRES_NOT_OPTIONAL(T) requires(!_CSL_STRUCT14VALUE_V(__is_optional, T))
+#define _REQUIRES_NOT_OPTIONAL(T) requires(!_CSL_Struct14Value_V(__is_optional, T))
 #else
 #define _REQUIRES_NOT_OPTIONAL(T)
 #endif
@@ -1731,7 +1731,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 #ifdef __cpp_lib_three_way_comparison
 	template <typename _Tp, typename _Up>
-		requires(!_CSL_STRUCT14VALUE_V(__is_optional, _Up)) && three_way_comparable_with<_Up, _Tp>
+		requires(!_CSL_Struct14Value_V(__is_optional, _Up)) && three_way_comparable_with<_Up, _Tp>
 	constexpr compare_three_way_result_t<_Tp, _Up>
 	operator<=> [[nodiscard]] (const optional<_Tp> &__x, const _Up & __v)
 	{
@@ -1744,36 +1744,36 @@ namespace std _GLIBCXX_VISIBILITY(default)
 	// _GLIBCXX_RESOLVE_LIB_DEFECTS
 	// 2748. swappable traits for optionals
 	template <typename _Tp>
-	_GLIBCXX20_CONSTEXPR inline enable_if_t<_CSL_STRUCT14VALUE_V(is_move_constructible, _Tp) && _CSL_STRUCT14VALUE_V(is_swappable, _Tp)>
+	_GLIBCXX20_CONSTEXPR inline enable_if_t<_CSL_Struct14Value_V(is_move_constructible, _Tp) && _CSL_Struct14Value_V(is_swappable, _Tp)>
 	swap(optional<_Tp> &__lhs, optional<_Tp> &__rhs) noexcept(noexcept(__lhs.swap(__rhs)))
 	{
 		__lhs.swap(__rhs);
 	}
 
 	template <typename _Tp>
-	enable_if_t<!(_CSL_STRUCT14VALUE_V(is_move_constructible, _Tp) && _CSL_STRUCT14VALUE_V(is_swappable, _Tp))>
+	enable_if_t<!(_CSL_Struct14Value_V(is_move_constructible, _Tp) && _CSL_Struct14Value_V(is_swappable, _Tp))>
 	swap(optional<_Tp> &, optional<_Tp> &) = delete;
 
 	template <typename _Tp>
-	constexpr enable_if_t<_CSL_STRUCT14VALUE_V(is_constructible, decay_t<_Tp>, _Tp),
+	constexpr enable_if_t<_CSL_Struct14Value_V(is_constructible, decay_t<_Tp>, _Tp),
 						  optional<decay_t<_Tp>>>
-	make_optional(_Tp &&__t) noexcept(_CSL_STRUCT14VALUE_V(is_nothrow_constructible, optional<decay_t<_Tp>>, _Tp))
+	make_optional(_Tp &&__t) noexcept(_CSL_Struct14Value_V(is_nothrow_constructible, optional<decay_t<_Tp>>, _Tp))
 	{
 		return optional<decay_t<_Tp>>{std::forward<_Tp>(__t)};
 	}
 
 	template <typename _Tp, typename... _Args>
-	constexpr enable_if_t<_CSL_STRUCT14VALUE_V(is_constructible, _Tp, _Args...),
+	constexpr enable_if_t<_CSL_Struct14Value_V(is_constructible, _Tp, _Args...),
 						  optional<_Tp>>
-	make_optional(_Args &&...__args) noexcept(_CSL_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, _Args...))
+	make_optional(_Args &&...__args) noexcept(_CSL_Struct14Value_V(is_nothrow_constructible, _Tp, _Args...))
 	{
 		return optional<_Tp>{in_place, std::forward<_Args>(__args)...};
 	}
 
 	template <typename _Tp, typename _Up, typename... _Args>
-	constexpr enable_if_t<_CSL_STRUCT14VALUE_V(is_constructible, _Tp, initializer_list<_Up> &, _Args...),
+	constexpr enable_if_t<_CSL_Struct14Value_V(is_constructible, _Tp, initializer_list<_Up> &, _Args...),
 						  optional<_Tp>>
-	make_optional(initializer_list<_Up> __il, _Args &&...__args) noexcept(_CSL_STRUCT14VALUE_V(is_nothrow_constructible, _Tp, initializer_list<_Up> &, _Args...))
+	make_optional(initializer_list<_Up> __il, _Args &&...__args) noexcept(_CSL_Struct14Value_V(is_nothrow_constructible, _Tp, initializer_list<_Up> &, _Args...))
 	{
 		return optional<_Tp>{in_place, __il, std::forward<_Args>(__args)...};
 	}

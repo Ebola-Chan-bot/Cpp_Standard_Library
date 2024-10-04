@@ -489,7 +489,7 @@
 #undef __glibcxx_want_launder
 
 #if !defined(__cpp_lib_logical_traits)
-#if __cplusplus >= 201703L || defined ARDUINO_ARCH_AVR
+#if __cplusplus >= 201703L || !defined ARDUINO_ARCH_ESP32
 #define __glibcxx_logical_traits 201510L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_logical_traits)
 #define __cpp_lib_logical_traits 201510L

@@ -141,10 +141,18 @@ namespace std _GLIBCXX_VISIBILITY(default)
 			_GLIBCXX17_INLINE constexpr ranges::__access::_Data data{};
 		}
 
-/// [range.range] The range concept.
 #define __t declval<_Tp &>()
+		template <typename _Tp, typename = void>
+		struct _CSL_range : false_type
+		{
+		};
 		template <typename _Tp>
-		_CSL_Concept(range, _CSL_RequiresExpression(ranges::begin(__t)) && _CSL_RequiresExpression(ranges::end(__t)));
+		struct _CSL_range<_Tp, void_t<decltype(ranges::begin(__t), ranges::end(__t))>> : true_type
+		{
+		};
+		/// [range.range] The range concept.
+		template <typename _Tp>
+		_CSL_Concept(range, _CSL_range<_Tp>::value);
 
 		/// [range.range] The borrowed_range concept.
 		template <typename _Tp>
@@ -159,8 +167,17 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		// 546
 		// 556
 		/// [range.sized] The sized_range concept.
+		template <typename _Tp, typename = void>
+		struct _CSL_sized_range : false_type
+		{
+		};
 		template <typename _Tp>
-		_CSL_Concept(sized_range, range<_Tp> _CSL_Parentheses11 &&_CSL_RequiresExpression(ranges::size(__t)));
+		struct _CSL_sized_range<_Tp, void_t<decltype(ranges::size(__t))>>
+		{
+			static constexpr bool value = range<_Tp> _CSL_Parentheses11;
+		};
+		template <typename _Tp>
+		_CSL_Concept(sized_range, _CSL_sized_range<_Tp>::value);
 		// 561
 		//     564
 		template <typename _Derived, typename = enable_if_t<is_class_v<_Derived> _CSL_Parentheses11 && same_as<_Derived, remove_cv_t<_Derived>> _CSL_Parentheses11>>
@@ -175,8 +192,16 @@ namespace std _GLIBCXX_VISIBILITY(default)
 // Returns true iff _Tp has exactly one public base class that's a
 // specialization of view_interface.
 #define __t declval<_Tp>()
+			template <typename _Tp, typename = void>
+			struct _CSL_is_derived_from_view_interface : false_type
+			{
+			};
 			template <typename _Tp>
-			_CSL_Concept(__is_derived_from_view_interface, _CSL_RequiresExpression(__is_derived_from_view_interface_fn(__t, __t)));
+			struct _CSL_is_derived_from_view_interface<_Tp, void_t<decltype(__is_derived_from_view_interface_fn(__t, __t))>> : true_type
+			{
+			};
+			template <typename _Tp>
+			_CSL_Concept(__is_derived_from_view_interface, _CSL_is_derived_from_view_interface<_Tp>::value);
 		} // namespace __detail
 
 		/// [range.view] The ranges::view_base type.
@@ -187,11 +212,11 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		//<span>中有特化，因此不能用函数模板
 		/// [range.view] The ranges::enable_view boolean.
 		template <typename _Tp>
-		_CSL_Struct17Concept(enable_view, _GLIBCXX17_INLINE, std::derived_from<_Tp, view_base> _CSL_Parentheses11 || __detail::__is_derived_from_view_interface<_Tp> _CSL_Parentheses11);
+		_CSL_Struct17Concept(enable_view, _GLIBCXX17_INLINE, (std::derived_from<_Tp, view_base> _CSL_Parentheses11 || __detail::__is_derived_from_view_interface<_Tp> _CSL_Parentheses11));
 
 		/// [range.view] The ranges::view concept.
 		template <typename _Tp>
-		_CSL_Concept(view, range<_Tp> _CSL_Parentheses11 &&movable<_Tp> _CSL_Parentheses11 &&std::enable_view<_Tp> _CSL_Parentheses11);
+		_CSL_Concept(view, range<_Tp> _CSL_Parentheses11 &&movable<_Tp> _CSL_Parentheses11 &&enable_view<_Tp> _CSL_Parentheses11);
 
 		// [range.refinements]
 
@@ -217,8 +242,17 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 /// A range for which ranges::begin returns a contiguous iterator.
 #define __t declval<_Tp &>()
+		template <typename _Tp, typename = add_pointer_t<range_reference_t<_Tp>>>
+		struct _CSL_contiguous_range : false_type
+		{
+		};
 		template <typename _Tp>
-		_CSL_Concept(contiguous_range, random_access_range<_Tp> _CSL_Parentheses11 &&contiguous_iterator<iterator_t<_Tp>> _CSL_Parentheses11 &&_CSL_RequiresExpressionType(ranges::data(__t), add_pointer_t<range_reference_t<_Tp>>));
+		struct _CSL_contiguous_range<_Tp, decltype(ranges::data(__t))>
+		{
+			static constexpr bool value = random_access_range<_Tp> _CSL_Parentheses11 && contiguous_iterator<iterator_t<_Tp>> _CSL_Parentheses11;
+		};
+		template <typename _Tp>
+		_CSL_Concept(contiguous_range, _CSL_contiguous_range<_Tp>::value);
 #undef __t
 		namespace __access
 		{

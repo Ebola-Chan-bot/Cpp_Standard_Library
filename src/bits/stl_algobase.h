@@ -1,6 +1,6 @@
 #pragma once
-#ifdef ARDUINO_ARCH_AVR
-// Core algorithmic facilities -*- C++ -*-
+// SAM也有这个文件，但是使用了被弃用的<bits/stl_iterator_base_types.h>中定义的_Iter_base，所以SAM的此文件也只能弃用
+//  Core algorithmic facilities -*- C++ -*-
 
 // Copyright (C) 2001-2024 Free Software Foundation, Inc.
 //
@@ -54,24 +54,28 @@
  *  This is an internal header file, included by other library headers.
  *  Do not attempt to use it directly. @headername{algorithm}
  */
-
-#ifndef _STL_ALGOBASE_H
-#define _STL_ALGOBASE_H 1
-
-#include <bits/functexcept.h>
+#ifdef ARDUINO_ARCH_AVR
+#include <debug/debug.h>
 #include <bits/stl_pair.h>
+#endif
+#ifdef ARDUINO_ARCH_SAM
+#include <debug/safe_iterator.h>
+#include <bits/concept_check.h>
+#if __cplusplus >= 202002L
+#include <compare>
+#endif
+#endif
+#ifdef ARDUINO_ARCH_ESP32
+#include_next <bits/stl_algobase.h>
+#else
+#include <bits/functexcept.h>
 #include <bits/stl_iterator_base_funcs.h>
 #include <bits/stl_iterator.h>
-#include <bits/concept_check.h>
-#include <debug/debug.h>
 #include <bits/predefined_ops.h>
 #if __cplusplus >= 201402L
 #include <bit> // std::__bit_width
 #else
 #include <ext/numeric_traits.h>
-#endif
-#if __cplusplus >= 202002L
-#include <compare>
 #endif
 
 namespace std _GLIBCXX_VISIBILITY(default)
@@ -496,6 +500,38 @@ namespace std _GLIBCXX_VISIBILITY(default)
              _GLIBCXX_STD_C::_Deque_iterator<_CharT, _CharT &, _CharT *>,
              bool);
 #endif
+
+  /**
+   *  @brief Copies the range [first,last) into result.
+   *  @ingroup mutating_algorithms
+   *  @param  __first  An input iterator.
+   *  @param  __last   An input iterator.
+   *  @param  __result An output iterator.
+   *  @return   result + (last - first)
+   *
+   *  This inline function will boil down to a call to @c memmove whenever
+   *  possible.  Failing that, if random access iterators are passed, then the
+   *  loop count will be known (and therefore a candidate for compiler
+   *  optimizations such as unrolling).  Result may not be contained within
+   *  [first,last); the copy_backward function should be used instead.
+   *
+   *  Note that the end of the output range is permitted to be contained
+   *  within [first,last).
+  */
+  template<typename _II, typename _OI>
+    _GLIBCXX20_CONSTEXPR
+    inline _OI
+    copy(_II __first, _II __last, _OI __result)
+    {
+      // concept requirements
+      __glibcxx_function_requires(_InputIteratorConcept<_II>)
+      __glibcxx_function_requires(_OutputIteratorConcept<_OI,
+	    typename iterator_traits<_II>::reference>)
+      __glibcxx_requires_can_increment_range(__first, __last, __result);
+
+      return std::__copy_move_a<__is_move_iterator<_II>::__value>
+	     (std::__miter_base(__first), std::__miter_base(__last), __result);
+    }
 
 #if __cplusplus >= 201103L
   /**
@@ -1284,15 +1320,11 @@ namespace std _GLIBCXX_VISIBILITY(default)
 #endif // C++11
   _GLIBCXX_END_NAMESPACE_VERSION
 } // namespace std
-
+#include <debug/safe_iterator.tcc>//此文件依赖本文件，所以不能由<safe_iterator.h>包含
 // NB: This file is included within many other C++ includes, as a way
 // of getting the base algorithms. So, make sure that parallel bits
 // come in too if requested.
 #ifdef _GLIBCXX_PARALLEL
 #include <parallel/algobase.h>
 #endif
-
-#endif
-#else
-#include_next <bits/stl_algobase.h>
 #endif

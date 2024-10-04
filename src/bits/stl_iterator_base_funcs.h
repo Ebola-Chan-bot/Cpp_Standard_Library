@@ -1,5 +1,4 @@
 #pragma once
-#ifdef ARDUINO_ARCH_AVR
 // Functions used by iterators -*- C++ -*-
 
 // Copyright (C) 2001-2024 Free Software Foundation, Inc.
@@ -57,53 +56,46 @@
  *  This file contains all of the general iterator-related utility
  *  functions, such as distance() and advance().
  */
-
-#ifndef _STL_ITERATOR_BASE_FUNCS_H
-#define _STL_ITERATOR_BASE_FUNCS_H 1
-
 #pragma GCC system_header
-
+#ifndef ARDUINO_ARCH_ESP32
+#include <bits/stl_iterator_base_types.h> //此包含必须在<bits/stl_iterator_base_funcs.h>之前，否则SAM会出错
+#endif
+#ifdef ARDUINO_ARCH_AVR
 #include <bits/concept_check.h>
 #include <debug/assertions.h>
-#include <bits/stl_iterator_base_types.h>
-
 namespace std _GLIBCXX_VISIBILITY(default)
 {
-_GLIBCXX_BEGIN_NAMESPACE_VERSION
+  _GLIBCXX_BEGIN_NAMESPACE_VERSION
 
 #if __cplusplus >= 201103L
 
-  template<typename _InputIterator>
-    _GLIBCXX_NODISCARD [[__gnu__::__always_inline__]]
-    inline _GLIBCXX17_CONSTEXPR _InputIterator
-    next(_InputIterator __x, typename
-	 iterator_traits<_InputIterator>::difference_type __n = 1)
-    {
-      // concept requirements
-      __glibcxx_function_requires(_InputIteratorConcept<_InputIterator>)
-      std::advance(__x, __n);
-      return __x;
-    }
+  template <typename _InputIterator>
+  _GLIBCXX_NODISCARD [[__gnu__::__always_inline__]]
+  inline _GLIBCXX17_CONSTEXPR _InputIterator
+  next(_InputIterator __x, typename iterator_traits<_InputIterator>::difference_type __n = 1)
+  {
+    // concept requirements
+    __glibcxx_function_requires(_InputIteratorConcept<_InputIterator>)
+        std::advance(__x, __n);
+    return __x;
+  }
 
-  template<typename _BidirectionalIterator>
-    _GLIBCXX_NODISCARD [[__gnu__::__always_inline__]]
-    inline _GLIBCXX17_CONSTEXPR _BidirectionalIterator
-    prev(_BidirectionalIterator __x, typename
-	 iterator_traits<_BidirectionalIterator>::difference_type __n = 1) 
-    {
-      // concept requirements
-      __glibcxx_function_requires(_BidirectionalIteratorConcept<
-				  _BidirectionalIterator>)
-      std::advance(__x, -__n);
-      return __x;
-    }
+  template <typename _BidirectionalIterator>
+  _GLIBCXX_NODISCARD [[__gnu__::__always_inline__]]
+  inline _GLIBCXX17_CONSTEXPR _BidirectionalIterator
+  prev(_BidirectionalIterator __x, typename iterator_traits<_BidirectionalIterator>::difference_type __n = 1)
+  {
+    // concept requirements
+    __glibcxx_function_requires(_BidirectionalIteratorConcept<
+                                _BidirectionalIterator>)
+        std::advance(__x, -__n);
+    return __x;
+  }
 
 #endif // C++11
 
-_GLIBCXX_END_NAMESPACE_VERSION
+  _GLIBCXX_END_NAMESPACE_VERSION
 } // namespace
-
-#endif /* _STL_ITERATOR_BASE_FUNCS_H */
 #else
 #include_next <bits/stl_iterator_base_funcs.h>
 #endif

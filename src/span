@@ -44,6 +44,7 @@
 #include <array>
 #include <cstddef>
 #include <bits/ranges_base.h>
+#include <debug/debug.h>
 #ifdef __cpp_lib_span // C++ >= 20 && concepts
 namespace std _GLIBCXX_VISIBILITY(default)
 {
@@ -120,7 +121,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 		// _GLIBCXX_RESOLVE_LIB_DEFECTS
 		// 3255. span's array constructor is too strict
-		template <typename _Tp, size_t _ArrayExtent, typename = std::enable_if_t<_Extent == dynamic_extent || _ArrayExtent == _Extent>>
+		template <typename _Tp, size_t _ArrayExtent, typename = enable_if_t<_Extent == dynamic_extent || _ArrayExtent == _Extent>>
 		using __is_compatible_array = __is_array_convertible<_Type, _Tp>;
 
 		template <typename _Ref>
@@ -157,71 +158,81 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		{
 		}
 
-		template <typename _It, typename = enable_if_t<contiguous_iterator<_It> _CSL_Parentheses11 && __is_compatible_ref<iter_reference_t<_It>>::value>>
+		template <typename _It, enable_if_t<contiguous_iterator<_It> _CSL_Parentheses11 && __is_compatible_ref<iter_reference_t<_It>>::value && extent != dynamic_extent, bool> = true>
+		constexpr explicit span(_It __first, size_type __count) noexcept
+			: _M_ptr(std::to_address(__first)), _M_extent(__count)
+		{
+			__glibcxx_assert(__count == _Extent);
+			__glibcxx_requires_valid_range(__first, __first + __count);
+		}
+		template <typename _It, enable_if_t<contiguous_iterator<_It> _CSL_Parentheses11 && __is_compatible_ref<iter_reference_t<_It>>::value && extent == dynamic_extent, bool> = true>
 		constexpr span(_It __first, size_type __count) noexcept
 			: _M_ptr(std::to_address(__first)), _M_extent(__count)
 		{
-#if __cplusplus > 201103L // C++11不允许constexpr函数中有if
-			if constexpr (_Extent != dynamic_extent)
-			{
-				__glibcxx_assert(__count == _Extent);
-			}
-#endif
 			__glibcxx_requires_valid_range(__first, __first + __count);
 		}
 
-		template <typename _It, typename _End, typename = enable_if_t<contiguous_iterator<_It> _CSL_Parentheses11 && sized_sentinel_for<_End, _It> _CSL_Parentheses11 && __is_compatible_ref<iter_reference_t<_It>>::value && !is_convertible_v<_End, size_type> _CSL_Parentheses11>>
-		constexpr span(_It __first, _End __last) noexcept(noexcept(__last - __first))
-			: _M_ptr(std::to_address(__first)),
-			  _M_extent(static_cast<size_type>(__last - __first))
+		template <typename _It, typename _End, enable_if_t<contiguous_iterator<_It> _CSL_Parentheses11 && sized_sentinel_for<_End, _It> _CSL_Parentheses11 && __is_compatible_ref<iter_reference_t<_It>>::value && !is_convertible_v<_End, size_type> _CSL_Parentheses11 && extent != dynamic_extent, bool> = true> // 这里使用 enable_if_t<...,bool> = true 而不是 typename = enable_if_t<...> 是因为后者无法重载
+		constexpr explicit span(_It __first, _End __last) noexcept(noexcept(__last - __first)) : _M_ptr(std::to_address(__first)), _M_extent(static_cast<size_type>(__last - __first))
 		{
-#if __cplusplus > 201103L // C++11不允许constexpr函数中有if
-			if _GLIBCXX17_CONSTEXPR (_Extent != dynamic_extent)
-			{
-				__glibcxx_assert((__last - __first) == _Extent);
-			}
-#endif
+			__glibcxx_assert((__last - __first) == _Extent);
+			__glibcxx_requires_valid_range(__first, __last);
+		}
+		template <typename _It, typename _End, enable_if_t<contiguous_iterator<_It> _CSL_Parentheses11 && sized_sentinel_for<_End, _It> _CSL_Parentheses11 && __is_compatible_ref<iter_reference_t<_It>>::value && !is_convertible_v<_End, size_type> _CSL_Parentheses11 && extent == dynamic_extent, bool> = true>
+		constexpr span(_It __first, _End __last) noexcept(noexcept(__last - __first)) : _M_ptr(std::to_address(__first)), _M_extent(static_cast<size_type>(__last - __first))
+		{
 			__glibcxx_requires_valid_range(__first, __last);
 		}
 
-		template <size_t _ArrayExtent, typename = enable_if_t<_Extent == dynamic_extent || _ArrayExtent == _Extent>>
-		constexpr span(type_identity_t<element_type> (&__arr)[_ArrayExtent]) noexcept
+		template <size_t _ArrayExtent>
+		constexpr span(type_identity_t<enable_if_t<_Extent == dynamic_extent || _ArrayExtent == _Extent, element_type>> (&__arr)[_ArrayExtent]) noexcept
 			: span(static_cast<pointer>(__arr), _ArrayExtent)
 		{
 		}
 
-		template <typename _Tp, size_t _ArrayExtent, typename = enable_if_t<__is_compatible_array<_Tp, _ArrayExtent>::value>>
-		constexpr span(array<_Tp, _ArrayExtent> &__arr) noexcept
+		template <typename _Tp, size_t _ArrayExtent>
+		constexpr span(array<enable_if_t<__is_compatible_array<_Tp, _ArrayExtent>::value, _Tp>, _ArrayExtent> &__arr) noexcept
 			: span(static_cast<pointer>(__arr.data()), _ArrayExtent)
 		{
 		}
 
-		template <typename _Tp, size_t _ArrayExtent, typename = enable_if_t<__is_compatible_array<const _Tp, _ArrayExtent>::value>>
-		constexpr span(const array<_Tp, _ArrayExtent> &__arr) noexcept
+		template <typename _Tp, size_t _ArrayExtent>
+		constexpr span(const array<enable_if_t<__is_compatible_array<const _Tp, _ArrayExtent>::value, _Tp>, _ArrayExtent> &__arr) noexcept
 			: span(static_cast<pointer>(__arr.data()), _ArrayExtent)
 		{
 		}
 
-		template <typename _Range, typename = enable_if_t<!__detail::__is_span<remove_cvref_t<_Range>> _CSL_Parentheses11 && !__detail::__is_std_array<remove_cvref_t<_Range>> _CSL_Parentheses11 && !is_array_v<remove_cvref_t<_Range>> _CSL_Parentheses11 && ranges::contiguous_range<_Range> _CSL_Parentheses11 && ranges::sized_range<_Range> _CSL_Parentheses11 && (ranges::borrowed_range<_Range> _CSL_Parentheses11 || is_const_v<element_type> _CSL_Parentheses11) && __is_compatible_ref<ranges::range_reference_t<_Range>>::value>>
+		template <typename _Range, enable_if_t<!__detail::__is_span<remove_cvref_t<_Range>> _CSL_Parentheses11 && !__detail::__is_std_array<remove_cvref_t<_Range>> _CSL_Parentheses11 && !is_array_v<remove_cvref_t<_Range>> _CSL_Parentheses11 && ranges::contiguous_range<_Range> _CSL_Parentheses11 && ranges::sized_range<_Range> _CSL_Parentheses11 && (ranges::borrowed_range<_Range> _CSL_Parentheses11 || is_const_v<element_type> _CSL_Parentheses11) && __is_compatible_ref<ranges::range_reference_t<_Range>>::value && extent != dynamic_extent, bool> = true>
+		constexpr explicit span(_Range &&__range) noexcept(noexcept(ranges::data(__range)) && noexcept(ranges::size(__range)))
+			: span(ranges::data(__range), ranges::size(__range))
+		{
+			__glibcxx_assert(ranges::size(__range) == extent);
+		}
+		template <typename _Range, enable_if_t<!__detail::__is_span<remove_cvref_t<_Range>> _CSL_Parentheses11 && !__detail::__is_std_array<remove_cvref_t<_Range>> _CSL_Parentheses11 && !is_array_v<remove_cvref_t<_Range>> _CSL_Parentheses11 && ranges::contiguous_range<_Range> _CSL_Parentheses11 && ranges::sized_range<_Range> _CSL_Parentheses11 && (ranges::borrowed_range<_Range> _CSL_Parentheses11 || is_const_v<element_type> _CSL_Parentheses11) && __is_compatible_ref<ranges::range_reference_t<_Range>>::value && extent == dynamic_extent, bool> = true>
 		constexpr span(_Range &&__range) noexcept(noexcept(ranges::data(__range)) && noexcept(ranges::size(__range)))
 			: span(ranges::data(__range), ranges::size(__range))
 		{
-#if __cplusplus > 201103L // C++11不允许constexpr函数中有if
-			if _GLIBCXX17_CONSTEXPR (extent != dynamic_extent)
-			{
-				__glibcxx_assert(ranges::size(__range) == extent);
-			}
-#endif
 		}
 
 		constexpr span(const span &) noexcept = default;
 
-		template <typename _OType, size_t _OExtent, typename = enable_if_t<(_Extent == dynamic_extent || _OExtent == dynamic_extent || _Extent == _OExtent) && __is_array_convertible<_Type, _OType>::value>>
+		template <typename _OType, size_t _OExtent, enable_if_t<(_Extent == dynamic_extent || _OExtent == dynamic_extent || _Extent == _OExtent) && __is_array_convertible<_Type, _OType>::value && extent != dynamic_extent && _OExtent == dynamic_extent, bool> = true>
+		constexpr explicit span(const span<_OType, _OExtent> &__s) noexcept
+			: _M_extent(__s.size()), _M_ptr(__s.data())
+		{
+#if __cpp_if_constexpr // C++11不允许constexpr函数中有if
+			if constexpr (extent != dynamic_extent)
+			{
+				__glibcxx_assert(__s.size() == extent);
+			}
+#endif
+		}
+		template <typename _OType, size_t _OExtent, enable_if_t<(_Extent == dynamic_extent || _OExtent == dynamic_extent || _Extent == _OExtent) && __is_array_convertible<_Type, _OType>::value && (extent == dynamic_extent || _OExtent != dynamic_extent), bool> = true>
 		constexpr span(const span<_OType, _OExtent> &__s) noexcept
 			: _M_extent(__s.size()), _M_ptr(__s.data())
 		{
-#if __cplusplus > 201103L // C++11不允许constexpr函数中有if
-			if _GLIBCXX17_CONSTEXPR (extent != dynamic_extent)
+#if __cpp_if_constexpr // C++11不允许constexpr函数中有if
+			if constexpr (extent != dynamic_extent)
 			{
 				__glibcxx_assert(__s.size() == extent);
 			}
@@ -230,7 +241,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 		~span() noexcept = default;
 
-		constexpr span &
+		_GLIBCXX17_CONSTEXPR span &
 		operator=(const span &) noexcept = default;
 
 		// observers
@@ -472,13 +483,13 @@ namespace std _GLIBCXX_VISIBILITY(default)
 	span(const array<_Type, _ArrayExtent> &)
 		-> span<const _Type, _ArrayExtent>;
 
-	template <typename _Iter, typename _End, typename = enable_if_t<contiguous_iterator<_Iter> _CSL_Parentheses11>>
+	template <typename _Iter, typename _End>
 	span(_Iter, _End)
-		-> span<remove_reference_t<iter_reference_t<_Iter>>>;
+		->enable_if_t<contiguous_iterator<_Iter> _CSL_Parentheses11, span<remove_reference_t<iter_reference_t<_Iter>>>>;
 
-	template <typename _Range, typename = enable_if_t<ranges::contiguous_range<_Range> _CSL_Parentheses11>>
+	template <typename _Range>
 	span(_Range &&)
-		-> span<remove_reference_t<ranges::range_reference_t<_Range &>>>;
+		->enable_if_t<ranges::contiguous_range<_Range> _CSL_Parentheses11, span<remove_reference_t<ranges::range_reference_t<_Range &>>>>;
 #endif
 	template <typename _Type, size_t _Extent>
 	[[nodiscard]]
@@ -495,10 +506,10 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		return span<const byte, extent>{data, size};
 	}
 
-	template <typename _Type, size_t _Extent, typename = enable_if_t<!is_const_v<_Type> _CSL_Parentheses11>>
-	inline span<byte, _Extent == dynamic_extent
-						  ? dynamic_extent
-						  : _Extent * sizeof(_Type)>
+	template <typename _Type, size_t _Extent>
+	inline span<enable_if_t<!is_const_v<_Type> _CSL_Parentheses11, byte>, _Extent == dynamic_extent
+																			  ? dynamic_extent
+																			  : _Extent * sizeof(_Type)>
 	as_writable_bytes [[nodiscard]] (span<_Type, _Extent> __sp) noexcept
 	{
 		auto data = reinterpret_cast<byte *>(__sp.data());

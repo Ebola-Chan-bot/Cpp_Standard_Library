@@ -471,7 +471,7 @@ namespace std
 		CPP20_DYNARRAY_CONSTEXPR internal_pointer_type data() noexcept
 		{
 			if _GLIBCXX14_CONSTEXPR
-				(_CSL_STRUCT14VALUE_V(is_same, T, internal_value_type)) return current_dimension_array_data.get();
+				(_CSL_Struct14Value_V(is_same, T, internal_value_type)) return current_dimension_array_data.get();
 			else
 				return current_dimension_array_data[0].data();
 		}
@@ -487,7 +487,7 @@ namespace std
 		CPP20_DYNARRAY_CONSTEXPR const internal_pointer_type data() const noexcept
 		{
 			if _GLIBCXX14_CONSTEXPR
-				(_CSL_STRUCT14VALUE_V(is_same, T, internal_value_type)) return current_dimension_array_data.get();
+				(_CSL_Struct14Value_V(is_same, T, internal_value_type)) return current_dimension_array_data.get();
 			else
 				return current_dimension_array_data[0].data();
 		}
@@ -750,7 +750,7 @@ namespace std
 	dynarray<T>::expand_list(std::initializer_list<Ty> init)
 	{
 		if _GLIBCXX14_CONSTEXPR
-			(_CSL_STRUCT14VALUE_V(is_same, T, internal_value_type))
+			(_CSL_Struct14Value_V(is_same, T, internal_value_type))
 			{
 				return init.size();
 			}
@@ -769,7 +769,7 @@ namespace std
 	dynarray<T>::expand_counts(size_type count, Args &&...args)
 	{
 		if _GLIBCXX14_CONSTEXPR
-			(_CSL_STRUCT14VALUE_V(is_same, T, internal_value_type) || sizeof...(args) == 0) return count;
+			(_CSL_Struct14Value_V(is_same, T, internal_value_type) || sizeof...(args) == 0) return count;
 		else
 			return T::expand_counts(std::forward<Args>(args)...) * count;
 	}
@@ -813,7 +813,7 @@ namespace std
 		verify_size(count);
 		size_type each_block_size = 1;
 		if _GLIBCXX14_CONSTEXPR
-			(!_CSL_STRUCT14VALUE_V(is_same, T, internal_value_type))
+			(!_CSL_Struct14Value_V(is_same, T, internal_value_type))
 				each_block_size = T::expand_counts(std::forward<Args>(args)...);
 
 		verify_size(each_block_size);
@@ -833,7 +833,7 @@ namespace std
 		for (size_type i = 0; i < current_dimension_array_size; ++i)
 		{
 			if _GLIBCXX14_CONSTEXPR
-				(!_CSL_STRUCT14VALUE_V(is_same, T, internal_value_type))
+				(!_CSL_Struct14Value_V(is_same, T, internal_value_type))
 					current_dimension_array_data[i]
 						.allocate_array(std::forward<Args>(args)...);
 			else if _GLIBCXX14_CONSTEXPR
@@ -902,7 +902,7 @@ namespace std
 	inline CPP20_DYNARRAY_CONSTEXPR void
 	dynarray<T>::copy_array(InputIterator other_begin, InputIterator other_end)
 	{
-		static_assert(_CSL_STRUCT14VALUE_V(is_same, std::decay_t<decltype(*other_begin)>, T) || _CSL_STRUCT14VALUE_V(is_convertible, std::decay_t<decltype(*other_begin)>, T),
+		static_assert(_CSL_Struct14Value_V(is_same, std::decay_t<decltype(*other_begin)>, T) || _CSL_Struct14Value_V(is_convertible, std::decay_t<decltype(*other_begin)>, T),
 					  "invalid iterator, cannot convert to a valid dynarray");
 #undef abs
 		size_type count = static_cast<size_type>(std::abs(other_end - other_begin));
@@ -966,7 +966,7 @@ namespace std
 		for (size_type i = 0; i < current_dimension_array_size; ++i)
 		{
 			if _GLIBCXX14_CONSTEXPR
-				(_CSL_STRUCT14VALUE_V(is_same, T, internal_value_type))
+				(_CSL_Struct14Value_V(is_same, T, internal_value_type))
 					current_dimension_array_data[i] = std::move(other.current_dimension_array_data[i]);
 			else
 				current_dimension_array_data[i].move_array(other.current_dimension_array_data[i]);
@@ -1039,7 +1039,7 @@ namespace std
 	dynarray<T>::swap(dynarray &other) noexcept
 	{
 		if _GLIBCXX14_CONSTEXPR
-			(_CSL_STRUCT14VALUE_V(is_same, T, internal_value_type))
+			(_CSL_Struct14Value_V(is_same, T, internal_value_type))
 			{
 				difference_type length = std::min<difference_type>(current_dimension_array_size, other.current_dimension_array_size);
 				for (difference_type i = 0; i < length; ++i)
@@ -1059,7 +1059,7 @@ namespace std
 		for (size_type i = 0; i < current_dimension_array_size; ++i)
 		{
 			if _GLIBCXX14_CONSTEXPR
-				(_CSL_STRUCT14VALUE_V(is_same, T, internal_value_type))
+				(_CSL_Struct14Value_V(is_same, T, internal_value_type))
 					current_dimension_array_data[i] = value;
 			else
 				current_dimension_array_data[i].fill(value);
