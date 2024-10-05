@@ -27,6 +27,9 @@
 /** @file debug/safe_iterator.tcc
  *  This file is a GNU debug extension to the Standard C++ Library.
  */
+#ifdef ARDUINO_ARCH_AVR
+#include <debug/helper_functions.h>
+#endif
 #ifdef ARDUINO_ARCH_SAM
 #include <bits/algorithmfwd.h>
 #endif

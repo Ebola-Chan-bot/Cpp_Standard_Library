@@ -33,9 +33,11 @@
 #ifdef ARDUINO_ARCH_AVR
 #include <bits/c++config.h>
 #include <bits/version.h>
-#include <type_traits>
 #else
 #include_next <bits/cpp_type_traits.h>
+#endif
+#ifndef ARDUINO_ARCH_ESP32
+#include <type_traits>
 #endif
 //
 // This file provides some compile-time information about various types.

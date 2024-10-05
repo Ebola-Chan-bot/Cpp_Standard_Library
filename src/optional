@@ -510,8 +510,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 		template <typename _Up, typename... _Args,
 				  enable_if_t<_CSL_Struct14Value_V(is_constructible, _Tp,
-											   initializer_list<_Up> &,
-											   _Args...),
+												   initializer_list<_Up> &,
+												   _Args...),
 							  bool> = false>
 		constexpr explicit _Optional_base(in_place_t,
 										  initializer_list<_Up> __il,
@@ -671,8 +671,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 		template <typename _Up, typename... _Args,
 				  enable_if_t<_CSL_Struct14Value_V(is_constructible, _Tp,
-											   initializer_list<_Up> &,
-											   _Args...),
+												   initializer_list<_Up> &,
+												   _Args...),
 							  bool> = false>
 		constexpr explicit _Optional_base(in_place_t,
 										  initializer_list<_Up> __il,
@@ -713,8 +713,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 		template <typename _Up, typename... _Args,
 				  enable_if_t<_CSL_Struct14Value_V(is_constructible, _Tp,
-											   initializer_list<_Up> &,
-											   _Args...),
+												   initializer_list<_Up> &,
+												   _Args...),
 							  bool> = false>
 		constexpr explicit _Optional_base(in_place_t,
 										  initializer_list<_Up> __il,
@@ -756,8 +756,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 		template <typename _Up, typename... _Args,
 				  enable_if_t<_CSL_Struct14Value_V(is_constructible, _Tp,
-											   initializer_list<_Up> &,
-											   _Args...),
+												   initializer_list<_Up> &,
+												   _Args...),
 							  bool> = false>
 		constexpr explicit _Optional_base(in_place_t,
 										  initializer_list<_Up> __il,
@@ -781,12 +781,6 @@ namespace std _GLIBCXX_VISIBILITY(default)
 	template <typename _Tp>
 	class optional;
 
-#if __cplusplus > 201402L
-	template <typename _Tp>
-	inline constexpr bool __is_optional_v = false;
-	template <typename _Tp>
-	inline constexpr bool __is_optional_v<optional<_Tp>> = true;
-#else
 	template <typename _Tp>
 	struct __is_optional : false_type
 	{
@@ -795,14 +789,15 @@ namespace std _GLIBCXX_VISIBILITY(default)
 	struct __is_optional<optional<_Tp>> : true_type
 	{
 	};
-#endif
+	template <typename _Tp>
+	inline constexpr bool __is_optional_v _CSL_Function17Variable(__is_optional<_Tp>::value);
 
-	template <typename _Tp, typename _Wp>
-	using __converts_from_any_cvref = __or_<
-		is_constructible<_Tp, _Wp &>, is_convertible<_Wp &, _Tp>,
-		is_constructible<_Tp, _Wp>, is_convertible<_Wp, _Tp>,
-		is_constructible<_Tp, const _Wp &>, is_convertible<const _Wp &, _Tp>,
-		is_constructible<_Tp, const _Wp>, is_convertible<const _Wp, _Tp>>;
+		template <typename _Tp, typename _Wp>
+		using __converts_from_any_cvref = __or_<
+			is_constructible<_Tp, _Wp &>, is_convertible<_Wp &, _Tp>,
+			is_constructible<_Tp, _Wp>, is_convertible<_Wp, _Tp>,
+			is_constructible<_Tp, const _Wp &>, is_convertible<const _Wp &, _Tp>,
+			is_constructible<_Tp, const _Wp>, is_convertible<const _Wp, _Tp>>;
 
 	template <typename _Tp, typename _Up>
 	using __converts_from_optional = __converts_from_any_cvref<_Tp, optional<_Up>>;
@@ -1024,7 +1019,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 											 initializer_list<_Up> &,
 											 _Args...>> = false>
 		explicit constexpr optional(in_place_t, initializer_list<_Up> __il, _Args &&...__args) noexcept(_CSL_Struct14Value_V(is_nothrow_constructible, _Tp, initializer_list<_Up> &,
-																														 _Args...))
+																															 _Args...))
 			: _Base(std::in_place, __il, std::forward<_Args>(__args)...) {}
 #endif
 
@@ -1070,7 +1065,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 									__not_<__assigns_from_optional<_Tp, _Up>>),
 					optional &>
 #endif
-																																					   operator=(const optional<_Up> &__u) noexcept(_STRUCT14VALUEV(__and_, is_nothrow_constructible<_Tp, const _Up &>, is_nothrow_assignable<_Tp &, const _Up &>))
+																																						   operator=(const optional<_Up> &__u) noexcept(_STRUCT14VALUEV(__and_, is_nothrow_constructible<_Tp, const _Up &>, is_nothrow_assignable<_Tp &, const _Up &>))
 		{
 			if (__u)
 			{
@@ -1098,7 +1093,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 									__not_<__assigns_from_optional<_Tp, _Up>>),
 					optional &>
 #endif
-																																	   operator=(optional<_Up> &&__u) noexcept(_STRUCT14VALUEV(__and_, is_nothrow_constructible<_Tp, _Up>, is_nothrow_assignable<_Tp &, _Up>))
+																																		   operator=(optional<_Up> &&__u) noexcept(_STRUCT14VALUEV(__and_, is_nothrow_constructible<_Tp, _Up>, is_nothrow_assignable<_Tp &, _Up>))
 		{
 			if (__u)
 			{
@@ -1130,7 +1125,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 			enable_if_t<_CSL_Struct14Value_V(is_constructible, _Tp, initializer_list<_Up> &, _Args...),
 						_Tp &>
 			emplace(initializer_list<_Up> __il, _Args &&...__args) noexcept(_CSL_Struct14Value_V(is_nothrow_constructible, _Tp, initializer_list<_Up> &,
-																							 _Args...))
+																								 _Args...))
 		{
 			this->_M_reset();
 			this->_M_construct(__il, std::forward<_Args>(__args)...);
@@ -1622,109 +1617,97 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 	// Comparisons with value type.
 	template <typename _Tp, typename _Up>
-	_REQUIRES_NOT_OPTIONAL(_Up)
 	constexpr auto
 	operator== [[nodiscard]] (const optional<_Tp> &__lhs, const _Up &__rhs)
-	-> __optional_eq_t<_Tp, _Up>
+	-> enable_if_t<!__is_optional_v<_Up> _CSL_Parentheses11, __optional_eq_t<_Tp, _Up>>
 	{
 		return __lhs && *__lhs == __rhs;
 	}
 
 	template <typename _Tp, typename _Up>
-	_REQUIRES_NOT_OPTIONAL(_Tp)
 	constexpr auto
 	operator== [[nodiscard]] (const _Tp &__lhs, const optional<_Up> &__rhs)
-	-> __optional_eq_t<_Tp, _Up>
+	-> enable_if_t<!__is_optional_v<_Up> _CSL_Parentheses11, __optional_eq_t<_Tp, _Up>>
 	{
 		return __rhs && __lhs == *__rhs;
 	}
 
 	template <typename _Tp, typename _Up>
-	_REQUIRES_NOT_OPTIONAL(_Up)
 	constexpr auto
 	operator!= [[nodiscard]] (const optional<_Tp> &__lhs, const _Up &__rhs)
-	-> __optional_ne_t<_Tp, _Up>
+	-> enable_if_t<!__is_optional_v<_Up> _CSL_Parentheses11, __optional_ne_t<_Tp, _Up>>
 	{
 		return !__lhs || *__lhs != __rhs;
 	}
 
 	template <typename _Tp, typename _Up>
-	_REQUIRES_NOT_OPTIONAL(_Tp)
 	constexpr auto
 	operator!= [[nodiscard]] (const _Tp &__lhs, const optional<_Up> &__rhs)
-	-> __optional_ne_t<_Tp, _Up>
+	-> enable_if_t<!__is_optional_v<_Up> _CSL_Parentheses11, __optional_ne_t<_Tp, _Up>>
 	{
 		return !__rhs || __lhs != *__rhs;
 	}
 
 	template <typename _Tp, typename _Up>
-	_REQUIRES_NOT_OPTIONAL(_Up)
 	constexpr auto
 	operator<[[nodiscard]] (const optional<_Tp> &__lhs, const _Up &__rhs)
-	-> __optional_lt_t<_Tp, _Up>
+	-> enable_if_t<!__is_optional_v<_Up> _CSL_Parentheses11, __optional_lt_t<_Tp, _Up>>
 	{
 		return !__lhs || *__lhs < __rhs;
 	}
 
 	template <typename _Tp, typename _Up>
-	_REQUIRES_NOT_OPTIONAL(_Tp)
 	constexpr auto
 	operator<[[nodiscard]] (const _Tp &__lhs, const optional<_Up> &__rhs)
-	-> __optional_lt_t<_Tp, _Up>
+	-> enable_if_t<!__is_optional_v<_Up> _CSL_Parentheses11, __optional_lt_t<_Tp, _Up>>
 	{
 		return __rhs && __lhs < *__rhs;
 	}
 
 	template <typename _Tp, typename _Up>
-	_REQUIRES_NOT_OPTIONAL(_Up)
 	constexpr auto
 	operator> [[nodiscard]] (const optional<_Tp> &__lhs, const _Up &__rhs)
-	-> __optional_gt_t<_Tp, _Up>
+	-> enable_if_t<!__is_optional_v<_Up> _CSL_Parentheses11, __optional_gt_t<_Tp, _Up>>
 	{
 		return __lhs && *__lhs > __rhs;
 	}
 
 	template <typename _Tp, typename _Up>
-	_REQUIRES_NOT_OPTIONAL(_Tp)
 	constexpr auto
 	operator> [[nodiscard]] (const _Tp &__lhs, const optional<_Up> &__rhs)
-	-> __optional_gt_t<_Tp, _Up>
+	-> enable_if_t<!__is_optional_v<_Up> _CSL_Parentheses11, __optional_gt_t<_Tp, _Up>>
 	{
 		return !__rhs || __lhs > *__rhs;
 	}
 
 	template <typename _Tp, typename _Up>
-	_REQUIRES_NOT_OPTIONAL(_Up)
 	constexpr auto
 	operator<= [[nodiscard]] (const optional<_Tp> &__lhs, const _Up &__rhs)
-	-> __optional_le_t<_Tp, _Up>
+	-> enable_if_t<!__is_optional_v<_Up> _CSL_Parentheses11, __optional_le_t<_Tp, _Up>>
 	{
 		return !__lhs || *__lhs <= __rhs;
 	}
 
 	template <typename _Tp, typename _Up>
-	_REQUIRES_NOT_OPTIONAL(_Tp)
 	constexpr auto
 	operator<= [[nodiscard]] (const _Tp &__lhs, const optional<_Up> &__rhs)
-	-> __optional_le_t<_Tp, _Up>
+	-> enable_if_t<!__is_optional_v<_Up> _CSL_Parentheses11, __optional_le_t<_Tp, _Up>>
 	{
 		return __rhs && __lhs <= *__rhs;
 	}
 
 	template <typename _Tp, typename _Up>
-	_REQUIRES_NOT_OPTIONAL(_Up)
 	constexpr auto
 	operator>= [[nodiscard]] (const optional<_Tp> &__lhs, const _Up &__rhs)
-	-> __optional_ge_t<_Tp, _Up>
+	-> enable_if_t<!__is_optional_v<_Up> _CSL_Parentheses11, __optional_ge_t<_Tp, _Up>>
 	{
 		return __lhs && *__lhs >= __rhs;
 	}
 
 	template <typename _Tp, typename _Up>
-	_REQUIRES_NOT_OPTIONAL(_Tp)
 	constexpr auto
 	operator>= [[nodiscard]] (const _Tp &__lhs, const optional<_Up> &__rhs)
-	-> __optional_ge_t<_Tp, _Up>
+	-> enable_if_t<!__is_optional_v<_Up> _CSL_Parentheses11, __optional_ge_t<_Tp, _Up>>
 	{
 		return !__rhs || __lhs >= *__rhs;
 	}

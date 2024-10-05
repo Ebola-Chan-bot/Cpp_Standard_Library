@@ -1198,20 +1198,14 @@ namespace std
     {
     };
     // 854
-    //  863
-    /// is_trivially_copyable
-    template <typename _Tp>
-    struct is_trivially_copyable
-        : public __bool_constant<__is_trivially_copyable(_Tp)>
-    {
-    };
 #endif
-#ifdef ARDUINO_ARCH_SAM
+    //  863
+#ifndef ARDUINO_ARCH_ESP32
     template <typename _Tp>
     struct is_trivially_copyable;
 #endif
-#ifdef ARDUINO_ARCH_AVR
     // 872
+#ifdef ARDUINO_ARCH_AVR
     // 882
     /// is_trivial
     template <typename _Tp>
@@ -1222,7 +1216,23 @@ namespace std
                       "template argument must be a complete class or an unbounded array");
     };
     // 891
-    //  937
+    // 913
+    /** is_pod
+     * @deprecated Deprecated in C++20.
+     * Use `is_standard_layout && is_trivial` instead.
+     */
+    // Could use is_standard_layout && is_trivial instead of the builtin.
+    template <typename _Tp>
+    struct
+        _GLIBCXX20_DEPRECATED_SUGGEST("is_standard_layout && is_trivial")
+            is_pod
+        : public __bool_constant<__is_pod(_Tp)>
+    {
+        static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
+                      "template argument must be a complete class or an unbounded array");
+    };
+    // 928
+    //   937
     /// @cond undocumented
     template <typename _Tp,
               bool = is_arithmetic<_Tp>::value>
@@ -4090,7 +4100,7 @@ namespace std
     };
 }
 #endif
-#ifdef ARDUINO_ARCH_SAM
+#ifndef ARDUINO_ARCH_ESP32
 #include <boost/type_traits/is_trivially_copyable.hpp>
 #endif
 #pragma GCC visibility pop

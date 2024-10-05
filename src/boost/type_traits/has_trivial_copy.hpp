@@ -12,7 +12,6 @@
 #include <cstddef> // size_t
 
 #if (defined(__GNUC__) && (__GNUC__ * 100 + __GNUC_MINOR__ >= 409)) || defined(BOOST_CLANG) || (defined(__SUNPRO_CC) && defined(BOOST_HAS_TRIVIAL_COPY))
-#include <boost/type_traits/is_copy_constructible.hpp>
 #define BOOST_TT_TRIVIAL_CONSTRUCT_FIX && is_copy_constructible<T>::value
 #else
 #define BOOST_TT_TRIVIAL_CONSTRUCT_FIX

@@ -1,12 +1,13 @@
 #pragma once
 #ifndef ARDUINO_ARCH_ESP32
+//这个宏不仅用于将concept实现为变量或函数模板，还标记此名称在GCC中真的是concept，而不是变量模板。所以对于原本就是 constexpr bool 的变量或函数模板，不应该使用这个宏，而应直接使用_CSL_Function17Variable
 #define _CSL_Concept(Name, ...) constexpr bool Name _CSL_Function17Variable(__VA_ARGS__)
 #define _CSL_RemoveComma(...) __VA_ARGS__
 #define _CSL_DelayedExpand(...) _CSL_DelayedExpandImpl(__VA_ARGS__)
 #define _CSL_DelayedExpandImpl(...) __VA_ARGS__
 #endif
 #ifdef ARDUINO_ARCH_ESP32
-#include_next __FILE__
+#include_next <concepts>
 #else
 #ifdef __cpp_variable_templates
 #define _CSL_Struct17Concept(Name, Inline, Value, ...) Inline constexpr bool Name _CSL_RemoveComma(__VA_ARGS__) = Value;

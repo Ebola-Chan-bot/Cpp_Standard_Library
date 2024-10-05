@@ -1,6 +1,6 @@
 #pragma once
 #include <Cpp_Standard_Library.h>
-#include _CSL_Official(new)//SAM不支持include_next，必须用宏
+#include _CSL_Official(new) //SAM不支持include_next<new>，原因不明，因此必须用宏给出绝对路径
 #if __cplusplus < 201402L
 [[gnu::weak]] void operator delete(void *ptr, std::size_t size) noexcept;
 [[gnu::weak]] void operator delete[](void *ptr, std::size_t size) noexcept;

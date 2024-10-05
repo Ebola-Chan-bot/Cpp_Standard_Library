@@ -12,6 +12,7 @@
 #include <queue>
 #include <unordered_set>
 #include <set>
+#include <span>
 std::map<uint8_t, std::move_only_function<void(std::dynarray<char> &&) const>> ListeningPorts;
 std::unordered_map<uint8_t, std::move_only_function<void(std::dynarray<char> &&) const>> UListeningPorts;
 std::queue<std::dynarray<char>> MessageQueue;
@@ -34,6 +35,7 @@ void setup() {
   bool A = IdleTasks.contains(nullptr);
   bool B = ListeningPorts.contains(0);
   bool C = UListeningPorts.contains(0);
+  std::span<bool> SpanBool(&A,1);
   UIF[1] = []() {};
   std::queue<std::move_only_function<void()>> QF;
   QF.emplace([]() {});

@@ -2,6 +2,9 @@
 #ifdef ARDUINO_ARCH_ESP32
 #include_next <bits/iterator_concepts.h>
 #else
+#ifdef __cpp_variable_templates
+#define _CSL_Return14Value
+#endif
 // Concepts and traits for use with iterators -*- C++ -*-
 
 // Copyright (C) 2019-2024 Free Software Foundation, Inc.
@@ -234,81 +237,105 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 	namespace __detail
 	{
-		// _GLIBCXX_RESOLVE_LIB_DEFECTS
-		// 3420. cpp17-iterator should check [type] looks like an iterator first
+// _GLIBCXX_RESOLVE_LIB_DEFECTS
+// 3420. cpp17-iterator should check [type] looks like an iterator first
+#define __it declval<_Iter &>()
+		template <typename _Iter, typename = void>
+		struct _CSL_cpp17_iterator : false_type
+		{
+		};
 		template <typename _Iter>
-		concept __cpp17_iterator = requires(_Iter __it) {
-			{ *__it } -> __can_reference;
-			{ ++__it } -> same_as<_Iter &>;
-			{ *__it++ } -> __can_reference;
-		} && copyable<_Iter>;
-
-		template <typename _Iter>
-		concept __cpp17_input_iterator = __cpp17_iterator<_Iter> && equality_comparable<_Iter> && requires(_Iter __it) {
-			typename incrementable_traits<_Iter>::difference_type;
-			typename indirectly_readable_traits<_Iter>::value_type;
-			typename common_reference_t<iter_reference_t<_Iter> &&,
-										typename indirectly_readable_traits<_Iter>::value_type &>;
-			typename common_reference_t<decltype(*__it++) &&,
-										typename indirectly_readable_traits<_Iter>::value_type &>;
-			requires signed_integral<
-				typename incrementable_traits<_Iter>::difference_type>;
+		struct _CSL_cpp17_iterator<_Iter, enable_if_t<__can_reference<decltype(*__it)> _CSL_Parentheses11 && same_as<decltype(++__it), _Iter &> _CSL_Parentheses11 && __can_reference<decltype(*__it++)> _CSL_Parentheses11 && copyable<_Iter> _CSL_Parentheses11>> : true_type
+		{
 		};
 
 		template <typename _Iter>
-		concept __cpp17_fwd_iterator = __cpp17_input_iterator<_Iter> && constructible_from<_Iter> && is_lvalue_reference_v<iter_reference_t<_Iter>> && same_as<remove_cvref_t<iter_reference_t<_Iter>>, typename indirectly_readable_traits<_Iter>::value_type> && requires(_Iter __it) {
-			{ __it++ } -> convertible_to<const _Iter &>;
-			{ *__it++ } -> same_as<iter_reference_t<_Iter>>;
+		_CSL_Concept(__cpp17_iterator, _CSL_cpp17_iterator<_Iter>::value);
+
+		template <typename _Iter, typename = void>
+		struct _CSL_cpp17_input_iterator : false_type
+		{
 		};
-
 		template <typename _Iter>
-		concept __cpp17_bidi_iterator = __cpp17_fwd_iterator<_Iter> && requires(_Iter __it) {
-			{ --__it } -> same_as<_Iter &>;
-			{ __it-- } -> convertible_to<const _Iter &>;
-			{ *__it-- } -> same_as<iter_reference_t<_Iter>>;
+		struct _CSL_cpp17_input_iterator<_Iter, void_t<enable_if_t<__cpp17_iterator<_Iter> _CSL_Parentheses11 && equality_comparable<_Iter> _CSL_Parentheses11 && signed_integral<typename incrementable_traits<_Iter>::difference_type> _CSL_Parentheses11>, typename incrementable_traits<_Iter>::difference_type, typename indirectly_readable_traits<_Iter>::value_type, common_reference_t<iter_reference_t<_Iter> &&, typename indirectly_readable_traits<_Iter>::value_type &>, common_reference_t<decltype(*__it++) &&, typename indirectly_readable_traits<_Iter>::value_type &>>> : true_type
+		{
 		};
-
 		template <typename _Iter>
-		concept __cpp17_randacc_iterator = __cpp17_bidi_iterator<_Iter> && totally_ordered<_Iter> && requires(_Iter __it, typename incrementable_traits<_Iter>::difference_type __n) {
-			{ __it += __n } -> same_as<_Iter &>;
-			{ __it -= __n } -> same_as<_Iter &>;
-			{ __it + __n } -> same_as<_Iter>;
-			{ __n + __it } -> same_as<_Iter>;
-			{ __it - __n } -> same_as<_Iter>;
-			{ __it - __it } -> same_as<decltype(__n)>;
-			{ __it[__n] } -> convertible_to<iter_reference_t<_Iter>>;
+		_CSL_Concept(__cpp17_input_iterator, _CSL_cpp17_input_iterator<_Iter>::value);
+
+		template <typename _Iter, typename = void>
+		struct _CSL_cpp17_fwd_iterator : false_type
+		{
 		};
-
 		template <typename _Iter>
-		concept __iter_with_nested_types = requires {
-			typename _Iter::iterator_category;
-			typename _Iter::value_type;
-			typename _Iter::difference_type;
-			typename _Iter::reference;
+		struct _CSL_cpp17_fwd_iterator<_Iter, enable_if_t<__cpp17_input_iterator<_Iter> _CSL_Parentheses11 && constructible_from<_Iter> _CSL_Parentheses11 && is_lvalue_reference_v<iter_reference_t<_Iter>> _CSL_Parentheses11 && same_as<remove_cvref_t<iter_reference_t<_Iter>>, typename indirectly_readable_traits<_Iter>::value_type> _CSL_Parentheses11 && convertible_to<decltype(__it++), const _Iter &> _CSL_Parentheses11 && same_as<iter_reference_t<decltype(*__it++), _Iter>> _CSL_Parentheses11>> : true_type
+		{
 		};
+		template <typename _Iter>
+		_CSL_Concept(__cpp17_fwd_iterator, _CSL_cpp17_fwd_iterator<_Iter>::value);
+
+		template <typename _Iter, typename = void>
+		struct _CSL_cpp17_bidi_iterator : false_type
+		{
+		};
+		template <typename _Iter>
+		struct _CSL_cpp17_bidi_iterator<_Iter, enable_if_t<__cpp17_fwd_iterator<_Iter> _CSL_Parentheses11 && same_as<decltype(--__it), _Iter &> _CSL_Parentheses11 && convertible_to<decltype(__it--), const _Iter &> _CSL_Parentheses11 && same_as<decltype(*__it--), iter_reference_t<_Iter>> _CSL_Parentheses11>> : true_type
+		{
+		};
+		template <typename _Iter>
+		_CSL_Concept(__cpp17_bidi_iterator, _CSL_cpp17_bidi_iterator<_Iter>::value);
+
+#define __n declval<incrementable_traits<_Iter>::difference_type>()
+		template <typename _Iter, typename = void>
+		struct _CSL_cpp17_randacc_iterator : false_type
+		{
+		};
+		template <typename _Iter>
+		struct _CSL_cpp17_randacc_iterator<_Iter, enable_if_t<__cpp17_bidi_iterator<_Iter> _CSL_Parentheses11 && totally_ordered<_Iter> _CSL_Parentheses11 && same_as<decltype(__it += __n), _Iter &> _CSL_Parentheses11 && same_as<decltype(__it -= __n), _Iter &> _CSL_Parentheses11 && same_as<decltype(__it + __n), _Iter> _CSL_Parentheses11 && same_as<decltype(__n + __it), _Iter> _CSL_Parentheses11 && same_as<decltype(__it - __n), _Iter> _CSL_Parentheses11 && same_as<decltype(__it - __it), decltype(__n)> _CSL_Parentheses11 && convertible_to<decltype(__it[__n]), iter_reference_t<_Iter>>>> : true_type
+		{
+		};
+		template <typename _Iter>
+		_CSL_Concept(__cpp17_randacc_iterator, _CSL_cpp17_randacc_iterator<_Iter>::value);
+
+		template <typename _Iter, typename = void>
+		struct _CSL_iter_with_nested_types : false_type
+		{
+		};
+		template <typename _Iter>
+		struct _CSL_iter_with_nested_types<_Iter, void_t<typename _Iter::iterator_category, typename _Iter::value_type, typename _Iter::difference_type, typename _Iter::reference>> : true_type
+		{
+		};
+		template <typename _Iter>
+		_CSL_Concept(__iter_with_nested_types, _CSL_iter_with_nested_types<_Iter>::value);
 
 		template <typename _Iter>
-		concept __iter_without_nested_types = !__iter_with_nested_types<_Iter>;
+		_CSL_Concept(__iter_without_nested_types, !__iter_with_nested_types<_Iter> _CSL_Parentheses11);
 
+		template <typename _Iter, typename = void>
+		struct _CSL_iter_without_category : true_type
+		{
+		};
 		template <typename _Iter>
-		concept __iter_without_category = !requires { typename _Iter::iterator_category; };
+		struct _CSL_iter_without_category<_Iter, void_t<typename _Iter::iterator_category>> : false_type
+		{
+		};
+		template <typename _Iter>
+		_CSL_Concept(__iter_without_category, _CSL_iter_without_category<_Iter>::value);
 
 	} // namespace __detail
 
 	template <typename _Iterator>
-		requires __detail::__iter_with_nested_types<_Iterator>
-	struct __iterator_traits<_Iterator, void>
+	struct __iterator_traits<_Iterator, enable_if_t<__detail::__iter_with_nested_types<_Iterator> _CSL_Parentheses11>>
 	{
 	private:
-		template <typename _Iter>
+		template <typename _Iter, typename = void>
 		struct __ptr
 		{
 			using type = void;
 		};
 
 		template <typename _Iter>
-			requires requires { typename _Iter::pointer; }
-		struct __ptr<_Iter>
+		struct __ptr<_Iter, void_t<typename _Iter::pointer>>
 		{
 			using type = typename _Iter::pointer;
 		};
@@ -322,73 +349,73 @@ namespace std _GLIBCXX_VISIBILITY(default)
 	};
 
 	template <typename _Iterator>
-		requires __detail::__iter_without_nested_types<_Iterator> && __detail::__cpp17_input_iterator<_Iterator>
-	struct __iterator_traits<_Iterator, void>
+	struct __iterator_traits<_Iterator, enable_if_t<__detail::__iter_without_nested_types<_Iterator> _CSL_Parentheses11 && __detail::__cpp17_input_iterator<_Iterator> _CSL_Parentheses11>>
 	{
 	private:
-		template <typename _Iter>
+		template <typename _Iter, typename = void>
 		struct __cat
 		{
 			using type = input_iterator_tag;
 		};
 
 		template <typename _Iter>
-			requires requires { typename _Iter::iterator_category; }
-		struct __cat<_Iter>
+		struct __cat<_Iter, void_t<typename _Iter::iterator_category>>
 		{
 			using type = typename _Iter::iterator_category;
 		};
 
 		template <typename _Iter>
-			requires __detail::__iter_without_category<_Iter> && __detail::__cpp17_randacc_iterator<_Iter>
-		struct __cat<_Iter>
+		struct __cat<_Iter, enable_if_t<__detail::__iter_without_category<_Iter> _CSL_Parentheses11 && __detail::__cpp17_randacc_iterator<_Iter> _CSL_Parentheses11>>
 		{
 			using type = random_access_iterator_tag;
 		};
 
 		template <typename _Iter>
-			requires __detail::__iter_without_category<_Iter> && __detail::__cpp17_bidi_iterator<_Iter>
-		struct __cat<_Iter>
+		struct __cat<_Iter, enable_if_t<__detail::__iter_without_category<_Iter> _CSL_Parentheses11 && __detail::__cpp17_bidi_iterator<_Iter> _CSL_Parentheses11>>
 		{
 			using type = bidirectional_iterator_tag;
 		};
 
 		template <typename _Iter>
-			requires __detail::__iter_without_category<_Iter> && __detail::__cpp17_fwd_iterator<_Iter>
-		struct __cat<_Iter>
+		struct __cat<_Iter, enable_if_t<__detail::__iter_without_category<_Iter> _CSL_Parentheses11 && __detail::__cpp17_fwd_iterator<_Iter> _CSL_Parentheses11>>
 		{
 			using type = forward_iterator_tag;
 		};
 
-		template <typename _Iter>
+		template <typename _Iter, typename = void>
 		struct __ptr
 		{
 			using type = void;
 		};
 
 		template <typename _Iter>
-			requires requires { typename _Iter::pointer; }
-		struct __ptr<_Iter>
+		struct __ptr<_Iter, void_t<typename _Iter::pointer>>
 		{
 			using type = typename _Iter::pointer;
 		};
 
+		template <typename _Iter, typename = void>
+		struct _CSL_Iter_without_pointer : true_type
+		{
+		};
 		template <typename _Iter>
-			requires(!requires { typename _Iter::pointer; } && requires(_Iter &__it) { __it.operator->(); })
-		struct __ptr<_Iter>
+		struct _CSL_Iter_without_pointer<_Iter, void_t<typename _Iter::pointer>> : false_type
+		{
+		};
+		template <typename _Iter>
+		struct __ptr<_Iter, void_t<enable_if_t<_CSL_Iter_without_pointer<_Iter>::value>, decltype(__it.operator->())>>
 		{
 			using type = decltype(std::declval<_Iter &>().operator->());
 		};
 
-		template <typename _Iter>
+		template <typename _Iter, typename = void>
 		struct __ref
 		{
 			using type = iter_reference_t<_Iter>;
 		};
 
 		template <typename _Iter>
-			requires requires { typename _Iter::reference; }
-		struct __ref<_Iter>
+		struct __ref<_Iter, void_t<typename _Iter::reference>>
 		{
 			using type = typename _Iter::reference;
 		};
@@ -402,19 +429,17 @@ namespace std _GLIBCXX_VISIBILITY(default)
 	};
 
 	template <typename _Iterator>
-		requires __detail::__iter_without_nested_types<_Iterator> && __detail::__cpp17_iterator<_Iterator>
-	struct __iterator_traits<_Iterator, void>
+	struct __iterator_traits<_Iterator, enable_if_t<__detail::__iter_without_nested_types<_Iterator> _CSL_Parentheses11 && __detail::__cpp17_iterator<_Iterator> _CSL_Parentheses11>>
 	{
 	private:
-		template <typename _Iter>
+		template <typename _Iter, typename = void>
 		struct __diff
 		{
 			using type = void;
 		};
 
 		template <typename _Iter>
-			requires requires { typename incrementable_traits<_Iter>::difference_type; }
-		struct __diff<_Iter>
+		struct __diff<_Iter, void_t<typename incrementable_traits<_Iter>::difference_type>>
 		{
 			using type = typename incrementable_traits<_Iter>::difference_type;
 		};
@@ -746,6 +771,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 	} // namespace __detail
 #undef __i
+#undef __it
 #undef __j
 #undef __n
 #undef __o

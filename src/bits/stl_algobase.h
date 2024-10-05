@@ -55,7 +55,6 @@
  *  Do not attempt to use it directly. @headername{algorithm}
  */
 #ifdef ARDUINO_ARCH_AVR
-#include <debug/debug.h>
 #include <bits/stl_pair.h>
 #endif
 #ifdef ARDUINO_ARCH_SAM
@@ -72,16 +71,17 @@
 #include <bits/stl_iterator_base_funcs.h>
 #include <bits/stl_iterator.h>
 #include <bits/predefined_ops.h>
+#include <debug/debug.h>
 #if __cplusplus >= 201402L
 #include <bit> // std::__bit_width
 #else
 #include <ext/numeric_traits.h>
 #endif
-
+#endif
 namespace std _GLIBCXX_VISIBILITY(default)
 {
   _GLIBCXX_BEGIN_NAMESPACE_VERSION
-
+#ifndef ARDUINO_ARCH_ESP32
   /*
    * A constexpr wrapper for __builtin_memcmp.
    * @param __num The number of elements of type _Tp (not bytes).
@@ -500,7 +500,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
              _GLIBCXX_STD_C::_Deque_iterator<_CharT, _CharT &, _CharT *>,
              bool);
 #endif
-
+#endif //! ARDUINO_ARCH_ESP32
+#ifdef ARDUINO_ARCH_SAM
   /**
    *  @brief Copies the range [first,last) into result.
    *  @ingroup mutating_algorithms
@@ -517,22 +518,21 @@ namespace std _GLIBCXX_VISIBILITY(default)
    *
    *  Note that the end of the output range is permitted to be contained
    *  within [first,last).
-  */
-  template<typename _II, typename _OI>
-    _GLIBCXX20_CONSTEXPR
-    inline _OI
-    copy(_II __first, _II __last, _OI __result)
-    {
-      // concept requirements
-      __glibcxx_function_requires(_InputIteratorConcept<_II>)
-      __glibcxx_function_requires(_OutputIteratorConcept<_OI,
-	    typename iterator_traits<_II>::reference>)
-      __glibcxx_requires_can_increment_range(__first, __last, __result);
+   */
+  template <typename _II, typename _OI>
+  _GLIBCXX20_CONSTEXPR inline _OI
+  copy(_II __first, _II __last, _OI __result)
+  {
+    // concept requirements
+    __glibcxx_function_requires(_InputIteratorConcept<_II>)
+        __glibcxx_function_requires(_OutputIteratorConcept<_OI,
+                                                           typename iterator_traits<_II>::reference>)
+            __glibcxx_requires_can_increment_range(__first, __last, __result);
 
-      return std::__copy_move_a<__is_move_iterator<_II>::__value>
-	     (std::__miter_base(__first), std::__miter_base(__last), __result);
-    }
-
+    return std::__copy_move_a<__is_move_iterator<_II>::__value>(std::__miter_base(__first), std::__miter_base(__last), __result);
+  }
+#endif // ARDUINO_ARCH_SAM
+#ifndef ARDUINO_ARCH_ESP32
 #if __cplusplus >= 201103L
   /**
    *  @brief Moves the range [first,last) into result.
@@ -1210,8 +1210,29 @@ namespace std _GLIBCXX_VISIBILITY(default)
       return ptrdiff_t(__len1 - __len2);
     }
   };
-
-  // Implementation of std::find_if, also used in std::remove_if and others.
+  // 1574
+  /// This is a helper function for the sort routines and for random.tcc.
+  //  Precondition: __n > 0.
+  template <typename _Tp>
+  inline _GLIBCXX_CONSTEXPR _Tp
+  __lg(_Tp __n)
+  {
+#if __cplusplus >= 201402L
+    return std::__bit_width(make_unsigned_t<_Tp>(__n)) - 1;
+#else
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wlong-long"
+    // Use +__n so it promotes to at least int.
+    return (sizeof(+__n) * __CHAR_BIT__ - 1) - (sizeof(+__n) == sizeof(long long)
+                                                    ? __builtin_clzll(+__n)
+                                                    : (sizeof(+__n) == sizeof(long)
+                                                           ? __builtin_clzl(+__n)
+                                                           : __builtin_clz(+__n)));
+#pragma GCC diagnostic pop
+#endif
+  }
+  // 1596
+  //  Implementation of std::find_if, also used in std::remove_if and others.
   template <typename _Iterator, typename _Predicate>
   _GLIBCXX20_CONSTEXPR inline _Iterator
   __find_if(_Iterator __first, _Iterator __last, _Predicate __pred)
@@ -1252,7 +1273,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
       }
     return __result;
   }
-
+#endif //! ARDUINO_ARCH_ESP32
+#ifdef ARDUINO_ARCH_AVR
 #if __cplusplus >= 201103L
   template <typename _ForwardIterator1, typename _ForwardIterator2,
             typename _BinaryPredicate>
@@ -1318,9 +1340,13 @@ namespace std _GLIBCXX_VISIBILITY(default)
                                  __gnu_cxx::__ops::__iter_equal_to_iter());
   }
 #endif // C++11
+#endif
   _GLIBCXX_END_NAMESPACE_VERSION
 } // namespace std
-#include <debug/safe_iterator.tcc>//此文件依赖本文件，所以不能由<safe_iterator.h>包含
+#ifdef ARDUINO_ARCH_SAM
+#include <debug/safe_iterator.tcc> //此文件依赖本文件，所以不能由<safe_iterator.h>包含
+#endif
+#ifndef ARDUINO_ARCH_ESP32
 // NB: This file is included within many other C++ includes, as a way
 // of getting the base algorithms. So, make sure that parallel bits
 // come in too if requested.

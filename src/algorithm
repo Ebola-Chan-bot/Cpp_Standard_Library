@@ -436,7 +436,8 @@ namespace std
 		}
 		return result;
 	}
-
+#endif // ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
 	template <class BidirectionalIterator1, class BidirectionalIterator2>
 	_UCXXEXPORT
 		BidirectionalIterator2
@@ -460,8 +461,7 @@ namespace std
 		*a = *b;
 		*b = temp;
 	}
-#endif // ARDUINO_ARCH_AVR
-#ifndef ARDUINO_ARCH_ESP32
+
 	template <class ForwardIterator1, class ForwardIterator2>
 	_UCXXEXPORT
 		ForwardIterator2
@@ -1077,7 +1077,8 @@ namespace std
 	{
 		partial_sort(first, nth, last, comp);
 	}
-
+#endif // ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
 	template <class ForwardIterator, class T>
 	_UCXXEXPORT
 		ForwardIterator
@@ -1087,7 +1088,8 @@ namespace std
 		less<typename iterator_traits<ForwardIterator>::value_type> c;
 		return lower_bound(first, last, value, c);
 	}
-
+#endif //! ARDUINO_ARCH_ESP32
+#ifdef ARDUINO_ARCH_AVR
 	template <class ForwardIterator, class T, class Compare>
 	_UCXXEXPORT
 		ForwardIterator
