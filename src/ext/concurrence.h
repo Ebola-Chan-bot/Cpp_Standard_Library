@@ -34,30 +34,40 @@
 #pragma GCC system_header
 
 #include <exception>
-#include <bits/gthr.h> 
+#include <bits/gthr.h>
 #include <bits/functexcept.h>
 #include <ext/type_traits.h>
+#ifdef ARDUINO_ARCH_AVR
+#include <stdlib.h>
+#define atexit _CSL_atexit // Workaround AVR bug，<Arduino.h>声明的atexit与<stdlib.h>中的atexit冲突
+#endif
+#include <Arduino.h>
 
 namespace __gnu_cxx _GLIBCXX_VISIBILITY(default)
 {
-_GLIBCXX_BEGIN_NAMESPACE_VERSION
+  _GLIBCXX_BEGIN_NAMESPACE_VERSION
 
   // Available locking policies:
   // _S_single    single-threaded code that doesn't need to be locked.
   // _S_mutex     multi-threaded code that requires additional support
   //              from gthr.h or abstraction layers in concurrence.h.
   // _S_atomic    multi-threaded code using atomic operations.
-  enum _Lock_policy { _S_single, _S_mutex, _S_atomic }; 
+  enum _Lock_policy
+  {
+    _S_single,
+    _S_mutex,
+    _S_atomic
+  };
 
   // Compile time constant that indicates prefered locking policy in
   // the current configuration.
   _GLIBCXX17_INLINE const _Lock_policy __default_lock_policy =
 #ifndef __GTHREADS
-  _S_single;
+      _S_single;
 #elif defined _GLIBCXX_HAVE_ATOMIC_LOCK_POLICY
-  _S_atomic;
+      _S_atomic;
 #else
-  _S_mutex;
+      _S_mutex;
 #endif
 
   // NB: As this is used in libsupc++, need to only depend on
@@ -65,55 +75,71 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
   class __concurrence_lock_error : public std::exception
   {
   public:
-    virtual char const*
+    virtual char const *
     what() const throw()
-    { return "__gnu_cxx::__concurrence_lock_error"; }
+    {
+      return "__gnu_cxx::__concurrence_lock_error";
+    }
   };
 
   class __concurrence_unlock_error : public std::exception
   {
   public:
-    virtual char const*
+    virtual char const *
     what() const throw()
-    { return "__gnu_cxx::__concurrence_unlock_error"; }
+    {
+      return "__gnu_cxx::__concurrence_unlock_error";
+    }
   };
 
   class __concurrence_broadcast_error : public std::exception
   {
   public:
-    virtual char const*
+    virtual char const *
     what() const throw()
-    { return "__gnu_cxx::__concurrence_broadcast_error"; }
+    {
+      return "__gnu_cxx::__concurrence_broadcast_error";
+    }
   };
 
   class __concurrence_wait_error : public std::exception
   {
   public:
-    virtual char const*
+    virtual char const *
     what() const throw()
-    { return "__gnu_cxx::__concurrence_wait_error"; }
+    {
+      return "__gnu_cxx::__concurrence_wait_error";
+    }
   };
 
   // Substitute for concurrence_error object in the case of -fno-exceptions.
   inline void
   __throw_concurrence_lock_error()
-  { _GLIBCXX_THROW_OR_ABORT(__concurrence_lock_error()); }
+  {
+    _GLIBCXX_THROW_OR_ABORT(__concurrence_lock_error());
+  }
 
   inline void
   __throw_concurrence_unlock_error()
-  { _GLIBCXX_THROW_OR_ABORT(__concurrence_unlock_error()); }
+  {
+    _GLIBCXX_THROW_OR_ABORT(__concurrence_unlock_error());
+  }
 
 #ifdef __GTHREAD_HAS_COND
   inline void
   __throw_concurrence_broadcast_error()
-  { _GLIBCXX_THROW_OR_ABORT(__concurrence_broadcast_error()); }
+  {
+    _GLIBCXX_THROW_OR_ABORT(__concurrence_broadcast_error());
+  }
 
   inline void
   __throw_concurrence_wait_error()
-  { _GLIBCXX_THROW_OR_ABORT(__concurrence_wait_error()); }
+  {
+    _GLIBCXX_THROW_OR_ABORT(__concurrence_wait_error());
+  }
 #endif
- 
-  class __mutex 
+
+  class __mutex
   {
   private:
 #if __GTHREADS && defined __GTHREAD_MUTEX_INIT
@@ -122,53 +148,59 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     __gthread_mutex_t _M_mutex;
 #endif
 
-    __mutex(const __mutex&);
-    __mutex& operator=(const __mutex&);
+    __mutex(const __mutex &);
+    __mutex &operator=(const __mutex &);
 
   public:
-    __mutex() 
-    { 
-#if __GTHREADS && ! defined __GTHREAD_MUTEX_INIT
+    __mutex()
+    {
+#if __GTHREADS && !defined __GTHREAD_MUTEX_INIT
       if (__gthread_active_p())
-	__GTHREAD_MUTEX_INIT_FUNCTION(&_M_mutex);
+        __GTHREAD_MUTEX_INIT_FUNCTION(&_M_mutex);
 #endif
     }
 
-#if __GTHREADS && ! defined __GTHREAD_MUTEX_INIT
-    ~__mutex() 
-    { 
+#if __GTHREADS && !defined __GTHREAD_MUTEX_INIT
+    ~__mutex()
+    {
       if (__gthread_active_p())
-	__gthread_mutex_destroy(&_M_mutex); 
+        __gthread_mutex_destroy(&_M_mutex);
     }
-#endif 
+#endif
 
     void lock()
     {
 #if __GTHREADS
       if (__gthread_active_p())
-	{
-	  if (__gthread_mutex_lock(&_M_mutex) != 0)
-	    __throw_concurrence_lock_error();
-	}
+      {
+        if (__gthread_mutex_lock(&_M_mutex) != 0)
+          __throw_concurrence_lock_error();
+      }
+#else
+      noInterrupts();
 #endif
     }
-    
+
     void unlock()
     {
 #if __GTHREADS
       if (__gthread_active_p())
-	{
-	  if (__gthread_mutex_unlock(&_M_mutex) != 0)
-	    __throw_concurrence_unlock_error();
-	}
+      {
+        if (__gthread_mutex_unlock(&_M_mutex) != 0)
+          __throw_concurrence_unlock_error();
+      }
+#else
+      interrupts();
 #endif
     }
 
-    __gthread_mutex_t* gthread_mutex(void)
-      { return &_M_mutex; }
+    __gthread_mutex_t *gthread_mutex(void)
+    {
+      return &_M_mutex;
+    }
   };
 
-  class __recursive_mutex 
+  class __recursive_mutex
   {
   private:
 #if __GTHREADS && defined __GTHREAD_RECURSIVE_MUTEX_INIT
@@ -177,50 +209,52 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     __gthread_recursive_mutex_t _M_mutex;
 #endif
 
-    __recursive_mutex(const __recursive_mutex&);
-    __recursive_mutex& operator=(const __recursive_mutex&);
+    __recursive_mutex(const __recursive_mutex &);
+    __recursive_mutex &operator=(const __recursive_mutex &);
 
   public:
-    __recursive_mutex() 
-    { 
-#if __GTHREADS && ! defined __GTHREAD_RECURSIVE_MUTEX_INIT
+    __recursive_mutex()
+    {
+#if __GTHREADS && !defined __GTHREAD_RECURSIVE_MUTEX_INIT
       if (__gthread_active_p())
-	__GTHREAD_RECURSIVE_MUTEX_INIT_FUNCTION(&_M_mutex);
+        __GTHREAD_RECURSIVE_MUTEX_INIT_FUNCTION(&_M_mutex);
 #endif
     }
 
-#if __GTHREADS && ! defined __GTHREAD_RECURSIVE_MUTEX_INIT
+#if __GTHREADS && !defined __GTHREAD_RECURSIVE_MUTEX_INIT
     ~__recursive_mutex()
     {
       if (__gthread_active_p())
-	__gthread_recursive_mutex_destroy(&_M_mutex);
+        __gthread_recursive_mutex_destroy(&_M_mutex);
     }
 #endif
 
     void lock()
-    { 
+    {
 #if __GTHREADS
       if (__gthread_active_p())
-	{
-	  if (__gthread_recursive_mutex_lock(&_M_mutex) != 0)
-	    __throw_concurrence_lock_error();
-	}
-#endif
-    }
-    
-    void unlock()
-    { 
-#if __GTHREADS
-      if (__gthread_active_p())
-	{
-	  if (__gthread_recursive_mutex_unlock(&_M_mutex) != 0)
-	    __throw_concurrence_unlock_error();
-	}
+      {
+        if (__gthread_recursive_mutex_lock(&_M_mutex) != 0)
+          __throw_concurrence_lock_error();
+      }
 #endif
     }
 
-    __gthread_recursive_mutex_t* gthread_recursive_mutex(void)
-    { return &_M_mutex; }
+    void unlock()
+    {
+#if __GTHREADS
+      if (__gthread_active_p())
+      {
+        if (__gthread_recursive_mutex_unlock(&_M_mutex) != 0)
+          __throw_concurrence_unlock_error();
+      }
+#endif
+    }
+
+    __gthread_recursive_mutex_t *gthread_recursive_mutex(void)
+    {
+      return &_M_mutex;
+    }
   };
 
   /// Scoped lock idiom.
@@ -232,17 +266,21 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     typedef __mutex __mutex_type;
 
   private:
-    __mutex_type& _M_device;
+    __mutex_type &_M_device;
 
-    __scoped_lock(const __scoped_lock&);
-    __scoped_lock& operator=(const __scoped_lock&);
+    __scoped_lock(const __scoped_lock &);
+    __scoped_lock &operator=(const __scoped_lock &);
 
   public:
-    explicit __scoped_lock(__mutex_type& __name) : _M_device(__name)
-    { _M_device.lock(); }
+    explicit __scoped_lock(__mutex_type &__name) : _M_device(__name)
+    {
+      _M_device.lock();
+    }
 
     ~__scoped_lock() throw()
-    { _M_device.unlock(); }
+    {
+      _M_device.unlock();
+    }
   };
 
 #ifdef __GTHREAD_HAS_COND
@@ -255,34 +293,34 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     __gthread_cond_t _M_cond;
 #endif
 
-    __cond(const __cond&);
-    __cond& operator=(const __cond&);
+    __cond(const __cond &);
+    __cond &operator=(const __cond &);
 
   public:
-    __cond() 
-    { 
-#if __GTHREADS && ! defined __GTHREAD_COND_INIT
+    __cond()
+    {
+#if __GTHREADS && !defined __GTHREAD_COND_INIT
       if (__gthread_active_p())
-	__GTHREAD_COND_INIT_FUNCTION(&_M_cond);
+        __GTHREAD_COND_INIT_FUNCTION(&_M_cond);
 #endif
     }
 
-#if __GTHREADS && ! defined __GTHREAD_COND_INIT
-    ~__cond() 
-    { 
+#if __GTHREADS && !defined __GTHREAD_COND_INIT
+    ~__cond()
+    {
       if (__gthread_active_p())
-	__gthread_cond_destroy(&_M_cond); 
+        __gthread_cond_destroy(&_M_cond);
     }
-#endif 
+#endif
 
     void broadcast()
     {
 #if __GTHREADS
       if (__gthread_active_p())
-	{
-	  if (__gthread_cond_broadcast(&_M_cond) != 0)
-	    __throw_concurrence_broadcast_error();
-	}
+      {
+        if (__gthread_cond_broadcast(&_M_cond) != 0)
+          __throw_concurrence_broadcast_error();
+      }
 #endif
     }
 
@@ -290,8 +328,8 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     {
 #if __GTHREADS
       {
-	  if (__gthread_cond_wait(&_M_cond, mutex->gthread_mutex()) != 0)
-	    __throw_concurrence_wait_error();
+        if (__gthread_cond_wait(&_M_cond, mutex->gthread_mutex()) != 0)
+          __throw_concurrence_wait_error();
       }
 #endif
     }
@@ -300,17 +338,16 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     {
 #if __GTHREADS
       {
-	  if (__gthread_cond_wait_recursive(&_M_cond,
-					    mutex->gthread_recursive_mutex())
-	      != 0)
-	    __throw_concurrence_wait_error();
+        if (__gthread_cond_wait_recursive(&_M_cond,
+                                          mutex->gthread_recursive_mutex()) != 0)
+          __throw_concurrence_wait_error();
       }
 #endif
     }
   };
 #endif
 
-_GLIBCXX_END_NAMESPACE_VERSION
+  _GLIBCXX_END_NAMESPACE_VERSION
 } // namespace
 
 #endif

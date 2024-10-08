@@ -25,7 +25,8 @@ std::move_only_function<void()> FF;
 void setup() {
   std::unique_ptr<std::chrono::hours[]> US = std::make_unique_for_overwrite<std::chrono::hours[]>(10);
   std::shared_ptr<std::chrono::hours[]> SSS;
-  std::fill_n(US.get(), 10, std::chrono::hours(1));
+  using namespace std::chrono_literals;
+  std::fill_n(US.get(), 10, 1h);
   std::chrono::hours H = US[5];
   FF = [H]() {
     Translate(H);

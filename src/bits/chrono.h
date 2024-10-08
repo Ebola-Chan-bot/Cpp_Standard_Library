@@ -1,5 +1,4 @@
 #pragma once
-#ifdef ARDUINO_ARCH_AVR
 // chrono::duration and chrono::time_point -*- C++ -*-
 
 // Copyright (C) 2008-2024 Free Software Foundation, Inc.
@@ -29,13 +28,8 @@
  *  Do not attempt to use it directly. @headername{chrono}
  */
 
-#ifndef _GLIBCXX_CHRONO_H
-#define _GLIBCXX_CHRONO_H 1
-
 #pragma GCC system_header
-
-#if __cplusplus >= 201103L
-
+#ifdef ARDUINO_ARCH_AVR
 #include <ratio>
 #include <type_traits>
 #include <limits>
@@ -48,10 +42,16 @@
 #include <bits/version.h>
 #undef abs
 #undef round
+#endif
+#ifdef ARDUINO_ARCH_ESP32
+#include_next <bits/chrono.h>
+#else
+#include <bits/parse_numbers.h> // for literals support.
+#endif
 namespace std _GLIBCXX_VISIBILITY(default)
 {
 	_GLIBCXX_BEGIN_NAMESPACE_VERSION
-
+#ifdef ARDUINO_ARCH_AVR
 #if __cplusplus >= 201703L
 	namespace filesystem
 	{
@@ -1373,7 +1373,156 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		/// @}
 #endif // C++20
 	} // namespace chrono
+#endif // ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
+// 1328
+#ifdef __glibcxx_chrono_udls // C++ >= 14
+	inline namespace literals
+	{
+		/** ISO C++ 2014  namespace for suffixes for duration literals.
+		 *
+		 * These suffixes can be used to create `chrono::duration` values with
+		 * tick periods of hours, minutes, seconds, milliseconds, microseconds
+		 * or nanoseconds. For example, `std::chrono::seconds(5)` can be written
+		 * as `5s` after making the suffix visible in the current scope.
+		 * The suffixes can be made visible by a using-directive or
+		 * using-declaration such as:
+		 *  - `using namespace std::chrono_literals;`
+		 *  - `using namespace std::literals;`
+		 *  - `using namespace std::chrono;`
+		 *  - `using namespace std;`
+		 *  - `using std::chrono_literals::operator"" s;`
+		 *
+		 * The result of these suffixes on an integer literal is one of the
+		 * standard typedefs such as `std::chrono::hours`.
+		 * The result on a floating-point literal is a duration type with the
+		 * specified tick period and an unspecified floating-point representation,
+		 * for example `1.5e2ms` might be equivalent to
+		 * `chrono::duration<long double, chrono::milli>(1.5e2)`.
+		 *
+		 * @since C+14
+		 * @ingroup chrono
+		 */
+		inline namespace chrono_literals
+		{
+			/// @addtogroup chrono
+			/// @{
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wliteral-suffix"
+			/// @cond undocumented
+			template <typename _Dur, char... _Digits>
+			constexpr _Dur __check_overflow()
+			{
+				using _Val = __parse_int::_Parse_int<_Digits...>;
+				using _Rep = typename _Dur::rep;
+				static_assert(static_cast<_Rep>(_Val::value) >= 0 && static_cast<_Rep>(_Val::value) == _Val::value, "literal value cannot be represented by duration type");
+				return _Dur(static_cast<_Rep>(_Val::value));
+			}
+			/// @endcond
+
+			/// Literal suffix for durations representing non-integer hours
+			constexpr chrono::duration<long double, ratio<3600, 1>>
+			operator"" h(long double __hours)
+			{
+				return chrono::duration<long double, ratio<3600, 1>>{__hours};
+			}
+
+			/// Literal suffix for durations of type `std::chrono::hours`
+			template <char... _Digits>
+			constexpr chrono::hours
+			operator"" h()
+			{
+				return __check_overflow<chrono::hours, _Digits...>();
+			}
+
+			/// Literal suffix for durations representing non-integer minutes
+			constexpr chrono::duration<long double, ratio<60, 1>>
+			operator"" min(long double __mins)
+			{
+				return chrono::duration<long double, ratio<60, 1>>{__mins};
+			}
+
+			/// Literal suffix for durations of type `std::chrono::minutes`
+			template <char... _Digits>
+			constexpr chrono::minutes
+			operator"" min()
+			{
+				return __check_overflow<chrono::minutes, _Digits...>();
+			}
+
+			/// Literal suffix for durations representing non-integer seconds
+			constexpr chrono::duration<long double>
+			operator"" s(long double __secs)
+			{
+				return chrono::duration<long double>{__secs};
+			}
+
+			/// Literal suffix for durations of type `std::chrono::seconds`
+			template <char... _Digits>
+			constexpr chrono::seconds
+			operator"" s()
+			{
+				return __check_overflow<chrono::seconds, _Digits...>();
+			}
+
+			/// Literal suffix for durations representing non-integer milliseconds
+			constexpr chrono::duration<long double, milli>
+			operator"" ms(long double __msecs)
+			{
+				return chrono::duration<long double, milli>{__msecs};
+			}
+
+			/// Literal suffix for durations of type `std::chrono::milliseconds`
+			template <char... _Digits>
+			constexpr chrono::milliseconds
+			operator"" ms()
+			{
+				return __check_overflow<chrono::milliseconds, _Digits...>();
+			}
+
+			/// Literal suffix for durations representing non-integer microseconds
+			constexpr chrono::duration<long double, micro>
+			operator"" us(long double __usecs)
+			{
+				return chrono::duration<long double, micro>{__usecs};
+			}
+
+			/// Literal suffix for durations of type `std::chrono::microseconds`
+			template <char... _Digits>
+			constexpr chrono::microseconds
+			operator"" us()
+			{
+				return __check_overflow<chrono::microseconds, _Digits...>();
+			}
+
+			/// Literal suffix for durations representing non-integer nanoseconds
+			constexpr chrono::duration<long double, nano>
+			operator"" ns(long double __nsecs)
+			{
+				return chrono::duration<long double, nano>{__nsecs};
+			}
+
+			/// Literal suffix for durations of type `std::chrono::nanoseconds`
+			template <char... _Digits>
+			constexpr chrono::nanoseconds
+			operator"" ns()
+			{
+				return __check_overflow<chrono::nanoseconds, _Digits...>();
+			}
+
+#pragma GCC diagnostic pop
+			/// @}
+		} // inline namespace chrono_literals
+	} // inline namespace literals
+
+	namespace chrono
+	{
+		using namespace literals::chrono_literals;
+	} // namespace chrono
+#endif // __glibcxx_chrono_udls
+#endif //! ARDUINO_ARCH_ESP32
+#ifdef ARDUINO_ARCH_AVR
 #if __cplusplus >= 201703L
 	namespace filesystem
 	{
@@ -1439,13 +1588,6 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		};
 	} // namespace filesystem
 #endif // C++17
-
+#endif
 	_GLIBCXX_END_NAMESPACE_VERSION
 } // namespace std
-
-#endif // C++11
-
-#endif //_GLIBCXX_CHRONO_H
-#else
-#include_next <bits/chrono.h>
-#endif

@@ -826,6 +826,8 @@ namespace std
 #define _GLIBCXX_TXN_SAFE_DYN
 #endif
 // 718
+#ifndef __has_cpp_attribute
 #define __has_cpp_attribute(A) 0
+#endif
 #define __constinit
 #endif
