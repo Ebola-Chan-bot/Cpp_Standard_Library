@@ -13,6 +13,7 @@
 #include <unordered_set>
 #include <set>
 #include <span>
+#include <vector>
 std::map<uint8_t, std::move_only_function<void(std::dynarray<char> &&) const>> ListeningPorts;
 std::unordered_map<uint8_t, std::move_only_function<void(std::dynarray<char> &&) const>> UListeningPorts;
 std::queue<std::dynarray<char>> MessageQueue;
@@ -36,7 +37,7 @@ void setup() {
   bool A = IdleTasks.contains(nullptr);
   bool B = ListeningPorts.contains(0);
   bool C = UListeningPorts.contains(0);
-  std::span<bool> SpanBool(&A,1);
+  std::span<bool> SpanBool(&A, 1);
   UIF[1] = []() {};
   std::queue<std::move_only_function<void()>> QF;
   QF.emplace([]() {});
@@ -50,6 +51,14 @@ void setup() {
   std::move_only_function DeductionTest([]() {});
 #endif
   PointerSet.contains(nullptr);
+  struct TestStruct {
+    int A;
+    int B;
+    constexpr TestStruct(int A, int B)
+      : A(A), B(B) {}
+  };
+  std::vector<TestStruct> TestVector;
+  TestVector.emplace_back(1, 1);
 }
 void loop() {
   FF();

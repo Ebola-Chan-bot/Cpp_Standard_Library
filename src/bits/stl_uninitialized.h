@@ -62,7 +62,7 @@
 #include <type_traits>
 #endif
 
-#include <bits/stl_algobase.h>    // copy
+#include <algorithm>    // copy
 #include <ext/alloc_traits.h>     // __alloc_traits
 
 #if __cplusplus >= 201703L

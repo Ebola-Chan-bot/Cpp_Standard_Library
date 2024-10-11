@@ -11,7 +11,7 @@
 
 对于SAM和ESP32架构，如欲使用C++标准异常处理和运行时类型识别（RTTI, typeid），还需要确保编译选项包含-fexceptions且不含-fno-rtti。AVR架构不支持异常处理，设置-fexceptions或使用try关键词将导致未定义行为。
 
-在包含任何C++标准头文件之前，必须先包含`Cpp_Standard_Library.h`。这是对 Arduino IDE 的提示，告诉编译器必须要将本库纳入编译流程。
+在包含任何C++标准头文件之前，必须先`#include <Cpp_Standard_Library.h>`。这是对 Arduino IDE 的提示，告诉编译器必须要将本库纳入编译流程。
 # 招牌功能（不限于此）
 - `<algorithm> fill_n shuffle`
 - `<chrono> chrono::duration`

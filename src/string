@@ -74,7 +74,7 @@ namespace std
 			if (*s > 0)
 			{
 				resize(n);
-				Tr::copy(vector<Ch, A>::data_, s, vector<Ch, A>::elements);
+				Tr::copy(vector<Ch, A>::data(), s, vector<Ch, A>::size());
 			}
 		}
 
@@ -105,7 +105,7 @@ namespace std
 			{
 				size_type len = Tr::length(s);
 				resize(len);
-				Tr::copy(vector<Ch, A>::data_, s, len);
+				Tr::copy(vector<Ch, A>::data(), s, len);
 			}
 			return *this;
 		}
@@ -142,9 +142,9 @@ namespace std
 
 		_UCXXEXPORT basic_string &append(const basic_string &str)
 		{
-			size_t temp = vector<Ch, A>::elements;
-			resize(vector<Ch, A>::elements + str.elements);
-			Tr::copy(vector<Ch, A>::data_ + temp, str.vector<Ch, A>::data_, str.elements);
+			size_t temp = vector<Ch, A>::size();
+			resize(vector<Ch, A>::size() + str.size());
+			Tr::copy(vector<Ch, A>::data() + temp, str.vector<Ch, A>::data(), str.size());
 
 			return *this;
 		}
@@ -156,41 +156,41 @@ namespace std
 				__throw_out_of_range();
 			}
 
-			size_type rlen = str.elements - pos;
+			size_type rlen = str.size() - pos;
 			if (rlen > n)
 			{
 				rlen = n;
 			}
-			if (vector<Ch, A>::elements > npos - rlen)
+			if (vector<Ch, A>::size() > npos - rlen)
 			{
 				__throw_length_error();
 			}
-			size_t temp = vector<Ch, A>::elements;
-			resize(vector<Ch, A>::elements + rlen);
-			Tr::copy(vector<Ch, A>::data_ + temp, str.vector<Ch, A>::data_ + pos, rlen);
+			size_t temp = vector<Ch, A>::size();
+			resize(vector<Ch, A>::size() + rlen);
+			Tr::copy(vector<Ch, A>::data() + temp, str.vector<Ch, A>::data() + pos, rlen);
 			return *this;
 		}
 
 		_UCXXEXPORT basic_string &append(const Ch *s, size_type n)
 		{
-			size_t temp = vector<Ch, A>::elements;
-			resize(vector<Ch, A>::elements + n);
-			Tr::copy(vector<Ch, A>::data_ + temp, s, n);
+			size_t temp = vector<Ch, A>::size();
+			resize(vector<Ch, A>::size() + n);
+			Tr::copy(vector<Ch, A>::data() + temp, s, n);
 			return *this;
 		}
 
 		_UCXXEXPORT basic_string &append(const Ch *s)
 		{
 			size_type strLen = Tr::length(s);
-			size_t temp = vector<Ch, A>::elements;
-			resize(vector<Ch, A>::elements + strLen);
-			Tr::copy(vector<Ch, A>::data_ + temp, s, strLen);
+			size_t temp = vector<Ch, A>::size();
+			resize(vector<Ch, A>::size() + strLen);
+			Tr::copy(vector<Ch, A>::data() + temp, s, strLen);
 			return *this;
 		}
 
 		_UCXXEXPORT basic_string &append(size_type n, Ch c)
 		{
-			vector<Ch, A>::resize(vector<Ch, A>::elements + n, c);
+			vector<Ch, A>::resize(vector<Ch, A>::size() + n, c);
 			return *this;
 		}
 
@@ -202,24 +202,24 @@ namespace std
 
 		_UCXXEXPORT basic_string &assign(const basic_string &str, size_type pos, size_type n)
 		{
-			if (pos > str.elements)
+			if (pos > str.size())
 			{
 				__throw_out_of_range();
 			}
-			size_type r = str.elements - pos;
+			size_type r = str.size() - pos;
 			if (r > n)
 			{
 				r = n;
 			}
 			resize(r);
-			Tr::copy(vector<Ch, A>::data_, str.vector<Ch, A>::data_ + pos, r);
+			Tr::copy(vector<Ch, A>::data(), str.vector<Ch, A>::data() + pos, r);
 			return *this;
 		}
 
 		_UCXXEXPORT basic_string &assign(const Ch *s, size_type n)
 		{
 			resize(n);
-			Tr::copy(vector<Ch, A>::data_, s, n);
+			Tr::copy(vector<Ch, A>::data(), s, n);
 			return *this;
 		}
 
@@ -251,40 +251,40 @@ namespace std
 
 		_UCXXEXPORT basic_string &insert(size_type pos1, const basic_string &str, size_type pos2 = 0, size_type n = npos)
 		{
-			if (pos1 > vector<Ch, A>::elements || pos2 > str.elements)
+			if (pos1 > vector<Ch, A>::size() || pos2 > str.size())
 			{
 				__throw_out_of_range();
 			}
-			size_type r = str.elements - pos2;
+			size_type r = str.size() - pos2;
 			if (r > n)
 			{
 				r = n;
 			}
-			if (vector<Ch, A>::elements > npos - r)
+			if (vector<Ch, A>::size() > npos - r)
 			{
 				__throw_length_error();
 			}
-			size_type temp = vector<Ch, A>::elements;
-			resize(vector<Ch, A>::elements + r);
-			Tr::move(vector<Ch, A>::data_ + pos1 + r, vector<Ch, A>::data_ + pos1, temp - pos1);
-			Tr::copy(vector<Ch, A>::data_ + pos1, str.vector<Ch, A>::data_ + pos2, r);
+			size_type temp = vector<Ch, A>::size();
+			resize(vector<Ch, A>::size() + r);
+			Tr::move(vector<Ch, A>::data() + pos1 + r, vector<Ch, A>::data() + pos1, temp - pos1);
+			Tr::copy(vector<Ch, A>::data() + pos1, str.vector<Ch, A>::data() + pos2, r);
 			return *this;
 		}
 
 		_UCXXEXPORT basic_string &insert(size_type pos, const Ch *s, size_type n)
 		{
-			if (pos > vector<Ch, A>::elements)
+			if (pos > vector<Ch, A>::size())
 			{
 				__throw_out_of_range();
 			}
-			if (vector<Ch, A>::elements > npos - n)
+			if (vector<Ch, A>::size() > npos - n)
 			{
 				__throw_length_error();
 			}
-			size_type temp = vector<Ch, A>::elements;
-			resize(vector<Ch, A>::elements + n);
-			Tr::move(vector<Ch, A>::data_ + pos + n, vector<Ch, A>::data_ + pos, temp - pos);
-			Tr::copy(vector<Ch, A>::data_ + pos, s, n);
+			size_type temp = vector<Ch, A>::size();
+			resize(vector<Ch, A>::size() + n);
+			Tr::move(vector<Ch, A>::data() + pos + n, vector<Ch, A>::data() + pos, temp - pos);
+			Tr::copy(vector<Ch, A>::data() + pos, s, n);
 			return *this;
 		}
 
@@ -296,18 +296,18 @@ namespace std
 
 		_UCXXEXPORT basic_string &insert(size_type pos, size_type n, Ch c)
 		{
-			if (pos > vector<Ch, A>::elements)
+			if (pos > vector<Ch, A>::size())
 			{
 				__throw_out_of_range();
 			}
-			if (vector<Ch, A>::elements > npos - n)
+			if (vector<Ch, A>::size() > npos - n)
 			{
 				__throw_length_error();
 			}
-			size_type temp = vector<Ch, A>::elements;
-			resize(vector<Ch, A>::elements + n);
-			Tr::move(vector<Ch, A>::data_ + pos + n, vector<Ch, A>::data_ + pos, temp - pos);
-			Tr::assign(vector<Ch, A>::data_ + pos, n, c);
+			size_type temp = vector<Ch, A>::size();
+			resize(vector<Ch, A>::size() + n);
+			Tr::move(vector<Ch, A>::data() + pos + n, vector<Ch, A>::data() + pos, temp - pos);
+			Tr::assign(vector<Ch, A>::data() + pos, n, c);
 			return *this;
 		}
 
@@ -317,15 +317,15 @@ namespace std
 
 		_UCXXEXPORT basic_string &erase(size_type pos = 0, size_type n = npos)
 		{
-			size_type xlen = vector<Ch, A>::elements - pos;
+			size_type xlen = vector<Ch, A>::size() - pos;
 
 			if (xlen > n)
 			{
 				xlen = n;
 			}
-			size_type temp = vector<Ch, A>::elements;
+			size_type temp = vector<Ch, A>::size();
 
-			Tr::move(vector<Ch, A>::data_ + pos, vector<Ch, A>::data_ + pos + xlen, temp - pos - xlen);
+			Tr::move(vector<Ch, A>::data() + pos, vector<Ch, A>::data() + pos + xlen, temp - pos - xlen);
 			resize(temp - xlen);
 			return *this;
 		}
@@ -362,7 +362,7 @@ namespace std
 				++last;
 			}
 
-			resize(vector<Ch, A>::elements - count);
+			resize(vector<Ch, A>::size() - count);
 
 			return temp;
 		}
@@ -370,38 +370,38 @@ namespace std
 		_UCXXEXPORT basic_string &
 		replace(size_type pos1, size_type n1, const basic_string &str, size_type pos2 = 0, size_type n2 = npos)
 		{
-			if (pos1 > vector<Ch, A>::elements)
+			if (pos1 > vector<Ch, A>::size())
 			{
 				__throw_out_of_range();
 			}
-			size_type xlen = vector<Ch, A>::elements - pos1;
+			size_type xlen = vector<Ch, A>::size() - pos1;
 			if (xlen > n1)
 			{
 				xlen = n1;
 			}
-			size_type rlen = str.elements - pos2;
+			size_type rlen = str.size() - pos2;
 			if (rlen > n2)
 			{
 				rlen = n2;
 			}
-			if ((vector<Ch, A>::elements - xlen) >= (npos - rlen))
+			if ((vector<Ch, A>::size() - xlen) >= (npos - rlen))
 			{
 				__throw_length_error();
 			}
 
-			size_t temp = vector<Ch, A>::elements;
+			size_t temp = vector<Ch, A>::size();
 
 			if (rlen > xlen)
 			{ // Only if making larger
 				resize(temp - xlen + rlen);
 			}
 
-			// Final length = vector<Ch, A>::elements - xlen + rlen
+			// Final length = vector<Ch, A>::size() - xlen + rlen
 			// Initial block is of size pos1
 			// Block 2 is of size len
 
-			Tr::move(vector<Ch, A>::data_ + pos1 + rlen, vector<Ch, A>::data_ + pos1 + xlen, temp - pos1 - xlen);
-			Tr::copy(vector<Ch, A>::data_ + pos1, str.vector<Ch, A>::data_ + pos2, rlen);
+			Tr::move(vector<Ch, A>::data() + pos1 + rlen, vector<Ch, A>::data() + pos1 + xlen, temp - pos1 - xlen);
+			Tr::copy(vector<Ch, A>::data() + pos1, str.vector<Ch, A>::data() + pos2, rlen);
 			resize(temp - xlen + rlen);
 			return *this;
 		}
@@ -429,16 +429,16 @@ namespace std
 
 		size_type _UCXXEXPORT copy(Ch *s, size_type n, size_type pos = 0) const
 		{
-			if (pos > vector<Ch, A>::elements)
+			if (pos > vector<Ch, A>::size())
 			{
 				__throw_out_of_range();
 			}
-			size_type r = vector<Ch, A>::elements - pos;
+			size_type r = vector<Ch, A>::size() - pos;
 			if (r > n)
 			{
 				r = n;
 			}
-			Tr::copy(s, vector<Ch, A>::data_ + pos, r);
+			Tr::copy(s, vector<Ch, A>::data() + pos, r);
 			return r;
 		}
 
@@ -449,16 +449,16 @@ namespace std
 			vector<Ch, A>::swap(s);
 		}
 
-		_UCXXEXPORT const Ch *c_str() const
+		_UCXXEXPORT const Ch *c_str()
 		{
-			const_cast<basic_string<Ch, Tr, A> *>(this)->reserve(vector<Ch, A>::elements + 1);
-			vector<Ch, A>::data_[vector<Ch, A>::elements] = 0; // Add 0 at the end
-			return vector<Ch, A>::data_;
+			const_cast<basic_string<Ch, Tr, A> *>(this)->reserve(vector<Ch, A>::size() + 1);
+			vector<Ch, A>::data()[vector<Ch, A>::size()] = 0; // Add 0 at the end
+			return vector<Ch, A>::data();
 		}
 
 		_UCXXEXPORT const Ch *data() const
 		{
-			return vector<Ch, A>::data_;
+			return vector<Ch, A>::data();
 		}
 		_UCXXEXPORT allocator_type get_allocator() const
 		{
@@ -673,19 +673,19 @@ namespace std
 
 		_UCXXEXPORT int compare(const basic_string &str) const
 		{
-			size_type rlen = vector<Ch, A>::elements;
-			if (rlen > str.elements)
+			size_type rlen = vector<Ch, A>::size();
+			if (rlen > str.size())
 			{
-				rlen = str.elements;
+				rlen = str.size();
 			}
-			int retval = Tr::compare(vector<Ch, A>::data_, str.vector<Ch, A>::data_, rlen);
+			int retval = Tr::compare(vector<Ch, A>::data(), str.vector<Ch, A>::data(), rlen);
 			if (retval == 0)
 			{
-				if (vector<Ch, A>::elements < str.elements)
+				if (vector<Ch, A>::size() < str.size())
 				{
 					retval = -1;
 				}
-				if (vector<Ch, A>::elements > str.elements)
+				if (vector<Ch, A>::size() > str.size())
 				{
 					retval = 1;
 				}
@@ -696,12 +696,12 @@ namespace std
 		_UCXXEXPORT int compare(size_type pos1, size_type n1, const basic_string &str,
 								size_type pos2 = 0, size_type n2 = npos) const
 		{
-			size_type len1 = vector<Ch, A>::elements - pos1;
+			size_type len1 = vector<Ch, A>::size() - pos1;
 			if (len1 > n1)
 			{
 				len1 = n1;
 			}
-			size_type len2 = str.vector<Ch, A>::elements - pos2;
+			size_type len2 = str.vector<Ch, A>::size() - pos2;
 			if (len2 > n2)
 			{
 				len2 = n2;
@@ -711,7 +711,7 @@ namespace std
 			{
 				rlen = len2;
 			}
-			int retval = Tr::compare(vector<Ch, A>::data_ + pos1, str.vector<Ch, A>::data_ + pos2, rlen);
+			int retval = Tr::compare(vector<Ch, A>::data() + pos1, str.vector<Ch, A>::data() + pos2, rlen);
 			if (retval == 0)
 			{
 				if (len1 < len2)
@@ -730,18 +730,18 @@ namespace std
 		{
 			size_type slen = Tr::length(s);
 			size_type rlen = slen;
-			if (rlen > vector<Ch, A>::elements)
+			if (rlen > vector<Ch, A>::size())
 			{
-				rlen = vector<Ch, A>::elements;
+				rlen = vector<Ch, A>::size();
 			}
-			int retval = Tr::compare(vector<Ch, A>::data_, s, rlen);
+			int retval = Tr::compare(vector<Ch, A>::data(), s, rlen);
 			if (retval == 0)
 			{
-				if (vector<Ch, A>::elements < slen)
+				if (vector<Ch, A>::size() < slen)
 				{
 					retval = -1;
 				}
-				if (vector<Ch, A>::elements > slen)
+				if (vector<Ch, A>::size() > slen)
 				{
 					retval = 1;
 				}
@@ -751,7 +751,7 @@ namespace std
 
 		_UCXXEXPORT int compare(size_type pos1, size_type n1, const Ch *s, size_type n2 = npos) const
 		{
-			size_type len1 = vector<Ch, A>::elements - pos1;
+			size_type len1 = vector<Ch, A>::size() - pos1;
 			if (len1 > n1)
 			{
 				len1 = n1;
@@ -767,7 +767,7 @@ namespace std
 			{
 				rlen = len2;
 			}
-			int retval = Tr::compare(vector<Ch, A>::data_ + pos1, s, rlen);
+			int retval = Tr::compare(vector<Ch, A>::data() + pos1, s, rlen);
 			if (retval == 0)
 			{
 				if (len1 < len2)
@@ -811,7 +811,7 @@ namespace std
 			rlen = n;
 		}
 		resize(rlen);
-		Tr::copy(vector<Ch, A>::data_, str.vector<Ch, A>::data_ + pos, vector<Ch, A>::elements);
+		Tr::copy(vector<Ch, A>::data(), str.vector<Ch, A>::data() + pos, vector<Ch, A>::size());
 	}
 
 	template <class Ch, class Tr, class A>
@@ -823,8 +823,8 @@ namespace std
 			return *this;
 		}
 		vector<Ch, A>::clear();
-		resize(str.elements);
-		Tr::copy(vector<Ch, A>::data_, str.vector<Ch, A>::data_, str.elements);
+		resize(str.size());
+		Tr::copy(vector<Ch, A>::data(), str.vector<Ch, A>::data(), str.size());
 		return *this;
 	}
 
@@ -850,16 +850,16 @@ namespace std
 	template <class Ch, class Tr, class A>
 	_UCXXEXPORT basic_string<Ch, Tr, A> basic_string<Ch, Tr, A>::substr(size_type pos, size_type n) const
 	{
-		if (pos > vector<Ch, A>::elements)
+		if (pos > vector<Ch, A>::size())
 		{
 			__throw_out_of_range();
 		}
-		size_type rlen = vector<Ch, A>::elements - pos;
+		size_type rlen = vector<Ch, A>::size() - pos;
 		if (rlen > n)
 		{
 			rlen = n;
 		}
-		return basic_string<Ch, Tr, A>(vector<Ch, A>::data_ + pos, rlen);
+		return basic_string<Ch, Tr, A>(vector<Ch, A>::data() + pos, rlen);
 	}
 
 #ifdef __UCLIBCXX_EXPAND_STRING_CHAR__
