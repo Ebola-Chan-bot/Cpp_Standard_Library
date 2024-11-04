@@ -1,3 +1,4 @@
+#pragma once
 /*	Copyright (C) 2004-2008 Garrett A. Kajmowicz
 
 	This file is part of the uClibc++ Library.
@@ -16,12 +17,15 @@
 	License along with this library; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-#pragma once
-#ifdef ARDUINO_ARCH_AVR
 #pragma GCC visibility push(default)
+#ifdef ARDUINO_ARCH_AVR
 #include "ostream_helpers"
+#else
+#include_next <ostream>
+#endif
 namespace std
 {
+#ifdef ARDUINO_ARCH_AVR
 	template <class charT, class traits>
 	class basic_ostream;
 	typedef basic_ostream<char> ostream;
@@ -108,6 +112,19 @@ namespace std
 			}
 			return *this;
 		}
+
+		// 埃博拉酱的F支持
+		_UCXXEXPORT basic_ostream<charT, traits> &write(const __FlashStringHelper *s, streamsize n)
+		{
+			if (basic_ostream<charT, traits>::traits_type::eq_int_type(
+					basic_ios<charT, traits>::mstreambuf->sputn(s, n),
+					basic_ostream<charT, traits>::traits_type::eof()))
+			{
+				basic_ios<charT, traits>::setstate(ios_base::eofbit);
+			}
+			return *this;
+		}
+
 		_UCXXEXPORT basic_ostream<charT, traits> &flush()
 		{
 			if (basic_ios<charT, traits>::mstreambuf->pubsync() == -1)
@@ -142,6 +159,31 @@ namespace std
 		}
 
 		_UCXXEXPORT void printout(const char_type *s, streamsize n)
+		{
+			streamsize extra = ios::width() - n;
+			if ((ios::flags() & ios::adjustfield) == ios::right)
+			{
+				while (extra > 0)
+				{
+					--extra;
+					put(ios::fill());
+				}
+			}
+			write(s, n);
+			if ((ios::flags() & ios::adjustfield) == ios::left)
+			{
+				while (extra > 0)
+				{
+					--extra;
+					put(ios::fill());
+				}
+			}
+			// Width value only applies for the next output operation.  Reset to zero.
+			ios::width(0);
+		}
+
+		// 埃博拉酱的F支持
+		_UCXXEXPORT void printout(const __FlashStringHelper *s, streamsize n)
 		{
 			streamsize extra = ios::width() - n;
 			if ((ios::flags() & ios::adjustfield) == ios::right)
@@ -494,6 +536,16 @@ namespace std
 		return out;
 	}
 
+	// 埃博拉酱的F支持
+	template <class traits>
+	_UCXXEXPORT basic_ostream<char, traits> &
+	operator<<(basic_ostream<char, traits> &out, const __FlashStringHelper *c)
+	{
+		typename basic_ostream<char, traits>::sentry s(out);
+		out.printout(c, strlen_P(reinterpret_cast<const char *>(c)));
+		return out;
+	}
+
 #ifdef __UCLIBCXX_HAS_WCHAR__
 	template <class traits>
 	_UCXXEXPORT basic_ostream<wchar_t, traits> &
@@ -600,11 +652,25 @@ namespace std
 	}
 
 #endif // !defined(__STRICT_ANSI__) || (__cplusplus >= 201103L)
-
+#else
+	// 埃博拉酱提供的F支持
+	template <class _Traits>
+	inline basic_ostream<char, _Traits> &
+	operator<<(basic_ostream<char, _Traits> &__out, const __FlashStringHelper *__s)
+	{
+		if (!__s)
+			__out.setstate(ios_base::badbit);
+		else
+		{
+			const streamsize __n = strlen_P(reinterpret_cast<const char *>(__s));
+			char *__buf = new char[__n + 1];
+			strcpy_P(__buf, reinterpret_cast<const char *>(__s));
+			__ostream_insert(__out, __buf, __n);
+			delete[] __buf;
+		}
+		return __out;
+	}
+#endif
 }
 
 #pragma GCC visibility pop
-#else
-#include "Cpp_Standard_Library.h"
-#include _CSL_Official(ostream)
-#endif

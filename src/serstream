@@ -135,7 +135,7 @@ namespace std
 
 			return n;
 		}
-
+		
 		/*
 		 * write a single char
 		 */

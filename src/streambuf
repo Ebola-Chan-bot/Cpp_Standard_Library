@@ -95,6 +95,16 @@ namespace std
 			return xsputn(s, n);
 		}
 
+		// 埃博拉酱提供的F支持
+		streamsize sputn(const __FlashStringHelper *s, streamsize n)
+		{
+			if (openedFor & ios_base::app)
+			{
+				seekoff(0, ios_base::end, ios_base::out);
+			}
+			return xsputn(s, n);
+		}
+
 	protected:
 		locale myLocale;
 		// Pointers for the "get" buffers
@@ -230,6 +240,17 @@ namespace std
 			}
 			return n;
 		}
+
+		// 埃博拉酱提供的F支持
+		streamsize xsputn(const __FlashStringHelper *c, streamsize n)
+		{
+			char *const p = new char[strlen_P(reinterpret_cast<const char *>(c)) + 1];
+			strcpy_P(p, reinterpret_cast<const char *>(c));
+			const streamsize ret = xsputn(p, n);
+			delete[] p;
+			return ret;
+		}
+
 		virtual int_type overflow(int_type c = traits::eof())
 		{
 			return c;
@@ -381,6 +402,5 @@ namespace std
 
 #pragma GCC visibility pop
 #else
-#include "Cpp_Standard_Library.h"
-#include _CSL_Official(streambuf)
+#include_next <streambuf>
 #endif
