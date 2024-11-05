@@ -21,7 +21,7 @@
 #ifndef	_SYS_CDEFS_H
 #define	_SYS_CDEFS_H	1
 
-/* We are almost always included from features.h. */
+   /* We are almost always included from features.h. */
 #ifndef _FEATURES_H
 # include <features.h>
 #endif
@@ -33,7 +33,7 @@
 # error "You need a ISO C or C++ conforming compiler to use the glibc headers"
 #endif
 
-/* Some user header file might have defined this before.  */
+   /* Some user header file might have defined this before.  */
 #undef	__P
 #undef	__PMT
 
@@ -61,8 +61,8 @@
 
 #if defined __GNUC__ || defined __clang__
 
-/* All functions, except those with callbacks or those that
-   synchronize memory, are leaf functions.  */
+   /* All functions, except those with callbacks or those that
+      synchronize memory, are leaf functions.  */
 # if __GNUC_PREREQ (4, 6) && !defined _LIBC
 #  define __LEAF , __leaf__
 #  define __LEAF_ATTR __attribute__ ((__leaf__))
@@ -71,11 +71,11 @@
 #  define __LEAF_ATTR
 # endif
 
-/* GCC can always grok prototypes.  For C++ programs we add throw()
-   to help it optimize the function calls.  But this only works with
-   gcc 2.8.x and egcs.  For gcc 3.4 and up we even mark C functions
-   as non-throwing using a function attribute since programs can use
-   the -fexceptions options for C code as well.  */
+      /* GCC can always grok prototypes.  For C++ programs we add throw()
+         to help it optimize the function calls.  But this only works with
+         gcc 2.8.x and egcs.  For gcc 3.4 and up we even mark C functions
+         as non-throwing using a function attribute since programs can use
+         the -fexceptions options for C code as well.  */
 # if !defined __cplusplus \
      && (__GNUC_PREREQ (3, 4) || __glibc_has_attribute (__nothrow__))
 #  define __THROW	__attribute__ ((__nothrow__ __LEAF))
@@ -122,18 +122,18 @@
 
 #endif	/* GCC || clang.  */
 
-/* These two macros are not used in glibc anymore.  They are kept here
-   only because some other projects expect the macros to be defined.  */
+   /* These two macros are not used in glibc anymore.  They are kept here
+      only because some other projects expect the macros to be defined.  */
 #define __P(args)	args
 #define __PMT(args)	args
 
-/* For these things, GCC behaves the ANSI way normally,
-   and the non-ANSI way under -traditional.  */
+      /* For these things, GCC behaves the ANSI way normally,
+         and the non-ANSI way under -traditional.  */
 
 #define __CONCAT(x,y)	x ## y
 #define __STRING(x)	#x
 
-/* This is not a typedef so `const __ptr_t' does the right thing.  */
+         /* This is not a typedef so `const __ptr_t' does the right thing.  */
 #define __ptr_t void *
 
 
@@ -179,8 +179,8 @@
   ((__typeof (__l)) 0 < (__typeof (__l)) -1				      \
    || (__builtin_constant_p (__l) && (__l) > 0))
 
-/* Length is known to be safe at compile time if the __L * __S <= __OBJSZ
-   condition can be folded to a constant and if it is true, or unknown (-1) */
+   /* Length is known to be safe at compile time if the __L * __S <= __OBJSZ
+      condition can be folded to a constant and if it is true, or unknown (-1) */
 #define __glibc_safe_or_unknown_len(__l, __s, __osz) \
   ((__builtin_constant_p (__osz) && (__osz) == (__SIZE_TYPE__) -1)	      \
    || (__glibc_unsigned_or_positive (__l)				      \
@@ -188,35 +188,35 @@
 						       (__s), (__osz)))	      \
        && __glibc_safe_len_cond ((__SIZE_TYPE__) (__l), (__s), (__osz))))
 
-/* Conversely, we know at compile time that the length is unsafe if the
-   __L * __S <= __OBJSZ condition can be folded to a constant and if it is
-   false.  */
+      /* Conversely, we know at compile time that the length is unsafe if the
+         __L * __S <= __OBJSZ condition can be folded to a constant and if it is
+         false.  */
 #define __glibc_unsafe_len(__l, __s, __osz) \
   (__glibc_unsigned_or_positive (__l)					      \
    && __builtin_constant_p (__glibc_safe_len_cond ((__SIZE_TYPE__) (__l),     \
 						   __s, __osz))		      \
    && !__glibc_safe_len_cond ((__SIZE_TYPE__) (__l), __s, __osz))
 
-/* To correctly instrument the fortify wrapper clang requires the
-   pass_object_size attribute, and the attribute has the restriction that the
-   argument needs to be 'const'.  Furthermore, to make it usable with C
-   interfaces, clang provides the overload attribute, which provides a C++
-   like function overload support.  The overloaded fortify wrapper with the
-   pass_object_size attribute has precedence over the default symbol.
+         /* To correctly instrument the fortify wrapper clang requires the
+            pass_object_size attribute, and the attribute has the restriction that the
+            argument needs to be 'const'.  Furthermore, to make it usable with C
+            interfaces, clang provides the overload attribute, which provides a C++
+            like function overload support.  The overloaded fortify wrapper with the
+            pass_object_size attribute has precedence over the default symbol.
 
-   Also, clang does not support __va_arg_pack, so variadic functions are
-   expanded to issue va_arg implementations. The error function must not have
-   bodies (address takes are expanded to nonfortified calls), and with
-   __fortify_function compiler might still create a body with the C++
-   mangling name (due to the overload attribute).  In this case, the function
-   is defined with __fortify_function_error_function macro instead.
+            Also, clang does not support __va_arg_pack, so variadic functions are
+            expanded to issue va_arg implementations. The error function must not have
+            bodies (address takes are expanded to nonfortified calls), and with
+            __fortify_function compiler might still create a body with the C++
+            mangling name (due to the overload attribute).  In this case, the function
+            is defined with __fortify_function_error_function macro instead.
 
-   The argument size check is also done with a clang-only attribute,
-   __attribute__ ((__diagnose_if__ (...))), different than gcc which calls
-   symbol_chk_warn alias with uses __warnattr attribute.
+            The argument size check is also done with a clang-only attribute,
+            __attribute__ ((__diagnose_if__ (...))), different than gcc which calls
+            symbol_chk_warn alias with uses __warnattr attribute.
 
-   The pass_object_size was added on clang 4.0, __diagnose_if__ on 5.0,
-   and pass_dynamic_object_size on 9.0.  */
+            The pass_object_size was added on clang 4.0, __diagnose_if__ on 5.0,
+            and pass_dynamic_object_size on 9.0.  */
 #if defined __clang_major__ && __clang_major__ >= 5
 # define __fortify_use_clang 1
 
@@ -328,8 +328,8 @@
 #endif
 
 
-/* Fortify function f.  __f_alias, __f_chk and __f_chk_warn must be
-   declared.  */
+            /* Fortify function f.  __f_alias, __f_chk and __f_chk_warn must be
+               declared.  */
 
 #if !__fortify_use_clang
 # define __glibc_fortify(f, __l, __s, __osz, ...) \
@@ -345,8 +345,8 @@
    : __ ## f ## _chk (__VA_ARGS__, __osz)
 #endif
 
-/* Fortify function f, where object size argument passed to f is the number of
-   elements and not total size.  */
+               /* Fortify function f, where object size argument passed to f is the number of
+                  elements and not total size.  */
 
 #if !__fortify_use_clang
 # define __glibc_fortify_n(f, __l, __s, __osz, ...) \
@@ -373,25 +373,25 @@
 # define __errordecl(name, msg) extern void name (void)
 #endif
 
-/* Support for flexible arrays.
-   Headers that should use flexible arrays only if they're "real"
-   (e.g. only if they won't affect sizeof()) should test
-   #if __glibc_c99_flexarr_available.  */
+                  /* Support for flexible arrays.
+                     Headers that should use flexible arrays only if they're "real"
+                     (e.g. only if they won't affect sizeof()) should test
+                     #if __glibc_c99_flexarr_available.  */
 #if defined __STDC_VERSION__ && __STDC_VERSION__ >= 199901L && !defined __HP_cc
 # define __flexarr	[]
 # define __glibc_c99_flexarr_available 1
 #elif __GNUC_PREREQ (2,97) || defined __clang__
-/* GCC 2.97 and clang support C99 flexible array members as an extension,
-   even when in C89 mode or compiling C++ (any version).  */
+                     /* GCC 2.97 and clang support C99 flexible array members as an extension,
+                        even when in C89 mode or compiling C++ (any version).  */
 # define __flexarr	[]
 # define __glibc_c99_flexarr_available 1
 #elif defined __GNUC__
-/* Pre-2.97 GCC did not support C99 flexible arrays but did have
-   an equivalent extension with slightly different notation.  */
+                     /* Pre-2.97 GCC did not support C99 flexible arrays but did have
+                        an equivalent extension with slightly different notation.  */
 # define __flexarr	[0]
 # define __glibc_c99_flexarr_available 1
 #else
-/* Some other non-C99 compiler.  Approximate with [1].  */
+                     /* Some other non-C99 compiler.  Approximate with [1].  */
 # define __flexarr	[1]
 # define __glibc_c99_flexarr_available 0
 #endif
@@ -432,32 +432,32 @@
 #define __REDIRECT_FORTIFY_NTH __REDIRECT_NTH
 #endif
 
-/*
-#elif __SOME_OTHER_COMPILER__
+   /*
+   #elif __SOME_OTHER_COMPILER__
 
-# define __REDIRECT(name, proto, alias) name proto; \
-	_Pragma("let " #name " = " #alias)
-*/
+   # define __REDIRECT(name, proto, alias) name proto; \
+     _Pragma("let " #name " = " #alias)
+   */
 #endif
 
-/* GCC and clang have various useful declarations that can be made with
-   the '__attribute__' syntax.  All of the ways we use this do fine if
-   they are omitted for compilers that don't understand it.  */
+   /* GCC and clang have various useful declarations that can be made with
+      the '__attribute__' syntax.  All of the ways we use this do fine if
+      they are omitted for compilers that don't understand it.  */
 #if !(defined __GNUC__ || defined __clang__)
 # define __attribute__(xyz)	/* Ignore */
 #endif
 
-/* At some point during the gcc 2.96 development the `malloc' attribute
-   for functions was introduced.  We don't want to use it unconditionally
-   (although this would be possible) since it generates warnings.  */
+      /* At some point during the gcc 2.96 development the `malloc' attribute
+         for functions was introduced.  We don't want to use it unconditionally
+         (although this would be possible) since it generates warnings.  */
 #if __GNUC_PREREQ (2,96) || __glibc_has_attribute (__malloc__)
 # define __attribute_malloc__ __attribute__ ((__malloc__))
 #else
 # define __attribute_malloc__ /* Ignore */
 #endif
 
-/* Tell the compiler which arguments to an allocation function
-   indicate the size of the allocation.  */
+         /* Tell the compiler which arguments to an allocation function
+            indicate the size of the allocation.  */
 #if __GNUC_PREREQ (4, 3)
 # define __attribute_alloc_size__(params) \
   __attribute__ ((__alloc_size__ params))
@@ -465,8 +465,8 @@
 # define __attribute_alloc_size__(params) /* Ignore.  */
 #endif
 
-/* Tell the compiler which argument to an allocation function
-   indicates the alignment of the allocation.  */
+            /* Tell the compiler which argument to an allocation function
+               indicates the alignment of the allocation.  */
 #if __GNUC_PREREQ (4, 9) || __glibc_has_attribute (__alloc_align__)
 # define __attribute_alloc_align__(param) \
   __attribute__ ((__alloc_align__ param))
@@ -474,16 +474,16 @@
 # define __attribute_alloc_align__(param) /* Ignore.  */
 #endif
 
-/* At some point during the gcc 2.96 development the `pure' attribute
-   for functions was introduced.  We don't want to use it unconditionally
-   (although this would be possible) since it generates warnings.  */
+               /* At some point during the gcc 2.96 development the `pure' attribute
+                  for functions was introduced.  We don't want to use it unconditionally
+                  (although this would be possible) since it generates warnings.  */
 #if __GNUC_PREREQ (2,96) || __glibc_has_attribute (__pure__)
 # define __attribute_pure__ __attribute__ ((__pure__))
 #else
 # define __attribute_pure__ /* Ignore */
 #endif
 
-/* This declaration tells the compiler that the value is constant.  */
+                  /* This declaration tells the compiler that the value is constant.  */
 #if __GNUC_PREREQ (2,5) || __glibc_has_attribute (__const__)
 # define __attribute_const__ __attribute__ ((__const__))
 #else
@@ -507,7 +507,7 @@
 # define __attribute_noinline__ /* Ignore */
 #endif
 
-/* Since version 3.2, gcc allows marking deprecated functions.  */
+   /* Since version 3.2, gcc allows marking deprecated functions.  */
 #if __GNUC_PREREQ (3,2) || __glibc_has_attribute (__deprecated__)
 # define __attribute_deprecated__ __attribute__ ((__deprecated__))
 #else
@@ -525,22 +525,22 @@
 # define __attribute_deprecated_msg__(msg) __attribute_deprecated__
 #endif
 
-/* At some point during the gcc 2.8 development the `format_arg' attribute
-   for functions was introduced.  We don't want to use it unconditionally
-   (although this would be possible) since it generates warnings.
-   If several `format_arg' attributes are given for the same function, in
-   gcc-3.0 and older, all but the last one are ignored.  In newer gccs,
-   all designated arguments are considered.  */
+   /* At some point during the gcc 2.8 development the `format_arg' attribute
+      for functions was introduced.  We don't want to use it unconditionally
+      (although this would be possible) since it generates warnings.
+      If several `format_arg' attributes are given for the same function, in
+      gcc-3.0 and older, all but the last one are ignored.  In newer gccs,
+      all designated arguments are considered.  */
 #if __GNUC_PREREQ (2,8) || __glibc_has_attribute (__format_arg__)
 # define __attribute_format_arg__(x) __attribute__ ((__format_arg__ (x)))
 #else
 # define __attribute_format_arg__(x) /* Ignore */
 #endif
 
-/* At some point during the gcc 2.97 development the `strfmon' format
-   attribute for functions was introduced.  We don't want to use it
-   unconditionally (although this would be possible) since it
-   generates warnings.  */
+      /* At some point during the gcc 2.97 development the `strfmon' format
+         attribute for functions was introduced.  We don't want to use it
+         unconditionally (although this would be possible) since it
+         generates warnings.  */
 #if __GNUC_PREREQ (2,97) || __glibc_has_attribute (__format__)
 # define __attribute_format_strfmon__(a,b) \
   __attribute__ ((__format__ (__strfmon__, a, b)))
@@ -548,10 +548,10 @@
 # define __attribute_format_strfmon__(a,b) /* Ignore */
 #endif
 
-/* The nonnull function attribute marks pointer parameters that
-   must not be NULL.  This has the name __nonnull in glibc,
-   and __attribute_nonnull__ in files shared with Gnulib to avoid
-   collision with a different __nonnull in DragonFlyBSD 5.9.  */
+         /* The nonnull function attribute marks pointer parameters that
+            must not be NULL.  This has the name __nonnull in glibc,
+            and __attribute_nonnull__ in files shared with Gnulib to avoid
+            collision with a different __nonnull in DragonFlyBSD 5.9.  */
 #ifndef __attribute_nonnull__
 # if __GNUC_PREREQ (3,3) || __glibc_has_attribute (__nonnull__)
 #  define __attribute_nonnull__(params) __attribute__ ((__nonnull__ params))
@@ -563,8 +563,8 @@
 # define __nonnull(params) __attribute_nonnull__ (params)
 #endif
 
-/* The returns_nonnull function attribute marks the return type of the function
-   as always being non-null.  */
+            /* The returns_nonnull function attribute marks the return type of the function
+               as always being non-null.  */
 #ifndef __returns_nonnull
 # if __GNUC_PREREQ (4, 9) || __glibc_has_attribute (__returns_nonnull__)
 # define __returns_nonnull __attribute__ ((__returns_nonnull__))
@@ -573,8 +573,8 @@
 # endif
 #endif
 
-/* If fortification mode, we warn about unused results of certain
-   function calls which can lead to problems.  */
+               /* If fortification mode, we warn about unused results of certain
+                  function calls which can lead to problems.  */
 #if __GNUC_PREREQ (3,4) || __glibc_has_attribute (__warn_unused_result__)
 # define __attribute_warn_unused_result__ \
    __attribute__ ((__warn_unused_result__))
@@ -588,7 +588,7 @@
 # define __wur /* Ignore */
 #endif
 
-/* Forces a function to be always inlined.  */
+                  /* Forces a function to be always inlined.  */
 #if __GNUC_PREREQ (3,2) || __glibc_has_attribute (__always_inline__)
 /* The Linux kernel defines __always_inline in stddef.h (283d7573), and
    it conflicts with this definition.  Therefore undefine it first to
@@ -608,15 +608,15 @@
 # define __attribute_artificial__ /* Ignore */
 #endif
 
-/* GCC 4.3 and above with -std=c99 or -std=gnu99 implements ISO C99
-   inline semantics, unless -fgnu89-inline is used.  Using __GNUC_STDC_INLINE__
-   or __GNUC_GNU_INLINE is not a good enough check for gcc because gcc versions
-   older than 4.3 may define these macros and still not guarantee GNU inlining
-   semantics.
+   /* GCC 4.3 and above with -std=c99 or -std=gnu99 implements ISO C99
+      inline semantics, unless -fgnu89-inline is used.  Using __GNUC_STDC_INLINE__
+      or __GNUC_GNU_INLINE is not a good enough check for gcc because gcc versions
+      older than 4.3 may define these macros and still not guarantee GNU inlining
+      semantics.
 
-   clang++ identifies itself as gcc-4.2, but has support for GNU inlining
-   semantics, that can be checked for by using the __GNUC_STDC_INLINE_ and
-   __GNUC_GNU_INLINE__ macro definitions.  */
+      clang++ identifies itself as gcc-4.2, but has support for GNU inlining
+      semantics, that can be checked for by using the __GNUC_STDC_INLINE_ and
+      __GNUC_GNU_INLINE__ macro definitions.  */
 #if (!defined __cplusplus || __GNUC_PREREQ (4,3) \
      || (defined __clang__ && (defined __GNUC_STDC_INLINE__ \
 			       || defined __GNUC_GNU_INLINE__)))
@@ -634,24 +634,24 @@
 # define __fortify_function __extern_always_inline __attribute_artificial__
 #endif
 
-/* GCC 4.3 and above allow passing all anonymous arguments of an
-   __extern_always_inline function to some other vararg function.  */
+      /* GCC 4.3 and above allow passing all anonymous arguments of an
+         __extern_always_inline function to some other vararg function.  */
 #if __GNUC_PREREQ (4,3)
 # define __va_arg_pack() __builtin_va_arg_pack ()
 # define __va_arg_pack_len() __builtin_va_arg_pack_len ()
 #endif
 
-/* It is possible to compile containing GCC extensions even if GCC is
-   run in pedantic mode if the uses are carefully marked using the
-   `__extension__' keyword.  But this is not generally available before
-   version 2.8.  */
+         /* It is possible to compile containing GCC extensions even if GCC is
+            run in pedantic mode if the uses are carefully marked using the
+            `__extension__' keyword.  But this is not generally available before
+            version 2.8.  */
 #if !(__GNUC_PREREQ (2,8) || defined __clang__)
 # define __extension__		/* Ignore */
 #endif
 
-/* __restrict is known in EGCS 1.2 and above, and in clang.
-   It works also in C++ mode (outside of arrays), but only when spelled
-   as '__restrict', not 'restrict'.  */
+            /* __restrict is known in EGCS 1.2 and above, and in clang.
+               It works also in C++ mode (outside of arrays), but only when spelled
+               as '__restrict', not 'restrict'.  */
 #if !(__GNUC_PREREQ (2,92) || __clang_major__ >= 3)
 # if defined __STDC_VERSION__ && __STDC_VERSION__ >= 199901L
 #  define __restrict	restrict
@@ -660,10 +660,10 @@
 # endif
 #endif
 
-/* ISO C99 also allows to declare arrays as non-overlapping.  The syntax is
-     array_name[restrict]
-   GCC 3.1 and clang support this.
-   This syntax is not usable in C++ mode.  */
+               /* ISO C99 also allows to declare arrays as non-overlapping.  The syntax is
+                    array_name[restrict]
+                  GCC 3.1 and clang support this.
+                  This syntax is not usable in C++ mode.  */
 #if (__GNUC_PREREQ (3,1) || __clang_major__ >= 3) && !defined __cplusplus
 # define __restrict_arr	__restrict
 #else
@@ -673,7 +673,7 @@
 #  if defined __STDC_VERSION__ && __STDC_VERSION__ >= 199901L
 #   define __restrict_arr	restrict
 #  else
-/* Some other non-C99 compiler.  */
+                  /* Some other non-C99 compiler.  */
 #   define __restrict_arr	/* Not supported.  */
 #  endif
 # endif
@@ -806,13 +806,13 @@ _Static_assert (0, "IEEE 128-bits long double requires redirection on this platf
 # define __glibc_macro_warning(msg)
 #endif
 
-/* Generic selection (ISO C11) is a C-only feature, available in GCC
-   since version 4.9.  Previous versions do not provide generic
-   selection, even though they might set __STDC_VERSION__ to 201112L,
-   when in -std=c11 mode.  Thus, we must check for !defined __GNUC__
-   when testing __STDC_VERSION__ for generic selection support.
-   On the other hand, Clang also defines __GNUC__, so a clang-specific
-   check is required to enable the use of generic selection.  */
+   /* Generic selection (ISO C11) is a C-only feature, available in GCC
+      since version 4.9.  Previous versions do not provide generic
+      selection, even though they might set __STDC_VERSION__ to 201112L,
+      when in -std=c11 mode.  Thus, we must check for !defined __GNUC__
+      when testing __STDC_VERSION__ for generic selection support.
+      On the other hand, Clang also defines __GNUC__, so a clang-specific
+      check is required to enable the use of generic selection.  */
 #if !defined __cplusplus \
     && (__GNUC_PREREQ (4, 9) \
 	|| __glibc_has_extension (c_generic_selections) \
@@ -824,16 +824,16 @@ _Static_assert (0, "IEEE 128-bits long double requires redirection on this platf
 #endif
 
 #if __GNUC_PREREQ (10, 0)
-/* Designates a 1-based positional argument ref-index of pointer type
-   that can be used to access size-index elements of the pointed-to
-   array according to access mode, or at least one element when
-   size-index is not provided:
-     access (access-mode, <ref-index> [, <size-index>])  */
+      /* Designates a 1-based positional argument ref-index of pointer type
+         that can be used to access size-index elements of the pointed-to
+         array according to access mode, or at least one element when
+         size-index is not provided:
+           access (access-mode, <ref-index> [, <size-index>])  */
 #  define __attr_access(x) __attribute__ ((__access__ x))
-/* For _FORTIFY_SOURCE == 3 we use __builtin_dynamic_object_size, which may
-   use the access attribute to get object sizes from function definition
-   arguments, so we can't use them on functions we fortify.  Drop the access
-   attribute for such functions.  */
+           /* For _FORTIFY_SOURCE == 3 we use __builtin_dynamic_object_size, which may
+              use the access attribute to get object sizes from function definition
+              arguments, so we can't use them on functions we fortify.  Drop the access
+              attribute for such functions.  */
 #  if __USE_FORTIFY_LEVEL == 3
 #    define __fortified_attr_access(a, o, s)
 #  else
@@ -851,8 +851,8 @@ _Static_assert (0, "IEEE 128-bits long double requires redirection on this platf
 #endif
 
 #if __GNUC_PREREQ (11, 0)
-/* Designates dealloc as a function to call to deallocate objects
-   allocated by the declared function.  */
+      /* Designates dealloc as a function to call to deallocate objects
+         allocated by the declared function.  */
 # define __attr_dealloc(dealloc, argno) \
     __attribute__ ((__malloc__ (dealloc, argno)))
 # define __attr_dealloc_free __attr_dealloc (__builtin_free, 1)
@@ -861,8 +861,8 @@ _Static_assert (0, "IEEE 128-bits long double requires redirection on this platf
 # define __attr_dealloc_free
 #endif
 
-/* Specify that a function such as setjmp or vfork may return
-   twice.  */
+      /* Specify that a function such as setjmp or vfork may return
+         twice.  */
 #if __GNUC_PREREQ (4, 1)
 # define __attribute_returns_twice__ __attribute__ ((__returns_twice__))
 #else
@@ -871,6 +871,5 @@ _Static_assert (0, "IEEE 128-bits long double requires redirection on this platf
 
 #endif	 /* sys/cdefs.h */
 #else
-#include "../Cpp_Standard_Library.h"
-#include _CSL_OfficialC(sys/cdefs.h)
+#include_next <sys/cdefs.h>
 #endif
