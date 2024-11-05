@@ -3,14 +3,13 @@
 #include <numeric>
 #include <array>
 #include <iostream>
-ARDUINO_ARCH
+#include <functional>
 void setup() {
   // Issue28
   std::array<float, 5> avgTemp = { 23.4, 24.5, 19.9, 25.6, 27.8 };
   float average = std::accumulate(avgTemp.begin(), avgTemp.end(), 0.0) / avgTemp.size();
   // Issue43
-  auto str = F("\r\nSystem halted!");
-  std::cout << str << std::endl;
+  std::cout << F("\r\nSystem halted!") << std::endl;
 }
 void loop() {}
 //Issue78
