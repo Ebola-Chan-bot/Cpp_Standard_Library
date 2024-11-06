@@ -273,7 +273,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   }
   template <typename _Ptr>
   constexpr auto
-  to_address(const _Ptr &__ptr) noexcept
+  to_address(const _Ptr &__ptr) noexcept ->decltype(std::to_address(__ptr.operator->()))
   {
     return std::to_address(__ptr.operator->());
   }
@@ -283,7 +283,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   template <typename _Ptr>
   [[__gnu__::__always_inline__]]
   constexpr auto
-  __to_address(const _Ptr &__ptr) noexcept
+  __to_address(const _Ptr &__ptr)noexcept ->decltype(std::to_address(__ptr)) 
   {
     return std::to_address(__ptr);
   }

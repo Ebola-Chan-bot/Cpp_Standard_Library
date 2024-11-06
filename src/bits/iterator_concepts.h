@@ -751,7 +751,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 			// for use by __range_iter_t below.
 			template <typename _Tp, typename = enable_if_t<is_array_v<_Tp> _CSL_Parentheses11 || __member_begin<_Tp &> _CSL_Parentheses11 || __adl_begin<_Tp &> _CSL_Parentheses11>>
 			auto
-			__begin(_Tp &__t)
+			__begin(_Tp &__t)->decltype(is_array_v<_Tp> _CSL_Parentheses11?__t + 0:__member_begin<_Tp &> _CSL_Parentheses11?__t.begin():begin(__t))
 			{
 				if _GLIBCXX17_CONSTEXPR (is_array_v<_Tp> _CSL_Parentheses11)
 					return __t + 0;
