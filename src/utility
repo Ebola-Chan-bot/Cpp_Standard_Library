@@ -1,11 +1,4 @@
 #pragma once
-#ifndef ARDUINO_ARCH_AVR
-#include_next <utility>
-#endif
-#ifndef ARDUINO_ARCH_ESP32
-#include <bits/utility.h>
-#endif
-#ifdef ARDUINO_ARCH_AVR
 /*	Copyright (C) 2004 Garrett A. Kajmowicz
 	This file is part of the uClibc++ Library.
 
@@ -24,7 +17,15 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 */
+#ifndef ARDUINO_ARCH_AVR
+#include_next <utility>
+#endif
+#ifndef ARDUINO_ARCH_ESP32
+#include <bits/utility.h>
+#endif
+#ifdef ARDUINO_ARCH_AVR
 #include <initializer_list>
+#endif
 
 #pragma GCC visibility push(default)
 
@@ -58,6 +59,9 @@ namespace std
 		}
 	}
 #endif
+
+//以下为埃博拉酱的标准库扩展
+
+template<typename T
 }
 #pragma GCC visibility pop
-#endif

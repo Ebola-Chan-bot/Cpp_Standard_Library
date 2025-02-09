@@ -125,7 +125,7 @@
 #define _GLIBCXX_USE_BUILTIN_TRAIT(BT) 0
 #endif
 
-#if __cplusplus > 201400L
+#ifdef __cpp_variable_templates
 #define _CSL_Struct14Value(StructValue, Arguments...) StructValue<Arguments>
 #define _STRUCT14VALUEV(StructValue, Arguments...) StructValue##v<Arguments>
 #define _CSL_Struct14Value_V(StructValue, Arguments...) StructValue##_v<Arguments>
