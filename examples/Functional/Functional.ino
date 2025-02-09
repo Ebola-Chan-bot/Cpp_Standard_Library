@@ -23,6 +23,7 @@ void Translate(std::chrono::hours H) {
   std::cout << std::chrono::duration_cast<std::chrono::seconds>(H + H).count() << std::endl;
 }
 std::move_only_function<void()> FF;
+static volatile const float LogMin = std::log2(0);
 void setup() {
   std::unique_ptr<std::chrono::hours[]> US = std::make_unique_for_overwrite<std::chrono::hours[]>(10);
   std::shared_ptr<std::chrono::hours[]> SSS;

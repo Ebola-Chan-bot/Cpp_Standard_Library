@@ -1,5 +1,4 @@
 #pragma once
-#ifdef ARDUINO_ARCH_AVR
 /*	Copyright (C) 2006 Garrett A. Kajmowicz
 
 	This file is part of the uClibc++ Library.
@@ -18,6 +17,7 @@
 	License along with this library; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+#ifdef ARDUINO_ARCH_AVR
 #include <math.h>
 #include "type_traits"
 #include "ext/type_traits.h"
@@ -45,8 +45,10 @@
 #undef tan
 #undef tanh
 #else
-#include "Cpp_Standard_Library.h"
 #include_next <cmath>
+#endif
+#ifdef ARDUINO_ARCH_SAM
+#include <limits>
 #endif
 namespace std
 {
@@ -300,10 +302,10 @@ namespace std
 
 	template <typename _Tp>
 	constexpr typename __gnu_cxx::__enable_if<__is_integer<_Tp>::__value,
-										   double>::__type
+											  double>::__type
 	log2(_Tp __x)
 	{
-		return __builtin_log2(__x);
+		return __x ? __builtin_log2(__x) : -std::numeric_limits<double>::infinity(); // AVR-GCC 7.3.0 的__builtin_log2输入0会出错，而不是返回负无穷
 	}
 #endif
 }
