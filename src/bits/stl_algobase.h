@@ -56,6 +56,7 @@
  */
 #ifdef ARDUINO_ARCH_AVR
 #include <bits/stl_pair.h>
+#include <bits/cpp_type_traits.h>
 #endif
 #ifdef ARDUINO_ARCH_SAM
 #include <debug/safe_iterator.h>
@@ -78,6 +79,8 @@
 #include <ext/numeric_traits.h>
 #endif
 #endif
+#undef min
+#undef maX
 namespace std _GLIBCXX_VISIBILITY(default)
 {
   _GLIBCXX_BEGIN_NAMESPACE_VERSION
