@@ -42,12 +42,12 @@
             "name": "esp32",
             "includePath": [
                 "${workspaceFolder}/src",
-                "${LOCALAPPDATA}/Arduino15/packages/esp32/hardware/esp32/3.0.5/cores/esp32"
+                "${LOCALAPPDATA}/Arduino15/packages/esp32/hardware/esp32/3.1.1/cores/esp32"
             ],
             "defines": [
                 "ARDUINO_ARCH_ESP32=1"
             ],
-            "compilerPath": "${LOCALAPPDATA}/Arduino15/packages/esp32/tools/esp-xs3/2302/bin/xtensa-esp32s3-elf-gcc.exe",
+            "compilerPath": "${LOCALAPPDATA}/Arduino15/packages/esp32/tools/esp-rv32/2405/bin/riscv32-esp-elf-g++.exe",
             "cStandard": "c11",
             "cppStandard": "c++20"
         }

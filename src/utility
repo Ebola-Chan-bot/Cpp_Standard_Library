@@ -59,9 +59,5 @@ namespace std
 		}
 	}
 #endif
-
-//以下为埃博拉酱的标准库扩展
-
-template<typename T
 }
 #pragma GCC visibility pop
