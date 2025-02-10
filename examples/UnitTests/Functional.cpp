@@ -1,2 +1,2 @@
 #include <functional>
-std::move_only_function<void()const>MOF;
+std::move_only_function<void() const> MOF;

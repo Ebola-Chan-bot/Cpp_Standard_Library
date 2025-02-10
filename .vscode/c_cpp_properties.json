@@ -49,7 +49,7 @@
             ],
             "compilerPath": "${LOCALAPPDATA}/Arduino15/packages/esp32/tools/esp-rv32/2405/bin/riscv32-esp-elf-g++.exe",
             "cStandard": "c11",
-            "cppStandard": "c++20"
+            "cppStandard": "c++17"
         }
     ],
     "version": 4

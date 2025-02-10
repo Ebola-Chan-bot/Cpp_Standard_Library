@@ -1,7 +1,5 @@
 #pragma once
-#ifdef ARDUINO_ARCH_ESP32
-#include_next <bits/stl_map.h>
-#else
+//SAM和ESP32虽然有map，但缺少contains方法，因此仍需覆盖
 // Map implementation -*- C++ -*-
 
 // Copyright (C) 2001-2024 Free Software Foundation, Inc.
@@ -1750,4 +1748,3 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
       _GLIBCXX_END_NAMESPACE_VERSION
 } // namespace std
-#endif

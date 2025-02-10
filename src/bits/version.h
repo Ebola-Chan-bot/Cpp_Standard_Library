@@ -319,12 +319,12 @@
 #undef __glibcxx_want_generic_associative_lookup
 
 #if !defined(__cpp_lib_make_unique)
-#if (__cplusplus >= 201402L) && _GLIBCXX_HOSTED || !defined ARDUINO_ARCH_ESP32
+//#if (__cplusplus >= 201402L) && _GLIBCXX_HOSTED
 #define __glibcxx_make_unique 201304L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_make_unique)
 #define __cpp_lib_make_unique 201304L
 #endif
-#endif
+//#endif
 #endif /* !defined(__cpp_lib_make_unique) && defined(__glibcxx_want_make_unique) */
 #undef __glibcxx_want_make_unique
 
@@ -1083,7 +1083,7 @@
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_span)
 #define __cpp_lib_span 202311L
 #endif
-#elif (__cplusplus >= 202002L) && (__glibcxx_concepts) || !defined ARDUINO_ARCH_ESP32
+#else
 #define __glibcxx_span 202002L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_span)
 #define __cpp_lib_span 202002L
@@ -1388,12 +1388,12 @@
 #undef __glibcxx_want_erase_if
 
 #if !defined(__cpp_lib_generic_unordered_lookup)
-#if (__cplusplus >= 202002L) && _GLIBCXX_HOSTED || !defined ARDUINO_ARCH_ESP32
+//#if (__cplusplus >= 202002L) && _GLIBCXX_HOSTED
 #define __glibcxx_generic_unordered_lookup 201811L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_generic_unordered_lookup)
 #define __cpp_lib_generic_unordered_lookup 201811L
 #endif
-#endif
+//#endif
 #endif /* !defined(__cpp_lib_generic_unordered_lookup) && defined(__glibcxx_want_generic_unordered_lookup) */
 #undef __glibcxx_want_generic_unordered_lookup
 
@@ -1848,12 +1848,12 @@
 #undef __glibcxx_want_ios_noreplace
 
 #if !defined(__cpp_lib_move_only_function)
-#if (__cplusplus >= 202100L) && _GLIBCXX_HOSTED || !defined ARDUINO_ARCH_ESP32
+//#if (__cplusplus >= 202100L) && _GLIBCXX_HOSTED
 #define __glibcxx_move_only_function 202110L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_move_only_function)
 #define __cpp_lib_move_only_function 202110L
 #endif
-#endif
+//#endif
 #endif /* !defined(__cpp_lib_move_only_function) && defined(__glibcxx_want_move_only_function) */
 #undef __glibcxx_want_move_only_function
 

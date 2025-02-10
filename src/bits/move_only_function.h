@@ -1,7 +1,4 @@
 #pragma once
-#ifdef ARDUINO_ARCH_ESP32
-#include_next <bits/move_only_function.h>
-#else
 // Implementation of std::move_only_function -*- C++ -*-
 
 // Copyright The GNU Toolchain Authors.
@@ -242,4 +239,3 @@ namespace std _GLIBCXX_VISIBILITY(default)
 #include "mofunc_impl.h"
 #endif // __glibcxx_move_only_function
 #endif // _GLIBCXX_MOVE_ONLY_FUNCTION_H
-#endif

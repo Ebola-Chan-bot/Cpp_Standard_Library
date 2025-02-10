@@ -1,7 +1,4 @@
 #pragma once
-#ifdef ARDUINO_ARCH_ESP32
-#include_next <bits/hashtable_policy.h>
-#else
 //_Hashtable_base在SAM平台缺少必要的无参构造，只能也覆盖掉
 // Internal policy header for unordered_set and unordered_map -*- C++ -*-
 
@@ -32,7 +29,9 @@
  *  Do not attempt to use it directly.
  *  @headername{unordered_map,unordered_set}
  */
-
+#ifdef ARDUINO_ARCH_ESP32
+#include_next <bits/hashtable_policy.h>
+#else
 #include <tuple>                  // for std::tuple, std::forward_as_tuple
 #include <bits/functional_hash.h> // for __is_fast_hash
 #include <bits/stl_algobase.h>    // for std::min, std::is_permutation.
@@ -40,7 +39,7 @@
 #include <ext/numeric_traits.h>   // for __gnu_cxx::__int_traits
 #include <utility>
 #include <iterator_base>
-#include <ext/aligned_buffer.h>   // for __gnu_cxx::__aligned_buffer
+#include <ext/aligned_buffer.h> // for __gnu_cxx::__aligned_buffer
 #endif
 #ifdef ARDUINO_ARCH_AVR
 #include <bits/exception_defines.h>
@@ -48,19 +47,20 @@
 #ifdef ARDUINO_ARCH_SAM
 #include <bits/algorithmfwd.h>
 #endif
-#ifndef ARDUINO_ARCH_ESP32
 namespace std _GLIBCXX_VISIBILITY(default)
 {
   _GLIBCXX_BEGIN_NAMESPACE_VERSION
+#ifndef ARDUINO_ARCH_ESP32
   /// @cond undocumented
   template <typename _Key, typename _Value, typename _Alloc,
             typename _ExtractKey, typename _Equal,
             typename _Hash, typename _RangeHash, typename _Unused,
             typename _RehashPolicy, typename _Traits>
   class _Hashtable;
-
+#endif
   namespace __detail
   {
+#ifndef ARDUINO_ARCH_ESP32
     /**
      *  @defgroup hashtable-detail Base and Implementation Classes
      *  @ingroup unordered_associative_containers
@@ -241,7 +241,9 @@ namespace std _GLIBCXX_VISIBILITY(default)
       using __node_ptr = typename __hashtable_alloc::__node_ptr;
 
       _ReuseOrAllocNode(__node_ptr __nodes, __hashtable_alloc &__h)
-          : _M_nodes(__nodes), _M_h(__h) {}
+          : _M_nodes(__nodes), _M_h(__h)
+      {
+      }
       _ReuseOrAllocNode(const _ReuseOrAllocNode &) = delete;
 
       ~_ReuseOrAllocNode()
@@ -285,7 +287,9 @@ namespace std _GLIBCXX_VISIBILITY(default)
       using __node_ptr = typename __hashtable_alloc::__node_ptr;
 
       _AllocNode(__hashtable_alloc &__h)
-          : _M_h(__h) {}
+          : _M_h(__h)
+      {
+      }
 
       template <typename... _Args>
       __node_ptr
@@ -454,7 +458,9 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
       _Node_iterator_base() : _M_cur(nullptr) {}
       _Node_iterator_base(__node_type *__p) noexcept
-          : _M_cur(__p) {}
+          : _M_cur(__p)
+      {
+      }
 
       void
       _M_incr() noexcept
@@ -500,7 +506,9 @@ namespace std _GLIBCXX_VISIBILITY(default)
       _Node_iterator() = default;
 
       explicit _Node_iterator(__node_type *__p) noexcept
-          : __base_type(__p) {}
+          : __base_type(__p)
+      {
+      }
 
       reference
       operator*() const noexcept
@@ -550,11 +558,15 @@ namespace std _GLIBCXX_VISIBILITY(default)
       _Node_const_iterator() = default;
 
       explicit _Node_const_iterator(__node_type *__p) noexcept
-          : __base_type(__p) {}
+          : __base_type(__p)
+      {
+      }
 
       _Node_const_iterator(const _Node_iterator<_Value, __constant_iterators,
                                                 __cache> &__x) noexcept
-          : __base_type(__x._M_cur) {}
+          : __base_type(__x._M_cur)
+      {
+      }
 
       reference
       operator*() const noexcept
@@ -619,7 +631,9 @@ namespace std _GLIBCXX_VISIBILITY(default)
       using __has_load_factor = true_type;
 
       _Prime_rehash_policy(float __z = 1.0) noexcept
-          : _M_max_load_factor(__z), _M_next_resize(0) {}
+          : _M_max_load_factor(__z), _M_next_resize(0)
+      {
+      }
 
       float
       max_load_factor() const noexcept
@@ -709,7 +723,9 @@ namespace std _GLIBCXX_VISIBILITY(default)
       using __has_load_factor = true_type;
 
       _Power2_rehash_policy(float __z = 1.0) noexcept
-          : _M_max_load_factor(__z), _M_next_resize(0) {}
+          : _M_max_load_factor(__z), _M_next_resize(0)
+      {
+      }
 
       float
       max_load_factor() const noexcept
@@ -809,7 +825,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
       float _M_max_load_factor;
       std::size_t _M_next_resize;
     };
-
+#endif
+#if __cplusplus < 202002L
     template <typename _RehashPolicy>
     struct _RehashStateGuard
     {
@@ -828,7 +845,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
           _M_guarded_obj->_M_reset(_M_prev_state);
       }
     };
-
+#endif
+#ifndef ARDUINO_ARCH_ESP32
     // Base classes for std::_Hashtable.  We define these base classes
     // because in some cases we want to do different things depending on
     // the value of a policy class.  In some cases the policy class
@@ -2224,10 +2242,9 @@ namespace std _GLIBCXX_VISIBILITY(default)
       __buckets_alloc_type __alloc(_M_node_allocator());
       __buckets_alloc_traits::deallocate(__alloc, __ptr, __bkt_count);
     }
-
+#endif
     ///@} hashtable-detail
   } // namespace __detail
   /// @endcond
   _GLIBCXX_END_NAMESPACE_VERSION
 } // namespace std
-#endif
