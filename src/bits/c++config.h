@@ -136,6 +136,18 @@
 #define _CSL_Struct14Value_V(StructValue, Arguments...) StructValue<Arguments>::value
 #endif
 
+#if !defined _GLIBCXX17_CONSTEXPR || __cplusplus < 202002L
+#if __cplusplus >= 201703L
+#define _GLIBCXX17_CONSTEXPR constexpr
+#define _GLIBCXX17_INLINE inline
+#define _GLIBCXX17_STATIC_ASSERT(Bool_constexpr) static_assert(Bool_constexpr);
+#else
+#define _GLIBCXX17_CONSTEXPR
+#define _GLIBCXX17_INLINE
+#define _GLIBCXX17_STATIC_ASSERT(Bool_constexpr) static_assert(Bool_constexpr, #Bool_constexpr);
+#endif
+#endif
+
 // 861
 #ifdef ARDUINO_ARCH_AVR
 // 40
@@ -294,18 +306,6 @@ namespace __gnu_cxx
 #endif
 #endif
 
-#ifndef _GLIBCXX17_CONSTEXPR
-#if __cplusplus >= 201703L
-#define _GLIBCXX17_CONSTEXPR constexpr
-#define _GLIBCXX17_INLINE inline
-#define _GLIBCXX17_STATIC_ASSERT(Bool_constexpr) static_assert(Bool_constexpr);
-#else
-#define _GLIBCXX17_CONSTEXPR
-#define _GLIBCXX17_INLINE
-#define _GLIBCXX17_STATIC_ASSERT(Bool_constexpr) static_assert(Bool_constexpr, #Bool_constexpr);
-#endif
-#endif
-
 #ifndef _GLIBCXX20_CONSTEXPR
 #if __cplusplus >= 202002L
 #define _GLIBCXX20_CONSTEXPR constexpr
@@ -445,11 +445,13 @@ namespace std
 #if _GLIBCXX_USE_CXX11_ABI
 namespace std
 {
-  inline namespace __cxx11 __attribute__((__abi_tag__("cxx11"))) {}
+  inline namespace __cxx11 __attribute__((__abi_tag__("cxx11"))) {
+  }
 }
 namespace __gnu_cxx
 {
-  inline namespace __cxx11 __attribute__((__abi_tag__("cxx11"))) {}
+  inline namespace __cxx11 __attribute__((__abi_tag__("cxx11"))) {
+  }
 }
 #define _GLIBCXX_NAMESPACE_CXX11 __cxx11::
 #define _GLIBCXX_BEGIN_NAMESPACE_CXX11 \
@@ -532,7 +534,8 @@ namespace std
   namespace __cxx1998
   {
 #if _GLIBCXX_USE_CXX11_ABI
-    inline namespace __cxx11 __attribute__((__abi_tag__("cxx11"))) {}
+    inline namespace __cxx11 __attribute__((__abi_tag__("cxx11"))) {
+    }
 #endif
   }
 

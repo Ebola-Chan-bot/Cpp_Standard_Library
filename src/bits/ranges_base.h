@@ -1,6 +1,5 @@
-#ifdef ARDUINO_ARCH_ESP32
-#include_next <bits/ranges_base.h>
-#else
+#pragma once
+#if __cplusplus < 202002L
 // Core concepts and definitions for <ranges> -*- C++ -*-
 
 // Copyright (C) 2019-2024 Free Software Foundation, Inc.
@@ -36,10 +35,10 @@
 #ifdef _GLIBCXX_SYSHDR
 #pragma GCC system_header
 #endif
-#ifdef ARDUINO_ARCH_SAM
+#ifndef ARDUINO_ARCH_AVR
 #define __glibcxx_want_span
-#include <bits/iterator_concepts.h>
 #include <concepts>
+#include <bits/iterator_concepts.h>
 #endif
 #include <initializer_list>
 #include <bits/stl_iterator.h>
@@ -54,7 +53,6 @@
 #define _GLIBCXX26_RANGE_ALGO_DEF_VAL_T(_I, _P)
 #endif
 
-#ifdef __cpp_lib_concepts
 namespace std _GLIBCXX_VISIBILITY(default)
 {
 	_GLIBCXX_BEGIN_NAMESPACE_VERSION
@@ -189,8 +187,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
 			void __is_derived_from_view_interface_fn(const _Tp &,
 													 const view_interface<_Up> &); // not defined
 
-// Returns true iff _Tp has exactly one public base class that's a
-// specialization of view_interface.
+			// Returns true iff _Tp has exactly one public base class that's a
+			// specialization of view_interface.
 #define __t declval<_Tp>()
 			template <typename _Tp, typename = void>
 			struct _CSL_is_derived_from_view_interface : false_type
@@ -240,7 +238,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		template <typename _Tp>
 		_CSL_Concept(random_access_range, bidirectional_range<_Tp> _CSL_Parentheses11 &&random_access_iterator<iterator_t<_Tp>> _CSL_Parentheses11);
 
-/// A range for which ranges::begin returns a contiguous iterator.
+		/// A range for which ranges::begin returns a contiguous iterator.
 #define __t declval<_Tp &>()
 		template <typename _Tp, typename = add_pointer_t<range_reference_t<_Tp>>>
 		struct _CSL_contiguous_range : false_type
@@ -373,7 +371,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
 	_GLIBCXX_END_NAMESPACE_VERSION
 } // namespace std
-#endif // library concepts
 #pragma GCC diagnostic pop
 #endif // _GLIBCXX_RANGES_BASE_H
+#else
+#include_next <bits/ranges_base.h>
 #endif

@@ -39,9 +39,9 @@
 #ifdef _GLIBCXX_SYSHDR
 #pragma GCC system_header
 #endif
+#include <bits/ranges_base.h>
 #include <array>
 #include <cstddef>
-#include <bits/ranges_base.h>
 #include <debug/debug.h>
 #ifdef __cpp_lib_span // C++ >= 20 && concepts
 namespace std _GLIBCXX_VISIBILITY(default)

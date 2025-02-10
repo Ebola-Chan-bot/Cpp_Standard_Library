@@ -1,5 +1,5 @@
 #pragma once
-#ifdef ARDUINO_ARCH_ESP32
+#if __cplusplus >= 202002L
 #include_next <bits/iterator_concepts.h>
 #else
 #ifdef __cpp_variable_templates
@@ -71,7 +71,6 @@ namespace std _GLIBCXX_VISIBILITY(default)
 	/// A default sentinel value.
 	_GLIBCXX17_INLINE constexpr default_sentinel_t default_sentinel{};
 
-#if __cpp_lib_concepts
 	struct input_iterator_tag;
 	struct output_iterator_tag;
 	struct forward_iterator_tag;
@@ -776,7 +775,6 @@ namespace std _GLIBCXX_VISIBILITY(default)
 #undef __n
 #undef __o
 #undef __s
-#endif // C++20 library concepts
 	_GLIBCXX_END_NAMESPACE_VERSION
 } // namespace std
 #pragma GCC diagnostic pop

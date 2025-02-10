@@ -41,19 +41,17 @@
  */
 #pragma once
 
-#ifndef ARDUINO_ARCH_AVR
-#include "Cpp_Standard_Library.h"
-#include _CSL_Official(cstddef)
-#else
+#ifdef ARDUINO_ARCH_AVR
 #ifdef __GCC__
 #pragma GCC system_header
 #endif
 #include <stddef.h>
 
-namespace std 
+namespace std
 {
   using ::ptrdiff_t;
   using ::size_t;
 }
-
+#else
+#include_next <cstddef>
 #endif

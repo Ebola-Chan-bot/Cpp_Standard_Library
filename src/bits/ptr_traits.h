@@ -33,7 +33,6 @@
 #ifndef ARDUINO_ARCH_AVR
 #include_next <bits/ptr_traits.h>
 #endif
-#ifndef ARDUINO_ARCH_ESP32
 #include <concepts>
 namespace __gnu_debug
 {
@@ -42,7 +41,7 @@ namespace __gnu_debug
 namespace std _GLIBCXX_VISIBILITY(default)
 {
   _GLIBCXX_BEGIN_NAMESPACE_VERSION
-
+#ifndef ARDUINO_ARCH_ESP32
   /// @cond undocumented
 
   class __undefined;
@@ -217,7 +216,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   template <typename _Ptr, typename _Tp>
   using __ptr_rebind = typename pointer_traits<_Ptr>::template rebind<_Tp>;
 #endif // ARDUINO_ARCH_AVR
-#ifndef ARDUINO_ARCH_ESP32
+#if __cplusplus < 202002L
 #ifndef __glibcxx_to_address // C++ < 20
   template <typename _Tp>
   [[__gnu__::__always_inline__]]
@@ -247,8 +246,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
   constexpr _Tp *
   to_address(_Tp *__ptr) noexcept
   {
-    static_assert(!is_function_v<_Tp>_CSL_Parentheses11, "std::to_address argument "
-                                       "must not be a function pointer");
+    static_assert(!is_function_v<_Tp> _CSL_Parentheses11, "std::to_address argument "
+                                                          "must not be a function pointer");
     return __ptr;
   }
 
@@ -273,7 +272,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   }
   template <typename _Ptr>
   constexpr auto
-  to_address(const _Ptr &__ptr) noexcept ->decltype(std::to_address(__ptr.operator->()))
+  to_address(const _Ptr &__ptr) noexcept -> decltype(std::to_address(__ptr.operator->()))
   {
     return std::to_address(__ptr.operator->());
   }
@@ -283,13 +282,12 @@ namespace std _GLIBCXX_VISIBILITY(default)
   template <typename _Ptr>
   [[__gnu__::__always_inline__]]
   constexpr auto
-  __to_address(const _Ptr &__ptr)noexcept ->decltype(std::to_address(__ptr)) 
+  __to_address(const _Ptr &__ptr) noexcept -> decltype(std::to_address(__ptr))
   {
     return std::to_address(__ptr);
   }
   /// @endcond
 #endif // __glibcxx_to_address
-
+#endif
   _GLIBCXX_END_NAMESPACE_VERSION
 } // namespace std
-#endif

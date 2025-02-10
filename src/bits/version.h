@@ -1,3 +1,4 @@
+#pragma once
 // Copyright (C) 2023-2024 Free Software Foundation, Inc.
 
 // This file is part of the GNU ISO C++ Library.  This library is free
@@ -905,7 +906,7 @@
 #undef __glibcxx_want_bounded_array_traits
 
 #if !defined(__cpp_lib_concepts)
-#if (__cplusplus >= 202002L) && (__cpp_concepts >= 201907L) || !defined ARDUINO_ARCH_ESP32
+#if (__cplusplus >= 202002L) && (__cpp_concepts >= 201907L)//这个条件不能妥协，因为concept是关键词，没有就是没有
 #define __glibcxx_concepts 202002L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_concepts)
 #define __cpp_lib_concepts 202002L
@@ -1018,7 +1019,7 @@
 #undef __glibcxx_want_is_layout_compatible
 
 #if !defined(__cpp_lib_is_nothrow_convertible)
-#if (__cplusplus >= 202002L) || !defined ARDUINO_ARCH_ESP32
+#if (__cplusplus < 202002L)
 #define __glibcxx_is_nothrow_convertible 201806L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_is_nothrow_convertible)
 #define __cpp_lib_is_nothrow_convertible 201806L
@@ -1058,7 +1059,7 @@
 #undef __glibcxx_want_make_obj_using_allocator
 
 #if !defined(__cpp_lib_remove_cvref)
-#if __cplusplus >= 202002L || !defined ARDUINO_ARCH_ESP32
+#if __cplusplus < 202002L
 #define __glibcxx_remove_cvref 201711L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_remove_cvref)
 #define __cpp_lib_remove_cvref 201711L
@@ -1113,12 +1114,12 @@
 #undef __glibcxx_want_three_way_comparison
 
 #if !defined(__cpp_lib_to_address)
-#if (__cplusplus >= 202002L) || !defined ARDUINO_ARCH_ESP32
+//#if (__cplusplus >= 202002L)
 #define __glibcxx_to_address 201711L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_to_address)
 #define __cpp_lib_to_address 201711L
 #endif
-#endif
+//#endif
 #endif /* !defined(__cpp_lib_to_address) && defined(__glibcxx_want_to_address) */
 #undef __glibcxx_want_to_address
 
@@ -1133,7 +1134,7 @@
 #undef __glibcxx_want_to_array
 
 #if !defined(__cpp_lib_type_identity)
-#if (__cplusplus >= 202002L) || !defined ARDUINO_ARCH_ESP32
+#if (__cplusplus < 202002L)
 #define __glibcxx_type_identity 201806L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_type_identity)
 #define __cpp_lib_type_identity 201806L
