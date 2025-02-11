@@ -49,6 +49,8 @@
 
 #include <bits/c++config.h>
 
+#define __glibcxx_want_all
+
 #if !defined(__cpp_lib_incomplete_container_elements)
 #if _GLIBCXX_HOSTED
 #define __glibcxx_incomplete_container_elements 201505L

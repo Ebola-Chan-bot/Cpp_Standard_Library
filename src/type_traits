@@ -20,16 +20,16 @@
 #define __glibcxx_want_bool_constant
 #define __glibcxx_want_bounded_array_traits
 #define __glibcxx_want_is_invocable
-#define __glibcxx_want_is_nothrow_convertible
 #define __glibcxx_want_is_null_pointer
 #define __glibcxx_want_is_swappable
 #define __glibcxx_want_logical_traits
-#define __glibcxx_want_remove_cvref
 #define __glibcxx_want_transformation_trait_aliases
 #define __glibcxx_want_type_identity
 #define __glibcxx_want_type_trait_variable_templates
 #endif
 #if __cplusplus < 202002L
+#define __glibcxx_want_is_nothrow_convertible
+#define __glibcxx_want_remove_cvref
 #include <bits/version.h>
 #endif
 #ifdef ARDUINO_ARCH_AVR

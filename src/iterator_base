@@ -18,7 +18,7 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#ifndef ARDUINO_ARCH_ESP32
+#if __cplusplus < 202002L
 #include <basic_definitions>
 #include <stddef.h>
 #endif
@@ -26,7 +26,7 @@
 
 namespace std
 {
-#ifndef ARDUINO_ARCH_ESP32 // SAM中也有这部分内容，但缺少contiguous_iterator_tag，所以弃用了那个文件
+#if __cplusplus < 202002L // SAM中也有这部分内容，但缺少contiguous_iterator_tag，所以弃用了那个文件
 	template <class Iterator>
 	struct iterator_traits;
 	template <class T>
@@ -35,12 +35,8 @@ namespace std
 	template <class Category, class T, class Distance = ptrdiff_t, class Pointer = T *, class Reference = T &>
 	struct iterator;
 
-	struct _UCXXEXPORT input_iterator_tag
-	{
-	};
-	struct _UCXXEXPORT output_iterator_tag
-	{
-	};
+	struct _UCXXEXPORT input_iterator_tag{};
+	struct _UCXXEXPORT output_iterator_tag{};
 	struct _UCXXEXPORT forward_iterator_tag : public input_iterator_tag
 	{
 	};
@@ -108,7 +104,7 @@ namespace std
 	template <class Container, class Iterator>
 	insert_iterator<Container> inserter(Container &x, Iterator i);
 #endif // ARDUINO_ARCH_AVR
-#ifndef ARDUINO_ARCH_ESP32
+#if __cplusplus < 202002L
 	template <class Category, class T, class Distance, class Pointer, class Reference>
 	struct _UCXXEXPORT iterator
 	{

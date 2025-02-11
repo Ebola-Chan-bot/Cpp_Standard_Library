@@ -43,6 +43,10 @@
 #include <array>
 #include <cstddef>
 #include <debug/debug.h>
+#ifdef ARDUINO_ARCH_SAM
+//SAM架构将byte定义在内置头文件中，标准库中未定义
+#include <Arduino.h>
+#endif
 #ifdef __cpp_lib_span // C++ >= 20 && concepts
 namespace std _GLIBCXX_VISIBILITY(default)
 {

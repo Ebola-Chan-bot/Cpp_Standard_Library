@@ -1,7 +1,6 @@
 #pragma once
-#if __cplusplus >= 202002L
-#include_next <bits/iterator_concepts.h>
-#else
+#if __cplusplus < 202002L
+//ESP32虽然有此头文件，但在C++20之前被条件编译选项屏蔽了，所以等于没有
 #ifdef __cpp_variable_templates
 #define _CSL_Return14Value
 #endif
@@ -779,4 +778,6 @@ namespace std _GLIBCXX_VISIBILITY(default)
 } // namespace std
 #pragma GCC diagnostic pop
 #endif // _ITERATOR_CONCEPTS_H
+#else
+#include_next <bits/iterator_concepts.h>
 #endif

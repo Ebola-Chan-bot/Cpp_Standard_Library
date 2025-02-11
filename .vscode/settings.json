@@ -98,6 +98,8 @@
 		"unordered_set": "cpp",
 		"span": "cpp",
 		"concepts": "cpp",
-		"numbers": "cpp"
+		"numbers": "cpp",
+		"format": "cpp",
+		"variant": "cpp"
 	}
 }

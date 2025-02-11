@@ -1,8 +1,6 @@
 #pragma once
-#ifdef ARDUINO_ARCH_ESP32
-#include_next <bits/stl_iterator_base_types.h>
-#else
-// SAM也有此文件，但缺少contiguous_iterator_tag，所以弃用原版改用新版
+#if __cplusplus < 202002L
+// SAM和ESP32也有此文件，但定义的iterator_traits是C++17旧版，无法重定义，这里只能替换
 //  Types used in iterator implementation -*- C++ -*-
 
 // Copyright (C) 2001-2024 Free Software Foundation, Inc.
@@ -99,6 +97,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
   {
   };
 
+/*本库有类似concepts的定义但没有真正的concept关键词，所以不定义__cpp_lib_concepts，但不需要这一段，会导致不明确
 #if !__cpp_lib_concepts
 
   template <typename _Iterator>
@@ -116,6 +115,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
     typedef typename _Iterator::reference reference;
   };
 #endif // ! concepts
+*/
 
   template <typename _Iterator>
   struct iterator_traits
@@ -225,4 +225,6 @@ namespace std _GLIBCXX_VISIBILITY(default)
 } // namespace
 
 #endif /* _STL_ITERATOR_BASE_TYPES_H */
+#else
+#include_next <bits/stl_iterator_base_types.h>
 #endif

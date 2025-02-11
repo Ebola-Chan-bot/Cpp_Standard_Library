@@ -1,2 +1,5 @@
+#include <chrono>//潜在的冲突可能性
 #include <span>
-std::span<char> SC;
+void SpanTest(char C) {
+  std::span<char>{&C, 1};
+}

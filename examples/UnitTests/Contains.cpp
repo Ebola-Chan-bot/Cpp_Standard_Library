@@ -2,7 +2,7 @@
 #include <set>
 #include <unordered_map>
 #include <unordered_set>
-void Contains()
+void ContainsTest()
 {
   std::map<char,char>{}.contains(0);
   std::set<char>{}.contains(0);

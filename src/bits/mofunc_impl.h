@@ -218,6 +218,14 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		{
 			return __x._M_invoke == nullptr;
 		}
+#ifndef __cpp_impl_three_way_comparison
+		// C++20之前，只定义operator==不会自动生成operator!=，需要手动定义
+		friend bool
+		operator!=(const move_only_function &__x, nullptr_t) noexcept
+		{
+			return __x._M_invoke != nullptr;
+		}
+#endif
 
 	private:
 		template <typename _Tp>
