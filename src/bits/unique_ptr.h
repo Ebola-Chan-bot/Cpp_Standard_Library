@@ -46,7 +46,7 @@
 #else
 #include <debug/assertions.h>
 #include <tuple>
-#include <bits/stl_function.h>
+#include <functional>
 #include <bits/functional_hash.h>
 #if __cplusplus >= 202002L
 #include <compare>

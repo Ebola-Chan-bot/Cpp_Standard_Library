@@ -35,7 +35,7 @@
 #include <cstdlib>             // std::malloc, std::free, std::strtoul
 #include <climits>             // INT_MAX
 #include "unwind-cxx.h"
-#include <bits/stl_function.h> // std::less
+#include <functional> // std::less
 #include <bits/c++config.h>
 #if _GLIBCXX_HOSTED
 # include <cstring>            // std::strchr, std::memset

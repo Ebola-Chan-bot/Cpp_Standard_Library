@@ -36,7 +36,7 @@
 
 #if __cplusplus >= 201103L
 
-#include <bits/move.h>
+#include <bits/stl_function.h> // for unary_function and binary_function
 #include <bits/invoke.h>
 
 #if __glibcxx_reference_wrapper >= 202403L // >= C++26

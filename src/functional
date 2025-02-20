@@ -110,21 +110,6 @@ namespace std {
 	template <class S, class T, class A>
 	mem_fun1_ref_t<S, T, A> mem_fun1_ref(S(T::* f)(A));
 
-	// Implementation
-
-	template <class Arg, class Result>
-	struct _UCXXEXPORT unary_function {
-		typedef Arg argument_type;
-		typedef Result result_type;
-	};
-
-	template <class Arg1, class Arg2, class Result>
-	struct _UCXXEXPORT binary_function {
-		typedef Arg1 first_argument_type;
-		typedef Arg2 second_argument_type;
-		typedef Result result_type;
-	};
-
 	template <class T>
 	struct _UCXXEXPORT plus : binary_function<T, T, T> {
 		T operator()(const T& x, const T& y) const {

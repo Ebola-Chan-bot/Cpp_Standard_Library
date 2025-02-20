@@ -80,7 +80,7 @@
 #endif
 #endif
 #undef min
-#undef maX
+#undef max
 namespace std _GLIBCXX_VISIBILITY(default)
 {
   _GLIBCXX_BEGIN_NAMESPACE_VERSION
