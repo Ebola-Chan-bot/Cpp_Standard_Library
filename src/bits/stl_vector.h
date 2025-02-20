@@ -69,6 +69,7 @@
 #endif
 
 #include <debug/assertions.h>
+#include <bits/exception_defines.h>
 
 #if _GLIBCXX_SANITIZE_STD_ALLOCATOR && _GLIBCXX_SANITIZE_VECTOR
 extern "C" void
