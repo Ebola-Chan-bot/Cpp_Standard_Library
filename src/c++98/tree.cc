@@ -1,4 +1,4 @@
-#ifdef ARDUINO_ARCH_AVR
+#ifndef ARDUINO_ARCH_ESP32
 // RB tree utilities implementation -*- C++ -*-
 
 // Copyright (C) 2003-2024 Free Software Foundation, Inc.

@@ -64,6 +64,13 @@ void setup() {
   std::vector<TestStruct> TestVector;
   TestVector.emplace_back(1, 1);
 }
+void Functional();
+extern std::unique_ptr<char[]> UPI;
+void Span(char C);
+void MapSet();
 void loop() {
   FF();
+  Functional();
+  Span(UPI[0]);
+  MapSet();
 }

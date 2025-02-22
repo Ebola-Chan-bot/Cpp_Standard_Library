@@ -1,5 +1,5 @@
 
 #include <span>
-void SpanTest(char C) {
+void Span(char C) {
   std::span<char>{&C, 1};
 }
