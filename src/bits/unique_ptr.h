@@ -8,7 +8,7 @@
   __uniq_ptr_data() = default;                                                                                                                                              \
   __uniq_ptr_data(typename __uniq_ptr_impl<_Tp, _Dp>::pointer __p) : __uniq_ptr_impl<_Tp, _Dp>(__p) {}                                                                      \
   template <typename _Del>                                                                                                                                                  \
-  __uniq_ptr_data(typename __uniq_ptr_impl<_Tp, _Dp>::pointer __p, _Del &&__d) : __uniq_ptr_impl<_Tp, _Dp>::template __uniq_ptr_impl<_Del>(__p, std::forward<_Del>(__d)) {} \
+  __uniq_ptr_data(typename __uniq_ptr_impl<_Tp, _Dp>::pointer __p, _Del &&__d) : __uniq_ptr_impl<_Tp, _Dp>(__p, std::forward<_Del>(__d)) {} \
   __uniq_ptr_data(__uniq_ptr_impl<_Tp, _Dp> &&__u) noexcept : __uniq_ptr_impl<_Tp, _Dp>(std::move(__u)) {}
 #endif
 // SAM架构没有make_unique，所以这里要自己实现
