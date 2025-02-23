@@ -1911,12 +1911,12 @@
 #undef __glibcxx_want_string_contains
 
 #if !defined(__cpp_lib_string_resize_and_overwrite)
-#if (__cplusplus >= 202100L) && _GLIBCXX_HOSTED
+//#if (__cplusplus >= 202100L) && _GLIBCXX_HOSTED
 #define __glibcxx_string_resize_and_overwrite 202110L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_string_resize_and_overwrite)
 #define __cpp_lib_string_resize_and_overwrite 202110L
 #endif
-#endif
+//#endif
 #endif /* !defined(__cpp_lib_string_resize_and_overwrite) && defined(__glibcxx_want_string_resize_and_overwrite) */
 #undef __glibcxx_want_string_resize_and_overwrite
 

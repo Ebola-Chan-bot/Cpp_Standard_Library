@@ -1,5 +1,7 @@
 #pragma once
-#ifdef ARDUINO_ARCH_AVR
+#ifdef ARDUINO_ARCH_ESP32
+#include_next <bits/functexcept.h>
+#else
 // Function-Based Exception Support -*- C++ -*-
 
 // Copyright (C) 2001-2024 Free Software Foundation, Inc.
@@ -142,7 +144,4 @@ _GLIBCXX_END_NAMESPACE_VERSION
 } // namespace
 
 #endif
-#else
-#include "../Cpp_Standard_Library.h"
-#include _CSL_Official(bits/functexcept.h)
 #endif
