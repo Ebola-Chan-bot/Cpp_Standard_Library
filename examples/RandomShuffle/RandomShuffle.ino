@@ -6,18 +6,16 @@
 #include <utility>
 template<typename T>
 struct MakeArray {};
-template<size_t... V>
-struct MakeArray<std::integer_sequence<size_t, V...>> {
-  static size_t value[sizeof...(V)];
+template<uint64_t... V>
+struct MakeArray<std::integer_sequence<uint64_t, V...>> {
+  static uint64_t value[sizeof...(V)];
 };
-template<size_t... V>
-size_t MakeArray<std::integer_sequence<size_t, V...>>::value[sizeof...(V)] = { V... };
-size_t (&Array)[10] = MakeArray<std::make_index_sequence<10>>::value;
+template<uint64_t... V>
+uint64_t MakeArray<std::integer_sequence<uint64_t, V...>>::value[sizeof...(V)] = { V... };
+uint64_t (&Array)[10] = MakeArray<std::make_integer_sequence<uint64_t, 10>>::value;
 void setup() {
   Serial.begin(9600);
   std::cout << "原始数组：";
-  for (size_t A : Array)
-    std::cout << A;
   //很多平台并不原生支持uint64_t，但本库仍能输出
   for (uint64_t A : Array)
     std::cout << A;
@@ -37,7 +35,7 @@ void loop() {
   std::cout << "输入任意字符以生成下一个乱序：";
   std::cin >> RandomSeed;
 #endif
-  
+
   // 清除错误标志位。必须紧贴ignore之前，因为不先清除错误状态ignore就不会生效。
   std::cin.clear();
 
@@ -47,11 +45,16 @@ void loop() {
   std::cout << RandomSeed << std::endl;
   std::shuffle(std::begin(Array), std::end(Array), Urng);
   std::cout << "随机乱序：";
-  for (size_t A : Array)
+  for (uint64_t A : Array)
     std::cout << A;
   std::cout << std::endl;
-#ifdef __cpp_exceptions
+
   //此段仅用于展示异常处理，对本示例主线逻辑无意义。必须在编译选项中启用-fexceptions并禁用-fno-rtti才能使本段生效。AVR不支持异常处理。
+#ifdef ARDUINO_ARCH_SAM
+//SAM架构不会自动定义此宏。如果在SAM的编译选项中启用了-fexceptions，还需要手动定义__cpp_exceptions。
+#define __cpp_exceptions
+#endif
+#ifdef __cpp_exceptions
   try {
     throw 0;
   } catch (...) {
