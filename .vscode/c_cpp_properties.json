@@ -6,7 +6,8 @@
                 "${workspaceFolder}/src",
                 "${LOCALAPPDATA}/Arduino15/packages/arduino/hardware/avr/1.8.6/cores/arduino",
                 "${LOCALAPPDATA}/Arduino15/packages/arduino/hardware/avr/1.8.6/variants/mega",
-                "${LOCALAPPDATA}/Arduino15/packages/arduino/tools/avr-gcc/7.3.0-atmel3.6.1-arduino7/avr/include"
+                "${LOCALAPPDATA}/Arduino15/packages/arduino/tools/avr-gcc/7.3.0-atmel3.6.1-arduino7/avr/include",
+                "${LOCALAPPDATA}/Arduino15/packages/arduino/tools/avr-gcc/7.3.0-atmel3.6.1-arduino7/lib/gcc/avr/7.3.0/include"
             ],
             "defines": [
                 "F_CPU=16000000L",
