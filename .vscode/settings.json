@@ -100,6 +100,7 @@
 		"concepts": "cpp",
 		"numbers": "cpp",
 		"format": "cpp",
-		"variant": "cpp"
+		"variant": "cpp",
+		"mutex": "cpp"
 	}
 }
