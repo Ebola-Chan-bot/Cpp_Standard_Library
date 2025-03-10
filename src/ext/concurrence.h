@@ -176,8 +176,6 @@ namespace __gnu_cxx _GLIBCXX_VISIBILITY(default)
         if (__gthread_mutex_lock(&_M_mutex) != 0)
           __throw_concurrence_lock_error();
       }
-#else
-      noInterrupts();
 #endif
     }
 
@@ -189,8 +187,6 @@ namespace __gnu_cxx _GLIBCXX_VISIBILITY(default)
         if (__gthread_mutex_unlock(&_M_mutex) != 0)
           __throw_concurrence_unlock_error();
       }
-#else
-      interrupts();
 #endif
     }
 
