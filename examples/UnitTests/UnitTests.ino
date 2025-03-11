@@ -69,10 +69,12 @@ extern std::unique_ptr<char[]> UPI;
 void Span(char C);
 void MapSet();
 void String();
+void Mutex();
 void loop() {
   FF();
   Functional();
   Span(UPI[0]);
   MapSet();
   String();
+  Mutex();
 }
