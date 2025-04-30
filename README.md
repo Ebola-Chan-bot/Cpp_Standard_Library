@@ -22,11 +22,13 @@
 - `<iostream> cin cout endl`使用`Serial`实现标准输入输出流。但是，使用前仍必须手动`Serial.begin`以设置波特率。不应在`setup`函数之前的全局变量初始化阶段使用`Serial`，因为在`setup`被调用之前无法保证`Serial`已完成初始化，此时使用`Serial`是未定义行为。此外测试发现，对于SAM架构，串口刚完成初始化后可能会发送一些随机字节，这似乎是硬件设计缺陷使然，软件层面无法解决，接收端必须要考虑到这个问题。字符写入串口依赖中断，禁用中断的上下文中所有字符将被缓存，待启用中断上下文后才会实际写出到串口。支持使用F宏的Flash字符串。
 - `<map>` `map::contains` `map::erase`
 - `<memory> unique_ptr make_unique shared_ptr make_unique_for_overwrite`
+- `<mutex>` 注意Arduino并不真正支持多线程，因此只能检查互斥锁是否被占用，如果被占就必须放弃，而不能等待
 - `<optional>`
 - `<random>` `ArduinoUrng`是Arduino平台特定的`UniformRandomNumberGenerator`，可用于`shuffle`，属于软件伪随机生成器，需要设置随机种子。ESP32和SAM架构还额外支持`TrueUrng`，是硬件真随机生成器，不支持设置种子。
 - `<ratio>`
 - `<set>` `set::contains` `set::erase`
 - `<span>`
+- `<string>` `string::resize_and_overwrite`
 - `<type_traits>`
 - `<unordered_map>` `unordered_map::contains` `unordered_map::erase`
 - `<unordered_set>` `unordered_set::contains` `unordered_set::erase`
