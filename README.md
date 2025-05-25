@@ -29,6 +29,7 @@
 - `<set>` `set::contains` `set::erase`
 - `<span>`
 - `<string>` `string::resize_and_overwrite`
+- `<tuple>`
 - `<type_traits>`
 - `<unordered_map>` `unordered_map::contains` `unordered_map::erase`
 - `<unordered_set>` `unordered_set::contains` `unordered_set::erase`

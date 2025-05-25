@@ -2539,6 +2539,17 @@ namespace std _GLIBCXX_VISIBILITY(default)
 	}
 #endif					 // three_way_comparison
 
+	// NB: DR 705.
+	/// Create a tuple containing copies of the arguments
+	template <typename... _Elements>
+	constexpr tuple<typename __decay_and_strip<_Elements>::__type...>
+	make_tuple(_Elements &&...__args)
+	{
+		typedef tuple<typename __decay_and_strip<_Elements>::__type...>
+			__result_type;
+		return __result_type(std::forward<_Elements>(__args)...);
+	}
+
 	// _GLIBCXX_RESOLVE_LIB_DEFECTS
 	// 2275. Why is forward_as_tuple not constexpr?
 	/// Create a tuple of lvalue or rvalue references to the arguments
