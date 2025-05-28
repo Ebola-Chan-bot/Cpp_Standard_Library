@@ -2230,5 +2230,7 @@ _GLIBCXX_END_NAMESPACE_VERSION
 
 #endif // _GLIBCXX_NUMERIC_LIMITS
 #else
+#undef min
+#undef max
 #include_next <limits>
 #endif

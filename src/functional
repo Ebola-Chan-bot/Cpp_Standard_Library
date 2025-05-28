@@ -577,9 +577,10 @@ compose2(const Op1 &fn1, const Op2 &fn2, const Op3 &fn3)
 #if __cplusplus < 202002L
 #include <bits/move_only_function.h>
 #endif
-#ifdef __cpp_deduction_guides
 namespace std
 {
+	// 非标准扩展，为function和move_only_function提供推断指引
+
 	// 主模板，同时也是针对可调用对象（包括lambda）的特化
 	template <typename T>
 	struct _FunctionSignature : _FunctionSignature<decltype(&T::operator())>
@@ -606,10 +607,10 @@ namespace std
 	template <typename T>
 	using _FunctionSignature_t = typename _FunctionSignature<T>::type;
 
-	// 非标准扩展，为function和move_only_function提供推断指引
+#ifdef __cpp_deduction_guides
 	template <typename T>
 	function(T) -> function<_FunctionSignature_t<T>>;
 	template <typename T>
 	move_only_function(T) -> move_only_function<_FunctionSignature_t<T>>;
-}
 #endif
+}
