@@ -586,6 +586,12 @@ namespace std
 	struct _FunctionSignature : _FunctionSignature<decltype(&T::operator())>
 	{
 	};
+	// 针对函数引用的特化
+	template <typename ReturnType, typename... Args>
+	struct _FunctionSignature<ReturnType (&)(Args...)>
+	{
+		using type = ReturnType(Args...) const;
+	};
 	// 针对函数指针的特化
 	template <typename ReturnType, typename... Args>
 	struct _FunctionSignature<ReturnType (*)(Args...)>
