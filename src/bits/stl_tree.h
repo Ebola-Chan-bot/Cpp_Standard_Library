@@ -453,12 +453,10 @@ namespace std _GLIBCXX_VISIBILITY(default)
   _Rb_tree_rebalance_for_erase(_Rb_tree_node_base *const __z,
                                _Rb_tree_node_base &__header) throw();
 
-#if __cplusplus > 201402L
   template <typename _Tree1, typename _Cmp2>
   struct _Rb_tree_merge_helper
   {
   };
-#endif
 
   template <typename _Key, typename _Val, typename _KeyOfValue,
             typename _Compare, typename _Alloc = allocator<_Val>>
@@ -2720,7 +2718,6 @@ namespace std _GLIBCXX_VISIBILITY(default)
     return true;
   }
 
-#if __cplusplus > 201402L
   // Allow access to internals of compatible _Rb_tree specializations.
   template <typename _Key, typename _Val, typename _Sel, typename _Cmp1,
             typename _Alloc, typename _Cmp2>
@@ -2736,7 +2733,6 @@ namespace std _GLIBCXX_VISIBILITY(default)
       return __tree._M_impl;
     }
   };
-#endif // C++17
 
   _GLIBCXX_END_NAMESPACE_VERSION
 } // namespace

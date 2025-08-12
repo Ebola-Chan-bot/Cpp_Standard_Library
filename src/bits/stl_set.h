@@ -658,6 +658,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
             {
                   return _M_t._M_reinsert_node_hint_unique(__hint, std::move(__nh));
             }
+#endif // C++17
 
             template <typename, typename>
             friend struct std::_Rb_tree_merge_helper;
@@ -691,7 +692,6 @@ namespace std _GLIBCXX_VISIBILITY(default)
             {
                   merge(__source);
             }
-#endif // C++17
 
 #if __cplusplus >= 201103L
             // _GLIBCXX_RESOLVE_LIB_DEFECTS
@@ -1188,7 +1188,6 @@ namespace std _GLIBCXX_VISIBILITY(default)
 
       _GLIBCXX_END_NAMESPACE_CONTAINER
 
-#if __cplusplus > 201402L
       // Allow std::set access to internals of compatible sets.
       template <typename _Val, typename _Cmp1, typename _Alloc, typename _Cmp2>
       struct
@@ -1209,7 +1208,6 @@ namespace std _GLIBCXX_VISIBILITY(default)
                   return __set._M_t;
             }
       };
-#endif // C++17
 
       _GLIBCXX_END_NAMESPACE_VERSION
 } // namespace std

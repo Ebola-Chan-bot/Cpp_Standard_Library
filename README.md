@@ -26,7 +26,7 @@
 - `<optional>`
 - `<random>` `ArduinoUrng`是Arduino平台特定的`UniformRandomNumberGenerator`，可用于`shuffle`，属于软件伪随机生成器，需要设置随机种子。ESP32和SAM架构还额外支持`TrueUrng`，是硬件真随机生成器，不支持设置种子。
 - `<ratio>`
-- `<set>` `set::contains` `set::erase`
+- `<set>` `set::contains` `set::erase` `set::merge`
 - `<span>`
 - `<string>` `string::resize_and_overwrite`
 - `<tuple>`
