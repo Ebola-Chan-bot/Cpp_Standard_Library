@@ -41,7 +41,13 @@
 #pragma GCC system_header
 #endif
 
+#ifdef ARDUINO_ARCH_AVR
+#include <ext/alloc_traits.h>
+#endif
+#ifdef ARDUINO_ARCH_SAM
 #include <bits/allocator_traits.h>
+#endif
+
 #include <debug/debug.h>
 
 #if __cplusplus >= 201103L

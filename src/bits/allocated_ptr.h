@@ -37,7 +37,7 @@
 #else
 # include <type_traits>
 # include <bits/ptr_traits.h>
-# include <bits/alloc_traits.h>
+# include <bits/allocator_traits.h>
 
 namespace std _GLIBCXX_VISIBILITY(default)
 {

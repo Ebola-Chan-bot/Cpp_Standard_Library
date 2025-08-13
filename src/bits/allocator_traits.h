@@ -1,10 +1,11 @@
 #pragma once
 // 此文件非GCC标准，而是特别独立出来，用来解决SAM旧架构循环包含问题
-#ifdef ARDUINO_ARCH_AVR
-#include <bits/alloc_traits.h>
-#endif
+
 #ifndef ARDUINO_ARCH_ESP32
 #include <bits/stl_construct.h>
+#endif
+#ifdef ARDUINO_ARCH_AVR
+#include <bits/alloc_traits.h>
 #endif
 namespace std
 {
