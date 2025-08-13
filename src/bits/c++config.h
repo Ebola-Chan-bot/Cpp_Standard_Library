@@ -5,6 +5,7 @@
 #ifdef ARDUINO_ARCH_SAM
 #include <arm-none-eabi/bits/c++config.h>
 #define _GLIBCXX_EXTERN_TEMPLATE 0
+#undef _GTHREAD_USE_MUTEX_TIMEDLOCK
 #endif
 #ifndef ARDUINO_ARCH_ESP32
 #include "../__config"

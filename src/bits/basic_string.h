@@ -1,4 +1,6 @@
 #pragma once
+//SAM架构也有basic_string，但缺少resize_and_overwrite，故不采用，直接屏蔽
+
 // Components for manipulating sequences of characters -*- C++ -*-
 
 // Copyright (C) 1997-2025 Free Software Foundation, Inc.
@@ -39,7 +41,7 @@
 #pragma GCC system_header
 #endif
 
-#include <ext/alloc_traits.h>
+#include <bits/allocator_traits.h>
 #include <debug/debug.h>
 
 #if __cplusplus >= 201103L

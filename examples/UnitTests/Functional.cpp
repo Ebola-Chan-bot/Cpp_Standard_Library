@@ -1,18 +1,8 @@
-
 #include <functional>
-struct Type
-{
-  Type(Type&&){}
-  Type(int){}
-  Type&operator=(int){}
-};
-struct AsMember
-{
-  Type MemberB=0;
-  //std::move_only_function<void() const> const Member = []() {};
-};
-void Functional()
-{
-  std::move_only_function<void() const>{}();
-  AsMember AM;
+void Functional() {
+#ifdef ARDUINO_ARCH_SAM
+  std::move_only_function<void() const> const Member{ []() {} };
+#else
+  std::move_only_function<void() const> const Member = []() {};  //SAM编译器的bug，不允许这样初始化
+#endif
 }

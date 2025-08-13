@@ -1,4 +1,7 @@
 #pragma once
+#ifdef ARDUINO_ARCH_SAM
+#define _GLIBCXX_HAS_GTHREADS
+#endif
 #ifdef ARDUINO_ARCH_AVR
 // <mutex> -*- C++ -*-
 

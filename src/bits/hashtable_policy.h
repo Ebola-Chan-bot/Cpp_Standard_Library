@@ -2105,7 +2105,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
       // Use __gnu_cxx to benefit from _S_always_equal and al.
       using __node_alloc_traits = __gnu_cxx::__alloc_traits<__node_alloc_type>;
 
-      using __value_alloc_traits = typename __node_alloc_traits::template rebind_traits<typename __get_value_type<__node_type>::type>;
+      using __value_alloc_traits = rebind_traits<__node_alloc_traits, typename __get_value_type<__node_type>::type>;
 
       using __node_ptr = __node_type *;
       using __node_base = _Hash_node_base;
