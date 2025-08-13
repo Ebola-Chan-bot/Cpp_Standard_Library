@@ -1,10 +1,10 @@
 #include <iterator>
 struct Module;
 struct Sequential {
-  Module* const Array[] = { nullptr };
+  Module* const Array[1] = { nullptr };
   Module* const* It = std::cend(Array);
 };
-void Iterator
+void Iterator()
 {
   Sequential S;
 };

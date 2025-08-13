@@ -211,7 +211,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
     template <typename _Up>
     using rebind = _Up *;
   };
-
+#endif
+#ifndef ARDUINO_ARCH_ESP32
   /// Convenience alias for rebinding pointers.
   template <typename _Ptr, typename _Tp>
   using __ptr_rebind = typename pointer_traits<_Ptr>::template rebind<_Tp>;

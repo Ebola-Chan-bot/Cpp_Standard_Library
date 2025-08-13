@@ -38,9 +38,7 @@
 #include <bits/hashtable_policy.h>
 #include <bits/enable_special_members.h>
 #include <bits/stl_function.h> // __has_is_transparent_t
-#if __cplusplus > 201402L
 #include <bits/node_handle.h>
-#endif
 
 namespace std _GLIBCXX_VISIBILITY(default)
 {
@@ -383,10 +381,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		using size_type = typename __hashtable_base::size_type;
 		using difference_type = typename __hashtable_base::difference_type;
 
-#if __cplusplus > 201402L
 		using node_type = _Node_handle<_Key, _Value, __node_alloc_type>;
 		using insert_return_type = _Node_insert_return<iterator, node_type>;
-#endif
 
 	private:
 		__buckets_ptr _M_buckets = &_M_single_bucket;
@@ -516,8 +512,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
 						  is_nothrow_copy_constructible<_Hash>,
 						  is_nothrow_copy_constructible<_Equal>>::value;
 #else
-			if constexpr (_No_realloc)
-				if constexpr (is_nothrow_copy_constructible<_Hash>())
+			if _GLIBCXX17_CONSTEXPR (_No_realloc)
+				if _GLIBCXX17_CONSTEXPR (is_nothrow_copy_constructible<_Hash>())
 					return is_nothrow_copy_constructible<_Equal>();
 			return false;
 #endif
@@ -1188,8 +1184,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		_M_src_hash_code(const _H2 &, const key_type &__k,
 						 const __node_value_type &__src_n) const
 		{
-			if constexpr (std::is_same_v<_H2, _Hash>)
-				if constexpr (std::is_empty_v<_Hash>)
+			if _GLIBCXX17_CONSTEXPR (std::is_same_v<_H2, _Hash>)
+				if _GLIBCXX17_CONSTEXPR (std::is_empty_v<_Hash>)
 					return this->_M_hash_code(__src_n);
 
 			return this->_M_hash_code(__k);

@@ -322,12 +322,12 @@
 #undef __glibcxx_want_generic_associative_lookup
 
 #if !defined(__cpp_lib_make_unique)
-//#if (__cplusplus >= 201402L) && _GLIBCXX_HOSTED
+// #if (__cplusplus >= 201402L) && _GLIBCXX_HOSTED
 #define __glibcxx_make_unique 201304L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_make_unique)
 #define __cpp_lib_make_unique 201304L
 #endif
-//#endif
+// #endif
 #endif /* !defined(__cpp_lib_make_unique) && defined(__glibcxx_want_make_unique) */
 #undef __glibcxx_want_make_unique
 
@@ -722,7 +722,7 @@
 #undef __glibcxx_want_memory_resource
 
 #if !defined(__cpp_lib_node_extract)
-#if (__cplusplus >= 201703L) && _GLIBCXX_HOSTED
+#if (__cplusplus >= 201703L) && _GLIBCXX_HOSTED || ARDUINO_ARCH_SAM
 #define __glibcxx_node_extract 201606L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_node_extract)
 #define __cpp_lib_node_extract 201606L
@@ -908,7 +908,7 @@
 #undef __glibcxx_want_bounded_array_traits
 
 #if !defined(__cpp_lib_concepts)
-#if (__cplusplus >= 202002L) && (__cpp_concepts >= 201907L)//这个条件不能妥协，因为concept是关键词，没有就是没有
+#if (__cplusplus >= 202002L) && (__cpp_concepts >= 201907L) // 这个条件不能妥协，因为concept是关键词，没有就是没有
 #define __glibcxx_concepts 202002L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_concepts)
 #define __cpp_lib_concepts 202002L
@@ -1116,12 +1116,12 @@
 #undef __glibcxx_want_three_way_comparison
 
 #if !defined(__cpp_lib_to_address)
-//#if (__cplusplus >= 202002L)
+// #if (__cplusplus >= 202002L)
 #define __glibcxx_to_address 201711L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_to_address)
 #define __cpp_lib_to_address 201711L
 #endif
-//#endif
+// #endif
 #endif /* !defined(__cpp_lib_to_address) && defined(__glibcxx_want_to_address) */
 #undef __glibcxx_want_to_address
 
@@ -1391,12 +1391,12 @@
 #undef __glibcxx_want_erase_if
 
 #if !defined(__cpp_lib_generic_unordered_lookup)
-//#if (__cplusplus >= 202002L) && _GLIBCXX_HOSTED
+// #if (__cplusplus >= 202002L) && _GLIBCXX_HOSTED
 #define __glibcxx_generic_unordered_lookup 201811L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_generic_unordered_lookup)
 #define __cpp_lib_generic_unordered_lookup 201811L
 #endif
-//#endif
+// #endif
 #endif /* !defined(__cpp_lib_generic_unordered_lookup) && defined(__glibcxx_want_generic_unordered_lookup) */
 #undef __glibcxx_want_generic_unordered_lookup
 
@@ -1851,12 +1851,12 @@
 #undef __glibcxx_want_ios_noreplace
 
 #if !defined(__cpp_lib_move_only_function)
-//#if (__cplusplus >= 202100L) && _GLIBCXX_HOSTED
+// #if (__cplusplus >= 202100L) && _GLIBCXX_HOSTED
 #define __glibcxx_move_only_function 202110L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_move_only_function)
 #define __cpp_lib_move_only_function 202110L
 #endif
-//#endif
+// #endif
 #endif /* !defined(__cpp_lib_move_only_function) && defined(__glibcxx_want_move_only_function) */
 #undef __glibcxx_want_move_only_function
 
@@ -1911,12 +1911,12 @@
 #undef __glibcxx_want_string_contains
 
 #if !defined(__cpp_lib_string_resize_and_overwrite)
-//#if (__cplusplus >= 202100L) && _GLIBCXX_HOSTED
+// #if (__cplusplus >= 202100L) && _GLIBCXX_HOSTED
 #define __glibcxx_string_resize_and_overwrite 202110L
 #if defined(__glibcxx_want_all) || defined(__glibcxx_want_string_resize_and_overwrite)
 #define __cpp_lib_string_resize_and_overwrite 202110L
 #endif
-//#endif
+// #endif
 #endif /* !defined(__cpp_lib_string_resize_and_overwrite) && defined(__glibcxx_want_string_resize_and_overwrite) */
 #undef __glibcxx_want_string_resize_and_overwrite
 

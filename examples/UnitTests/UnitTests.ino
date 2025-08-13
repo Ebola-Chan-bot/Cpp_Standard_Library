@@ -70,6 +70,8 @@ void Span(char C);
 void MapSet();
 void String();
 void Mutex();
+void Iterator();
+void Set();
 void loop() {
   FF();
   Functional();
@@ -77,4 +79,6 @@ void loop() {
   MapSet();
   String();
   Mutex();
+  Iterator();
+  Set();
 }

@@ -1,7 +1,6 @@
 #pragma once
-#ifdef ARDUINO_ARCH_ESP32
-#include_next <set>
-#else
+#ifdef ARDUINO_ARCH_AV
+
 // <set> -*- C++ -*-
 
 // Copyright (C) 2001-2024 Free Software Foundation, Inc.
@@ -101,4 +100,6 @@ _GLIBCXX_END_NAMESPACE_VERSION
 #endif // C++20
 
 #endif /* _GLIBCXX_SET */
+#else
+#include_next <set>
 #endif

@@ -1,5 +1,7 @@
 #pragma once
-#ifdef ARDUINO_ARCH_AVR
+#ifdef ARDUINO_ARCH_ESP32
+#include_next <bits/node_handle.h>
+#else
 // Node handles for containers -*- C++ -*-
 
 // Copyright (C) 2016-2024 Free Software Foundation, Inc.
@@ -204,9 +206,9 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 	operator=(_NodeAlloc&& __alloc) noexcept
 	{
 	  using _ATr = _AllocTraits;
-	  if constexpr (_ATr::propagate_on_container_move_assignment::value)
+	  if _GLIBCXX17_CONSTEXPR(_ATr::propagate_on_container_move_assignment::value)
 	    _M_alloc = std::move(__alloc);
-	  else if constexpr (!_AllocTraits::is_always_equal::value)
+	  else if _GLIBCXX17_CONSTEXPR (!_AllocTraits::is_always_equal::value)
 	    __glibcxx_assert(_M_alloc == __alloc);
 	}
 
@@ -215,9 +217,9 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 	swap(_Optional_alloc& __other) noexcept
 	{
 	  using std::swap;
-	  if constexpr (_AllocTraits::propagate_on_container_swap::value)
+	  if _GLIBCXX17_CONSTEXPR (_AllocTraits::propagate_on_container_swap::value)
 	    swap(_M_alloc, __other._M_alloc);
-	  else if constexpr (!_AllocTraits::is_always_equal::value)
+	  else if _GLIBCXX17_CONSTEXPR (!_AllocTraits::is_always_equal::value)
 	    __glibcxx_assert(_M_alloc == __other._M_alloc);
 	}
 
@@ -408,6 +410,4 @@ _GLIBCXX_END_NAMESPACE_VERSION
 
 #endif // __glibcxx_node_extract
 #endif
-#else
-#include_next <bits/node_handle.h>
 #endif

@@ -75,9 +75,7 @@
 #if __cplusplus >= 201103L
 #include <ext/aligned_buffer.h>
 #endif
-#if __cplusplus > 201402L
 #include <bits/node_handle.h>
-#endif
 
 namespace std _GLIBCXX_VISIBILITY(default)
 {
@@ -912,12 +910,10 @@ namespace std _GLIBCXX_VISIBILITY(default)
     typedef std::reverse_iterator<iterator> reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
-#if __cplusplus > 201402L
     using node_type = _Node_handle<_Key, _Val, _Node_allocator>;
     using insert_return_type = _Node_insert_return<
-        __conditional_t<is_same_v<_Key, _Val>, const_iterator, iterator>,
+        __conditional_t<_CSL_Struct14Value_V(is_same,_Key, _Val), const_iterator, iterator>,
         node_type>;
-#endif
 
     pair<_Base_ptr, _Base_ptr>
     _M_get_insert_unique_pos(const key_type &__k);
