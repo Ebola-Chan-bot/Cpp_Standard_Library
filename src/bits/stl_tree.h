@@ -2723,8 +2723,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
   private:
     friend class _Rb_tree<_Key, _Val, _Sel, _Cmp1, _Alloc>;
 
-    static auto &
-    _S_get_impl(_Rb_tree<_Key, _Val, _Sel, _Cmp2, _Alloc> &__tree)
+    static auto 
+    _S_get_impl(_Rb_tree<_Key, _Val, _Sel, _Cmp2, _Alloc> &__tree)->decltype(__tree._M_impl)&
     {
       return __tree._M_impl;
     }

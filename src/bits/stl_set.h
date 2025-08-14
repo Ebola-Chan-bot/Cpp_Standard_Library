@@ -1196,14 +1196,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
 	private:
 		friend class _GLIBCXX_STD_C::set<_Val, _Cmp1, _Alloc>;
 
-		static auto &
-		_S_get_tree(_GLIBCXX_STD_C::set<_Val, _Cmp2, _Alloc> &__set)
-		{
-			return __set._M_t;
-		}
-
-		static auto &
-		_S_get_tree(_GLIBCXX_STD_C::multiset<_Val, _Cmp2, _Alloc> &__set)
+		static auto 
+		_S_get_tree(_GLIBCXX_STD_C::set<_Val, _Cmp2, _Alloc> &__set)->decltype(__set._M_t)&
 		{
 			return __set._M_t;
 		}
