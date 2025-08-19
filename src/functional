@@ -574,7 +574,7 @@ compose2(const Op1 &fn1, const Op2 &fn2, const Op3 &fn3)
 #else
 #include_next <functional>
 #endif
-#if __cplusplus < 202002L
+#if __cplusplus < 202302L
 #include <bits/move_only_function.h>
 #endif
 namespace std

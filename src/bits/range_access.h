@@ -264,6 +264,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
     return std::rend(__cont);
   }
 #endif
+#if __cplusplus < 202002L
 #ifdef __glibcxx_nonmember_container_access // C++ >= 17
   /**
    *  @brief  Return the size of a container.
@@ -395,6 +396,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
     return _Num;
   }
 #endif // __glibcxx_ssize
+#endif
   _GLIBCXX_END_NAMESPACE_VERSION
 } // namespace
 

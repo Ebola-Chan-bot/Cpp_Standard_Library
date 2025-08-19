@@ -1,3 +1,6 @@
+#ifdef ARDUINO_ARCH_ESP32
+#include_next <bits/version.h>
+#else
 #pragma once
 // Copyright (C) 2023-2024 Free Software Foundation, Inc.
 
@@ -2011,3 +2014,4 @@
 #undef __glibcxx_want_to_string
 
 #undef __glibcxx_want_all
+#endif

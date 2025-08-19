@@ -43,14 +43,14 @@
             "name": "esp32",
             "includePath": [
                 "${workspaceFolder}/src",
-                "${LOCALAPPDATA}/Arduino15/packages/esp32/hardware/esp32/3.1.1/cores/esp32"
+                "${LOCALAPPDATA}/Arduino15/packages/esp32/hardware/esp32/3.3.0/cores/esp32"
             ],
             "defines": [
                 "ARDUINO_ARCH_ESP32=1"
             ],
-            "compilerPath": "${LOCALAPPDATA}/Arduino15/packages/esp32/tools/esp-rv32/2405/bin/riscv32-esp-elf-g++.exe",
+            "compilerPath": "${LOCALAPPDATA}/Arduino15/packages/esp32/tools/esp-rv32/2411/bin/riscv32-esp-elf-g++.exe",
             "cStandard": "c11",
-            "cppStandard": "c++17"
+            "cppStandard": "c++20"
         }
     ],
     "version": 4

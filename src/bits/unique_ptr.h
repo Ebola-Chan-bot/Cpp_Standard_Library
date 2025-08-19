@@ -1104,7 +1104,7 @@ namespace std _GLIBCXX_VISIBILITY(default) {
     make_unique_for_overwrite(_Args &&...) = delete;
 #endif
 #endif // C++14 && HOSTED
-
+#if defined(ARUINO_ARCH_AVR)||__cplusplus<202002L
 #if __cplusplus > 201703L && __cpp_concepts && _GLIBCXX_HOSTED
   // _GLIBCXX_RESOLVE_LIB_DEFECTS
   // 2948. unique_ptr does not define operator<< for stream output
@@ -1128,7 +1128,7 @@ namespace std _GLIBCXX_VISIBILITY(default) {
   template <typename _Tp, typename _Del>
   static constexpr bool __is_unique_ptr<unique_ptr<_Tp, _Del>> = true;
 #endif
-
+#endif
   /// @} group pointer_abstractions
 
 #if __cplusplus >= 201703L && !defined ARDUINO_ARCH_ESP32

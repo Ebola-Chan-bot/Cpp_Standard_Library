@@ -35,7 +35,7 @@
 
 #include <bits/version.h>
 
-#ifdef __glibcxx_move_only_function // C++ >= 23 && HOSTED
+#if __cplusplus < 202302L
 
 #include <bits/invoke.h>
 #include <bits/utility.h>
