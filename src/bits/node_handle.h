@@ -32,14 +32,7 @@
  *  @headername{map,set,unordered_map,unordered_set}
  */
 
-#ifndef _NODE_HANDLE
-#define _NODE_HANDLE 1
-
 #pragma GCC system_header
-
-#include <bits/version.h>
-
-#ifdef __glibcxx_node_extract // C++ >= 17 && HOSTED
 
 #include <new>
 #include <bits/alloc_traits.h>
@@ -408,6 +401,4 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 _GLIBCXX_END_NAMESPACE_VERSION
 } // namespace std
 
-#endif // __glibcxx_node_extract
-#endif
 #endif
