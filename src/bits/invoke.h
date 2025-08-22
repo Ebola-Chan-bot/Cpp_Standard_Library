@@ -1,7 +1,4 @@
 #pragma once
-#ifdef ARDUINO_ARCH_ESP32
-#include_next <bits/invoke.h>
-#else
 // Implementation of INVOKE -*- C++ -*-
 
 // Copyright (C) 2016-2024 Free Software Foundation, Inc.
@@ -31,22 +28,17 @@
  *  Do not attempt to use it directly. @headername{functional}
  */
 
-#ifndef _GLIBCXX_INVOKE_H
-#define _GLIBCXX_INVOKE_H 1
-
 #pragma GCC system_header
-
-#if __cplusplus < 201103L
-#include <bits/c++0x_warning.h>
+#ifdef ARDUINO_ARCH_ESP32
+#include_next <bits/invoke.h>
 #else
-
 #include <type_traits>
 #include <bits/move.h> // forward
-
+#endif
 namespace std _GLIBCXX_VISIBILITY(default)
 {
 	_GLIBCXX_BEGIN_NAMESPACE_VERSION
-
+#ifndef ARDUINO_ARCH_ESP32
 	/**
 	 *  @addtogroup utilities
 	 *  @{
@@ -97,7 +89,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
 	{
 		return (*std::forward<_Tp>(__t)).*__f;
 	}
-
+#endif
+#ifdef ARDUINO_ARCH_AVR
 	/// Invoke a callable object.
 	template <typename _Callable, typename... _Args>
 	constexpr typename __invoke_result<_Callable, _Args...>::type
@@ -109,7 +102,8 @@ namespace std _GLIBCXX_VISIBILITY(default)
 		return std::__invoke_impl<__type>(__tag{}, std::forward<_Callable>(__fn),
 										  std::forward<_Args>(__args)...);
 	}
-
+#endif
+#ifndef ARDUINO_ARCH_ESP32
 #if __cplusplus >= 201703L
 	// INVOKE<R>: Invoke a callable object and convert the result to R.
 	template <typename _Res, typename _Callable, typename... _Args>
@@ -163,11 +157,6 @@ namespace std _GLIBCXX_VISIBILITY(default)
 								   std::forward<_Args>(__args)...);
 	}
 #endif // C++11 or C++14
-
+#endif
 	_GLIBCXX_END_NAMESPACE_VERSION
 } // namespace std
-
-#endif // C++11
-
-#endif // _GLIBCXX_INVOKE_H
-#endif
