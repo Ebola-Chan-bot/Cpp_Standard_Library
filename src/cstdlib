@@ -24,7 +24,7 @@ namespace std
 {
 	using ::abort;
 	using ::abs;
-	using ::atexit;
+	//using ::atexit;
 	using ::atof;
 	using ::atoi;
 	using ::atol;
