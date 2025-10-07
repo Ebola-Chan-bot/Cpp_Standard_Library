@@ -52,7 +52,7 @@ void loop() {
   //此段仅用于展示异常处理，对本示例主线逻辑无意义。必须在编译选项中启用-fexceptions并禁用-fno-rtti才能使本段生效。AVR不支持异常处理。
 #ifdef ARDUINO_ARCH_SAM
 //SAM架构不会自动定义此宏。如果在SAM的编译选项中启用了-fexceptions，还需要手动定义__cpp_exceptions。
-#define __cpp_exceptions
+//#define __cpp_exceptions
 #endif
 #ifdef __cpp_exceptions
   try {
