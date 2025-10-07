@@ -1,4 +1,7 @@
 #pragma once
+#ifdef ARDUINO_ARCH_ESP32
+#define _GLIBCXX_INCLUDE_NEXT_C_HEADERS
+#endif
 #ifdef ARDUINO_ARCH_AVR
 //AVR的stdlib与Arduino的atexit声明冲突
 #ifndef __ASSEMBLER__
